@@ -70,13 +70,12 @@ end
 
 function initlayer(l::Recurrent, X)
     inputSize = size(X, 1)
-    usegpu = is_on_gpu(X)
-    dataType = eltype(X)
+    usegpu = ctx.devType == :gpu
     l.ops = Knet.RNN(
         inputSize,
         l.hidden_size,
         numLayers = l.num_layers,
-        dataType = dataType,
+        dataType = ctx.dataType,
         usegpu = usegpu,
         rnnType = l.mode,
     )

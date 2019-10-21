@@ -1,3 +1,6 @@
+using Photon
+using Knet
+
 using IterTools
 
 include(Knet.dir("data", "mnist.jl"))
@@ -27,10 +30,13 @@ function loss(x, y)
 end
 
 
+
+ctx.devType = :cpu
 model = get_model()
 dtrn, dtst = mnistdata(xtype=Array)
 adam!(loss, ncycle(dtrn, 1))
 
+ctx.devType = :gpu
 model = get_model()
 dtrn, dtst = mnistdata(xtype=KnetArray)
 adam!(loss, ncycle(dtrn, 1))

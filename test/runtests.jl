@@ -13,13 +13,13 @@ using Test
 @info "Running Unit tests"
 
 function getimages(s=224)
-    images = randn(Float32,s,s,3,4)
-    images = gpu() >= 0 ? KnetArray(images) : images
+    images = randn(ctx.dataType,s,s,3,4)
+    images = ctx.devType == :gpu ? KnetArray(images) : images
 end
 
 function gethistoric(steps=100, features=10)
-    images = randn(Float32,features,steps,4)
-    images = gpu() >= 0 ? KnetArray(images) : images
+    images = randn(ctx.dataType,features,steps,4)
+    images = ctx.devType == :gpu ? KnetArray(images) : images
 end
 
 
@@ -109,17 +109,22 @@ function dense_model()
         model(data)
     end
 
-    data = randn(Float32, 10,16)
+    ctx.dataType = Float32
+    ctx.devType = :cpu
+    data = randn(ctx.dataType, 10,16)
     pred = run_model(data)
     @test size(pred) == (1,16)
     @test typeof(pred) == Array{Float32,2}
 
-    data = randn(Float64, 10,16)
+    ctx.dataType = Float64
+    ctx.devType = :cpu
+    data = randn(ctx.dataType, 10,16)
     pred = run_model(data)
     @test size(pred) == (1,16)
     @test typeof(pred) == Array{Float64,2}
 
-
+    ctx.dataType = Float32
+    ctx.devType = :gpu
     data = randn(Float32, 10,16)
     data = gpu() >= 0 ? KnetArray(data) : data
     pred = run_model(data)
@@ -150,7 +155,7 @@ end
 
 @testset "Dense" begin
     dense_model()
-    splitted_dense_model()
+    # splitted_dense_model()
 end
 
 
@@ -162,6 +167,7 @@ end
 
 function test_vgg()
 
+    ctx.devType = :gpu
     model = VGG16()
     images = getimages()
     pred = model(images)
@@ -174,6 +180,8 @@ end
 
 
 function test_alexnet()
+
+    ctx.devType = :gpu
     model = AlexNet(classes=500)
     images = getimages()
     pred = model(images)
@@ -186,6 +194,8 @@ end
 
 
 function test_densenet()
+
+    ctx.devType = :gpu
     model = DenseNet169()
     images = getimages()
     pred = model(images)
@@ -197,7 +207,6 @@ function test_densenet()
     @test size(pred) == (500, size(images,4))
 
 end
-
 
 @testset "DenseNet" begin
     test_densenet()

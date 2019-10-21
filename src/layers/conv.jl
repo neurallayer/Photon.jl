@@ -26,9 +26,9 @@ end
 function initlayer(layer::Conv, X)
 	input_channels = size(X)[end-1]
 	kernel_size = expand(ndims(X)-2, layer.kernel_size)
-    layer.w = getparam(X,kernel_size...,input_channels,layer.channels)
+    layer.w = getparam(kernel_size...,input_channels,layer.channels)
 	if layer.use_bias
-    	layer.b = getparam(X,1,1,layer.channels,1, init=zeros)
+    	layer.b = getparam(1,1,layer.channels,1, init=zeros)
 	else
 		layer.b = nothing
 	end
@@ -97,9 +97,9 @@ end
 function initlayer(layer::ConvTranspose, X)
 	input_channels = size(X)[end-1]
 	kernel_size = expand(ndims(X)-2, layer.kernel_size)
-    layer.w = getparam(X,kernel_size...,input_channels,layer.channels)
+    layer.w = getparam(kernel_size...,input_channels,layer.channels)
 	if layer.use_bias
-    	layer.b = getparam(X,1,1,layer.channels,1, init=zeros)
+    	layer.b = getparam(1,1,layer.channels,1, init=zeros)
 	else
 		layer.b = nothing
 	end

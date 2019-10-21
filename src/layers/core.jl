@@ -2,31 +2,24 @@
 
 
 mutable struct Context
-	devType::String
+	devType::Symbol
 	devId::Int
-	datatype::Type
+	dataType::Type
 end
 
-global ctx = Context("gpu",0,Float32)
+global ctx = Context(:gpu,0,Float32)
 
 
-function is_on_gpu(x)
-	if isa(x, KnetArray)
-		return true
-	elseif isa(x, AutoGrad.Result)
-		if isa(x.value, KnetArray)
-			return true
-		end
-	end
-	return false
+
+
+function is_on_gpu()
+	ctx.devType == :gpu
 end
 
 
-function getparam(x, d...;init=xavier)
-	@debug typeof(x)
-	et = eltype(x)
-	atype = is_on_gpu(x) ? KnetArray{et} : Array{et}
-	@debug atype
+function getparam(d...;init=xavier)
+	et = ctx.dataType
+	atype = ctx.devType == :gpu ? KnetArray{et} : Array{et}
 	Param(atype(init(d...)))
 end
 
@@ -84,9 +77,9 @@ end
 
 function initlayer(layer::Dense, X)
 	# t = eltype(X)
-    layer.w = getparam(X, layer.units, size(X,1))
+    layer.w = getparam(layer.units, size(X,1))
     if layer.use_bias
-		layer.b = getparam(X, layer.units, init=zeros)
+		layer.b = getparam(layer.units, init=zeros)
 	else
 		layer.b  = nothing
 	end
