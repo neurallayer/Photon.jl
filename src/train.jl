@@ -30,7 +30,6 @@ function loss(x, y)
 end
 
 
-
 ctx.devType = :cpu
 model = get_model()
 dtrn, dtst = mnistdata(xtype=Array)

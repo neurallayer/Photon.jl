@@ -1,5 +1,20 @@
 
 
+const _layernames = Dict{String,Int}()
+
+function get_layername(layername; kwargs...)
+	info = Dict(kwargs)
+	if haskey(info, :name)
+		info[:name]
+	else
+		if ! haskey(_layernames, layername)
+			_layernames[layername] = 1
+		end
+		id = _layernames[layername]
+		_layernames[layername] += 1
+		"$(layername)_$(id)"
+	end
+end
 
 mutable struct Context
 	devType::Symbol
@@ -8,7 +23,6 @@ mutable struct Context
 end
 
 global ctx = Context(:gpu,0,Float32)
-
 
 
 
@@ -23,30 +37,29 @@ function getparam(d...;init=xavier)
 	Param(atype(init(d...)))
 end
 
-
 abstract type Layer end
+abstract type LazyLayer <: Layer end
+
 function (layer::Layer)(X)
 	@debug "Calling $(typeof(layer))" size(X)
-    forward(layer, X)
+    call(layer, X)
 end
 
-"""
-LazyLayer will initialize the first time it sees input data. It will typically
-infer its required parameters based on the size, type and context of this input data.
 
-A LazyLayer needs to implement forward and initlayer functions and need an attribute
-called initialized.
-"""
-abstract type LazyLayer <: Layer end
+## Generic code
 function (layer::LazyLayer)(X)
-    if ! layer.initialized
+	@assert hasproperty(layer, :built) "LazyLayer $layer without built property detected"
+	@assert isa(layer.built, Bool) "LazyLayer $layer built property not a boolean"
+
+    if ! layer.built
 		@debug "Initializing $(typeof(layer))" size(X) layer
-        initlayer(layer, X)
-		layer.initialized = true
+        build(layer, size(X)[1:end-1])
+		layer.built = true
     end
 	@debug "Calling $(typeof(layer))" size(X)
-    forward(layer, X)
+    call(layer, X)
 end
+
 
 
 
@@ -54,35 +67,40 @@ end
 Fully connected layer with an optinal bias
 """
 mutable struct Dense <:LazyLayer
-    w
-    b
-    units
-    activation
-    initialized::Bool
+    units::Int
+	activation::Function
 	use_bias::Bool
+	name::String
+	built::Bool
+	params::NamedTuple
+
+	function Dense(units::Int; activation=identity, use_bias=true, kwargs...)
+		@assert units > 0
+		name = get_layername("dense"; kwargs...)
+	    new(units, activation, use_bias, name, false, (w=nothing, b=nothing))
+	end
 end
 
-function Dense(units; activation=identity, use_bias=true, flatten=true)
-	@assert units > 0 "Dense layer should have more then 0 units"
-    Dense(undef, undef, units, activation, false, use_bias)
-end
+function call(layer::Dense, X)
+	X = mat(X) # Flatten if required
 
-function forward(layer::Dense, X)
+	w,b = layer.params
 	if layer.use_bias
-    	layer.activation.(layer.w*X .+ layer.b)
+    	layer.activation.(w*X .+ b)
 	else
-		layer.activation.(layer.w*X)
+		layer.activation.(w*X)
 	end
 end
 
-function initlayer(layer::Dense, X)
-	# t = eltype(X)
-    layer.w = getparam(layer.units, size(X,1))
+function build(layer::Dense, shape::Tuple)
+	nInput = length(shape) > 1 ? *(shape...) : shape[1]
+
+    w = getparam(layer.units, nInput)
+	b = nothing
     if layer.use_bias
-		layer.b = getparam(layer.units, init=zeros)
-	else
-		layer.b  = nothing
+		b = getparam(layer.units, init=zeros)
 	end
+	layer.params = (w=w,b=b)
 end
 
 
@@ -95,7 +113,7 @@ mutable struct Flatten <: Layer
 	Flatten(dims=nothing) = new(dims)
 end
 
-function forward(layer::Flatten, X)
+function call(layer::Flatten, X)
 	layer.dims == nothing ? mat(X) : mat(X, dims=layer.dims)
 end
 
@@ -106,7 +124,7 @@ mutable struct Activation <:Layer
 	activation
 end
 
-function forward(c::Activation, x)
+function call(c::Activation, x)
 	c.activation.(x)
 end
 
@@ -124,7 +142,7 @@ struct Dropout <: Layer
 	end
 end
 
-function forward(d::Dropout,X)
+function call(d::Dropout,X)
 	dropout(X, d.rate)
 end
 
@@ -138,7 +156,7 @@ struct BatchNorm <: Layer
 	end
 end
 
-function forward(bn::BatchNorm, X)
+function call(bn::BatchNorm, X)
 	batchnorm(X, bn.moments)
 end
 

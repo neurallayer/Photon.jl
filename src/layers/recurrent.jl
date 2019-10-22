@@ -22,7 +22,7 @@ mutable struct Recurrent <: LazyLayer
     hidden_size::Int
     num_layers::Int
     ops
-    initialized::Bool
+    built::Bool
     last_only::Bool
     mode
 end
@@ -68,8 +68,8 @@ function RNN_RELU(
 end
 
 
-function initlayer(l::Recurrent, X)
-    inputSize = size(X, 1)
+function build(l::Recurrent, shape::Tuple)
+    inputSize = shape[1]
     usegpu = ctx.devType == :gpu
     l.ops = Knet.RNN(
         inputSize,
@@ -81,7 +81,7 @@ function initlayer(l::Recurrent, X)
     )
 end
 
-function forward(layer::Recurrent, X)
+function call(layer::Recurrent, X)
     output = layer.ops(X)
     if layer.last_only
         output[:, end, :]

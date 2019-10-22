@@ -14,7 +14,7 @@ mutable struct Conv <:LazyLayer
 	padding
 	strides
 	dilation
-	initialized::Bool
+	built::Bool
 	use_bias::Bool
 end
 
@@ -23,9 +23,9 @@ function Conv(channels, kernel_size; activation=identity, padding=0, strides=1, 
 	Conv(undef, undef, channels, kernel_size, activation, padding, strides, dilation, false, use_bias)
 end
 
-function initlayer(layer::Conv, X)
-	input_channels = size(X)[end-1]
-	kernel_size = expand(ndims(X)-2, layer.kernel_size)
+function build(layer::Conv, shape::Tuple)
+	input_channels = shape[end]
+	kernel_size = expand(length(shape)-1, layer.kernel_size)
     layer.w = getparam(kernel_size...,input_channels,layer.channels)
 	if layer.use_bias
     	layer.b = getparam(1,1,layer.channels,1, init=zeros)
@@ -34,7 +34,7 @@ function initlayer(layer::Conv, X)
 	end
 end
 
-function forward(c::Conv, x)
+function call(c::Conv, x)
 	x = conv4(c.w, x, padding=c.padding, stride=c.strides, dilation=c.dilation)
 	if c.use_bias
 		c.activation.(x .+ c.b)
@@ -85,7 +85,7 @@ mutable struct ConvTranspose <:LazyLayer
 	padding
 	strides
 	dilation
-	initialized::Bool
+	built::Bool
 	use_bias::Bool
 end
 
@@ -94,7 +94,7 @@ function ConvTranspose(channels, kernel_size; activation=identity, padding=0, st
 	Conv(undef, undef, channels, kernel_size, activation, padding, strides, dilation, false, use_bias)
 end
 
-function initlayer(layer::ConvTranspose, X)
+function build(layer::ConvTranspose, X)
 	input_channels = size(X)[end-1]
 	kernel_size = expand(ndims(X)-2, layer.kernel_size)
     layer.w = getparam(kernel_size...,input_channels,layer.channels)
@@ -105,7 +105,7 @@ function initlayer(layer::ConvTranspose, X)
 	end
 end
 
-function forward(c::ConvTranspose, x)
+function call(c::ConvTranspose, x)
 	x = deconv4(c.w, x, padding=c.padding, stride=c.strides, dilation=c.dilation)
 	if c.use_bias
 		c.activation.(x .+ c.b)
@@ -138,7 +138,7 @@ function AvgPool(;pool_size=2, padding=0, strides=2)
 	AvgPool(pool_size, padding, strides)
 end
 
-function forward(p::AvgPool,X)
+function call(p::AvgPool,X)
 	pool(X, window=p.pool_size, padding=p.padding, stride=p.strides, mode=0)
 end
 
@@ -151,7 +151,7 @@ struct AdaptiveAvgPool <: PoolingLayer
   output_size::Tuple
 end
 
-function forward(m::AdaptiveAvgPool, x)
+function call(m::AdaptiveAvgPool, x)
 	s = []
 	for idx in 1:length(m.output_size)
 		push!(s, size(x, idx) - m.output_size[idx] + 1 )
@@ -174,7 +174,7 @@ function MaxPool(;pool_size=2, padding=0, strides=2, nanOpt=0)
 	MaxPool(pool_size, padding, strides, nanOpt)
 end
 
-function forward(p::MaxPool, X)
+function call(p::MaxPool, X)
 	pool(X, window=p.pool_size, padding=p.padding, maxpoolingNanOpt=p.nanOpt, stride=p.strides, mode=1)
 end
 
@@ -187,7 +187,7 @@ struct AdaptiveMaxPool <: PoolingLayer
   output_size::Tuple
 end
 
-function forward(m::AdaptiveMaxPool, x)
+function call(m::AdaptiveMaxPool, x)
 	s = []
  	for idx in 1:length(m.ouput_size)
  		push!(s, size(x, idx) - m.output_size[idx] + 1 )

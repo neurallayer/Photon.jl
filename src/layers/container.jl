@@ -24,7 +24,7 @@ struct Sequential <:StackedLayer
 	end
 end
 
-function forward(model::Sequential,X)
+function call(model::Sequential,X)
 	for layer in model.layers
 		X = layer(X)
 	end
@@ -43,7 +43,7 @@ struct Concurrent <:StackedLayer
 	end
 end
 
-function forward(model::Concurrent, X)
+function call(model::Concurrent, X)
 	out = []
 	for layer in model.layers
 		push!(out, layer(X))
@@ -64,7 +64,7 @@ struct Residual <:StackedLayer
 	end
 end
 
-function forward(model::Residual, X)
+function call(model::Residual, X)
 	res = X
 	for layer in model.layers
 		X = layer(X)
