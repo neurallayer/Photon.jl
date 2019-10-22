@@ -162,7 +162,33 @@ end
 
 
 
+## SwitchContext
 
+"""
+Beginning of allowing for a single model instance to run on multiple devices
+(expiremental)
+"""
+struct ContextSwitch <: Layer
+
+  	devType
+	devId
+	dataType
+
+	function ContextSwitch(;devType=:gpu,devId=0,dataType=Float32)
+		new(devType,devId,dataType)
+	end
+end
+
+function call(c::ContextSwitch, X)
+	if c.devType == :cpu
+		ctx.devType = :cpu
+		X = Array(X)
+	elseif c.devType == :gpu
+		ctx.devType = :gpu
+		X = KnetArray(X)
+	end
+	X
+end
 
 
 

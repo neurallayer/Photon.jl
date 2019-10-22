@@ -10,10 +10,10 @@ include("layers/container.jl")
 include("utils.jl")
 
 
-export Layer, LazyLayer, Dense, BatchNorm, move2gpu, move2cpu, Conv,
+export Layer, LazyLayer, Dense, BatchNorm,
 	  Conv2D, Dropout, Sequential, Flatten, MaxPool2D, AvgPool2D,
 	  LSTM, GRU, Residual, Concurrent, AdaptiveAvgPool, AdaptiveMaxPool,
-	  Activation, add, forward, ctx
+	  Activation, add, forward, ctx, ContextSwitch
 
 @info "Loaded Photon"
 

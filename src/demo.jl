@@ -16,7 +16,7 @@ model = Sequential(
 
 
 # Lets create 100 batches of random images and labels
-x = [randn(Float64,28,28,1,16) for _ in 1:100]
+x = [randn(Float32,28,28,1,16) for _ in 1:100]
 y = [rand(0:9,16) for _ in 1:100]
 
 # Define the losss model

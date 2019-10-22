@@ -82,7 +82,6 @@ function lstm_model2()
     # Adaptive model
     model = Sequential(
         LSTM(20, last_only=false),
-        Flatten(),
         Dense(100, activation=relu),
         Dense(10)
     )
@@ -138,12 +137,13 @@ function splitted_dense_model()
     function run_model(data)
         model = Sequential(
             Dense(10),
-            move2cpu,
+            ContextSwitch(devType=:cpu),
             Dense(1)
         )
         model(data)
     end
 
+    ctx.devType = :gpu
     data = randn(Float32, 10,16)
     data = gpu() >= 0 ? KnetArray(data) : data
     pred = run_model(data)
@@ -155,7 +155,7 @@ end
 
 @testset "Dense" begin
     dense_model()
-    # splitted_dense_model()
+    splitted_dense_model()
 end
 
 
@@ -211,5 +211,6 @@ end
 @testset "DenseNet" begin
     test_densenet()
 end
+
 
 end
