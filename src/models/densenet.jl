@@ -42,7 +42,7 @@ function _make_transition(num_output_features)
     add(out, BatchNorm())
     add(out, Activation(relu))
     add(out, Conv2D(num_output_features, (1, 1), use_bias = false))
-    add(out, AvgPool2D(pool_size = 2, strides = 2))
+    add(out, AvgPool2D())
     return out
 end
 

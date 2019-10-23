@@ -10,7 +10,7 @@ function _make_features(layers, filters, batch_norm)
             end
             add(featurizer, Activation(relu))
         end
-        add(featurizer, MaxPool2D(strides = 2))
+        add(featurizer, MaxPool2D())
     end
     return featurizer
 end

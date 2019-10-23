@@ -92,10 +92,37 @@ function lstm_model2()
     @test_throws DimensionMismatch model(gethistoric(200))
 end
 
+function gru_model()
+    # Adaptive model
+    model = Sequential(
+        GRU(20,2;dropout=0.5),
+        Dense(100, activation=relu),
+        Dense(10)
+    )
+
+    pred = model(gethistoric(100))
+    @test size(pred) == (10,4)
+end
+
+
+function rnn_model()
+    # Adaptive model
+    model = Sequential(
+        RNN_RELU(20,2;dropout=0.5),
+        Dense(100, activation=relu),
+        Dense(10)
+    )
+
+    pred = model(gethistoric(100))
+    @test size(pred) == (10,4)
+end
+
 
 @testset "Recurrent" begin
     lstm_model()
     lstm_model2()
+    gru_model()
+    rnn_model()
 end
 
 
@@ -152,12 +179,10 @@ function splitted_dense_model()
 
 end
 
-
 @testset "Dense" begin
     dense_model()
     splitted_dense_model()
 end
-
 
 """
 ############################################

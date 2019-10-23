@@ -180,12 +180,14 @@ struct ContextSwitch <: Layer
 end
 
 function call(c::ContextSwitch, X)
+	ctx.devType = c.devType
+	ctx.dataType = c.dataType
+	ctx.devId = c.devId
+
 	if c.devType == :cpu
-		ctx.devType = :cpu
-		X = Array(X)
+		X = convert(Array{c.dataType},X)
 	elseif c.devType == :gpu
-		ctx.devType = :gpu
-		X = KnetArray(X)
+		X = convert(KnetArray{c.dataType},X)
 	end
 	X
 end
