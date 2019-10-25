@@ -1,7 +1,7 @@
 
 # Photon
 
-Photon is a developer friendly framework for Deep Learning in Julia. Under the hood it leverages **Knet** and it provides a **Keras** like API on top of that.
+Photon is a developer friendly framework for Deep Learning in Julia. Under the hood it leverages **KNet** and it provides a **Keras** like API on top of that.
 
 Defining a model couldn't be much simpler and should look familiar if you used
 Keras in the past:  
