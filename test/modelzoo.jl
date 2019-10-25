@@ -20,8 +20,6 @@ end
 
 
 function test_vgg()
-
-    ctx.devType = :gpu
     model = VGG16()
     images = getimages()
     pred = model(images)
@@ -34,8 +32,6 @@ end
 
 
 function test_alexnet()
-
-    ctx.devType = :gpu
     model = AlexNet(classes=500)
     images = getimages()
     pred = model(images)
@@ -48,8 +44,6 @@ end
 
 
 function test_densenet()
-
-    ctx.devType = :gpu
     model = DenseNet169()
     images = getimages()
     pred = model(images)

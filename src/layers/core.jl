@@ -20,10 +20,14 @@ mutable struct Context
 	devType::Symbol
 	devId::Int
 	dataType::Type
+
+	function Context()
+		devType = gpu() >= 0 ? :gpu : :cpu
+		new(devType, 0, Float32)
+	end
 end
 
-global ctx = Context(:gpu,0,Float32)
-
+global ctx = Context()
 
 
 function is_on_gpu()

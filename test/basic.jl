@@ -139,6 +139,7 @@ function dense_model()
     @test size(pred) == (1,16)
     @test typeof(pred) == Array{Float64,2}
 
+
     ctx.dataType = Float32
     ctx.devType = :gpu
     data = randn(Float32, 10,16)
@@ -170,8 +171,10 @@ function splitted_dense_model()
 end
 
 @testset "Dense" begin
-    dense_model()
-    splitted_dense_model()
+    if gpu() >= 0
+        dense_model()
+        splitted_dense_model()
+    end
 end
 
 

@@ -1,3 +1,6 @@
+
+const ϵ = 10e-8
+
 mutable struct Descent
   eta::Float64
 end
@@ -50,7 +53,7 @@ opt = ADAM(0.001, (0.9, 0.8))
 [ADAM](https://arxiv.org/abs/1412.6980v8) optimiser.
 """
 
-ϵ = 10e-8
+
 
 mutable struct ADAM
   eta::Float64

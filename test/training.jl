@@ -2,8 +2,6 @@ module TrainingTests
 
 using Photon, Knet, Test
 
-
-
 function simple_conv_model()
     model = Sequential(
         Conv2D(16, 3, activation=relu),
@@ -15,16 +13,18 @@ function simple_conv_model()
     return model
 end
 
+function KorA(arr)
+    (ctx.devType == :gpu) ? KnetArray(arr) : arr
+end
+
 function getdata(s=28)
     [(
-        KnetArray(randn(Float32,s,s,1,16)),
-        KnetArray(randn(Float32,10,16))
+        KorA(randn(Float32,s,s,1,16)),
+        KorA(randn(Float32,10,16))
     ) for i=1:10]
 end
 
 function test_train()
-
-    ctx.devType = :gpu
     model = simple_conv_model()
     workout = Workout(model, mse, ADAM())
 
