@@ -1,6 +1,6 @@
 
-using Flux
-using Flux:CuArray
+# using Flux
+# using Flux:CuArray
 
 model = Chain(
   Conv((3,3), 3=>16, relu),
@@ -43,7 +43,7 @@ model = Sequential(
   Conv2D(256, (3,3), activation=relu),
   MaxPool2D((4,4)),
   Dense(64, activation=relu),
-  Dense(10, activation=relu),
+  Dense(10, activation=relu)
   )
 
 ctx.devType = :gpu

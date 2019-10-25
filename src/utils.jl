@@ -5,7 +5,7 @@ function getEntry(d, val)
     return ""
 end
 
-function weights(layer, d, root="", mode=0)
+function weights(layer, d=Dict(), root="", mode=0)
     c = typeof(layer)
     for name in fieldnames(c)
         if ! isdefined(layer, name)
@@ -39,6 +39,7 @@ function weights(layer, d, root="", mode=0)
             weights(field, d, "$root:$c:$name", mode)
         end
     end
+	d
 end
 
 
