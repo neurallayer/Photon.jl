@@ -1,12 +1,8 @@
-module PhotonTest
+module TrainingTests
 
-using Photon
-using Knet
+using Photon, Knet, Test
 
 
-## Simple conv model
-using Test
-@info "Running Unit tests"
 
 function simple_conv_model()
     model = Sequential(
@@ -25,7 +21,6 @@ function getdata(s=28)
         KnetArray(randn(Float32,10,16))
     ) for i=1:10]
 end
-
 
 function test_train()
 

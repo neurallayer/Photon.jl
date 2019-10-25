@@ -1,0 +1,15 @@
+# Documentation: http://docs.travis-ci.com/user/languages/julia/
+
+language: julia
+
+os:
+  - linux
+
+julia:
+  - nightly
+
+notifications:
+  email: false
+
+script:
+ - julia --color=yes -e 'using Pkg; Pkg.activate(); Pkg.instantiate(); Pkg.test()'
