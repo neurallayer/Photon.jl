@@ -1,4 +1,10 @@
 
+function getparam(d...;init=xavier)
+	et = ctx.dataType
+	atype = ctx.devType == :gpu ? KnetArray{et} : Array{et}
+	Param(atype(init(d...)))
+end
+
 
 const _layernames = Dict{String,Int}()
 
@@ -16,30 +22,6 @@ function get_layername(layername; kwargs...)
 	end
 end
 
-mutable struct Context
-	devType::Symbol
-	devId::Int
-	dataType::Type
-
-	function Context()
-		devType = gpu() >= 0 ? :gpu : :cpu
-		new(devType, 0, Float32)
-	end
-end
-
-global ctx = Context()
-
-
-function is_on_gpu()
-	ctx.devType == :gpu
-end
-
-
-function getparam(d...;init=xavier)
-	et = ctx.dataType
-	atype = ctx.devType == :gpu ? KnetArray{et} : Array{et}
-	Param(atype(init(d...)))
-end
 
 abstract type Layer end
 abstract type LazyLayer <: Layer end

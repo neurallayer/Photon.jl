@@ -128,3 +128,22 @@ J = @diff begin
     loss = workout.loss(y_pred, y)
     updatemetrics(workout, loss, y, y_pred)
 end
+
+
+using Photon
+
+
+function getContext()
+  ctx
+end
+
+function setContext(;device=ctx.devType, deviceId=ctx.devId, dtype=ctx.dataType)
+  ctx.devType = device
+  ctx.devId = deviceId
+  ctx.dataType= dtype
+  getctx()
+end
+
+setContext(device=:cpu)
+
+getctx()

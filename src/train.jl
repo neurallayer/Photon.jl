@@ -49,6 +49,8 @@ function updatemetrics(workout::Workout, loss, y, y_pred, prefix="")
 end
 
 
+zerograd!(ps) = for param in ps; param.opt = nothing; end
+
 """
 Take a single step in updating the weights of a model. This function
 will be invoked from fit! to do the actual learning.
@@ -61,7 +63,7 @@ For a minibatch (x,y) of data, the folowing sequence will be executed:
 4. do the backpropagation and calculate the gradients
 5. update the weights of the model
 """
-function step!(workout::Workout, x, y)
+function step!(workout::Workout, x, y; zerograd=true)
     workout.steps += 1
     J = @diff begin
         y_pred = workout.model(x)
@@ -70,6 +72,7 @@ function step!(workout::Workout, x, y)
     end
     ps = back(J)
     update!(workout.opt, ps)
+    zerograd && zerograd!(ps)
 end
 
 
@@ -92,7 +95,7 @@ Examples:
 
     fit!(workout, traindata)
     fit!(workout, traindata, testdata, epochs=50)
-    
+
 """
 function fit!(workout::Workout, data, validation=nothing; epochs=1)
 

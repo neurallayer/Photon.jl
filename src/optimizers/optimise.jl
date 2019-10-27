@@ -1,30 +1,35 @@
 
+
+export SGD, ADAM, Momentum
+
 const ϵ = 10e-8
 
-mutable struct Descent
+mutable struct SGD
   eta::Float64
 end
 
-Descent() = Descent(0.1)
+SGD(lr=0.01) = SGD(lr)
 
-function apply!(o::Descent, x, Δ)
-  Δ .*= o.eta
+function update!(o::SGD, params)
+    for x in params
+        Δ = x.opt == nothing ? continue : x.opt
+        x.value .-=  Δ .* o.eta
+    end
 end
 
 
-
-mutable struct Momentum2
+mutable struct Momentum
   eta::Float64
   rho::Float64
   velocity::IdDict
 end
 
 
-function Momentum2(η = 0.01, ρ = 0.9)
+function Momentum(η = 0.01, ρ = 0.9)
     Momentum2(η, ρ, IdDict())
 end
 
-function update!(o::Momentum2, params, zerograd=true)
+function update!(o::Momentum, params)
     η, ρ = o.eta, o.rho
     for x in params
         Δ = x.opt == nothing ? continue : x.opt
@@ -33,7 +38,6 @@ function update!(o::Momentum2, params, zerograd=true)
         o.velocity[x] = v
 
         x.value .+= v
-        zerograd && (x.opt = nothing)
     end
 end
 
@@ -63,7 +67,7 @@ end
 
 ADAM(η = 0.001, β = (0.9, 0.999)) = ADAM(η, β, IdDict())
 
-function update!(o::ADAM, params, zerograd=true)
+function update!(o::ADAM, params)
   η, β = o.eta, o.beta
   for x in params
     Δ = x.opt == nothing ? continue : x.opt
@@ -74,7 +78,6 @@ function update!(o::ADAM, params, zerograd=true)
     o.state[x] = (mt, vt, βp .* β)
 
     x.value .-= Δ
-    zerograd && (x.opt = nothing)
   end
 
 end

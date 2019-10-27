@@ -1,5 +1,6 @@
 using Photon, Knet
 
+
 # Get the MNIST data set
 include(Knet.dir("data", "mnist.jl"))
 trndata, tstdata = mnistdata()
