@@ -12,6 +12,7 @@ include("utils.jl")
 include("optimise.jl")
 include("train.jl")
 include("losses.jl")
+include("metrics/core.jl")
 
 
 export Layer, LazyLayer, Dense, BatchNorm, RNN_RELU, RNN_TANH,

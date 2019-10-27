@@ -22,21 +22,12 @@ fit!(workout, trndata, tstdata; epochs=10)
 println("Trained the model in $(workout.epochs) epochs.")
 
 
-# Not lets plot some results. If you haven't installed plots, you need to run
-#     using Pkg; Pkg.add("Plots")
-
+# Now let's plot some results. If you haven't installed Plots yet, you'll
+# need to run:  using Pkg; Pkg.add("Plots")
 using Plots
-
-function history(workout::Workout, symbol::Symbol)
-      h = workout.metrics[symbol].history
-      steps = sort(collect(keys(h)))
-      return (steps, [h[step] for step in steps])
-end
-
 
 h1 = history(workout, :loss)
 h2 = history(workout, :valid_loss)
 
-
-plot(h1...)
-plot!(h2...)
+plot(h1..., xlabel = "steps", ylabel="loss", label="training")
+plot!(h2..., linewidth = 2, label="validation")

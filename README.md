@@ -34,18 +34,18 @@ Or a recurrent LSTM network:
 
 ```
 model = Sequential(
-      LSTM(256,3),
+      LSTM(256, 3),
       Dense(64, activation=relu),
       Dense(10)
   )
 ```
 
 
-But also the training of the model can be done through an
+And also the training of the model can be done through an
 easy API:
 
 ```
-workout = Workout(model, ADAM(), nll)
+workout = Workout(model, nll, ADAM())
 fit!(workout, data, epochs=50)
 ```
 
@@ -55,14 +55,17 @@ fit!(workout, data, epochs=50)
 
 
 ## Features
-The goal is to provide a user friendly API for Machine Learning that enables fast prototyping, while remaining fast.
+The goal is to provide a user friendly API for Machine Learning that enables both prototyping
+and production ready solutions, while remaining fast.
 
 Some of the features:
 
-- Rather then providing all of the input and output shapes, you only provide the output ones. The framework will infer the input sizes the first time it is being invoked.
+- The framework will infer the input sizes the first time it is being invoked. This
+  makes it quicker to get started, but also making the layers more reusable.
 
-- If the dimensionality is not matching and there is a sensible default, that will be
-applied.
+- Where possible, sensible defaults are selected.
+
+- Make it easy to create reproducable results.
 
 ## Todo
 This software is still alpha quality and there remain many things to do:
@@ -72,9 +75,9 @@ This software is still alpha quality and there remain many things to do:
 - Implement dataset + dataloader
 - Implement more models (resnet,...)
 - Write documentation
-- Finalise Workout API
+- Finalize Workout API
 
-And btw, we are always open in accepting contributions ;)
+And b.t.w, we are always open in accepting contributions ;)
 
 ## License
 Photon is provided under the MIT open source license.
@@ -83,13 +86,13 @@ Photon is provided under the MIT open source license.
 ## References
 We also used several other open source frameworks for code and inspiration
 
-
-
 - Knet (pronounced "kay-net") is the Koç University deep learning framework
   implemented in Julia by Deniz Yuret and collaborators. It is right now the backend
-  for Photon due to its excellent performance on GPU.
+  for Photon due to its excellent performance on GPU's.
 
 - FluxML, we used some of their optimise code. This has to be one of the more
   beautiful code bases out there.
 
 - Keras and MXNet for their well thought out API's.
+
+- And of course Julia, that enables writing very fast data applications

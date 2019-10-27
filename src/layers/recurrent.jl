@@ -27,6 +27,15 @@ mutable struct Recurrent <: LazyLayer
     mode
 end
 
+"""
+Create a LSTM layer
+
+Examples:
+=========
+
+    layer = LSTM(50)
+
+"""
 function LSTM(
     hidden_size,
     num_layers = 1;
@@ -37,6 +46,16 @@ function LSTM(
     Recurrent(hidden_size, num_layers, undef, false, last_only, :lstm)
 end
 
+
+"""
+Create a GRU layer
+
+Examples:
+=========
+
+    layer = GRU(50)
+
+"""
 function GRU(
     hidden_size,
     num_layers = 1;

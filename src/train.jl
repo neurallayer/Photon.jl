@@ -1,29 +1,22 @@
 
+"""
+The Workout keeps track of the progress of a training session.
 
-struct SmartReducer
-    history
-    momentum
-    SmartReducer(momentum=0.9) = new(Dict(), momentum)
-end
+Examples
+========
 
-function update!(r::SmartReducer, step::Int, value::Number)
-    if haskey(r.history, step)
-        r.history[step] = r.momentum * r.history[step] + (1-r.momentum) * value
-    else
-        r.history[step] = value
-    end
-end
+    workout = Workout(model, mse, SGD())
 
+    workout = Workout(model, nll, ADAM())
 
-
-
+"""
 mutable struct Workout
     model
     loss
     opt
     metrics
-    steps
-    epochs
+    steps::Int
+    epochs::Int
 
     function Workout(model, loss, opt; metrics=Dict())
         new(model, loss, opt, metrics, 0, 0)
@@ -32,8 +25,9 @@ end
 
 
 """
-Perform the backpropagation and update the gradients. The weights are not yet
-updated, that is the role of an optimiser.
+Perform the back propagation and update the gradients. The weights are not yet
+updated, that is the role of the optimizers. For now the gradients are stored
+with the weights.
 """
 function back(J)
     ps = params(J)
@@ -44,8 +38,10 @@ function back(J)
     ps
 end
 
-
-function updatemetrics(workout, loss, y, y_pred, prefix="")
+"""
+Invoke the configured metrics. The loss metric will always be logged and available.
+"""
+function updatemetrics(workout::Workout, loss, y, y_pred, prefix="")
     metricname = Symbol(prefix, "loss")
     e = get!(workout.metrics, metricname, SmartReducer())
     update!(e, workout.steps, value(loss))
@@ -54,8 +50,10 @@ end
 
 
 """
-Take a single step in updating the weights of a model. So for the minibatch (x,y)
-the folowing sequence will be executed:
+Take a single step in updating the weights of a model. This function
+will be invoked from fit! to do the actual learning.
+
+For a minibatch (x,y) of data, the folowing sequence will be executed:
 
 1. the forward pass
 2. calculate the loss
@@ -76,7 +74,7 @@ end
 
 
 """
-Predict a minibatch and calculate the loss and defined metrics
+Predict a minibatch and calculate the loss and defined metrics.
 """
 function predict(workout::Workout, x, y)
     y_pred = workout.model(x)
@@ -88,6 +86,13 @@ end
 """
 Train the model based on a supervised dataset and the number of
 epochs to run.
+
+Examples:
+========
+
+    fit!(workout, traindata)
+    fit!(workout, traindata, testdata, epochs=50)
+    
 """
 function fit!(workout::Workout, data, validation=nothing; epochs=1)
 
