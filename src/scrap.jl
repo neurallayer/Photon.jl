@@ -121,3 +121,10 @@ data = randn(Float32,28,28,1,16)
 @time for i in 1:100000
   batchindex2(data,2)
 end
+
+
+J = @diff begin
+    y_pred = workout.model(x)
+    loss = workout.loss(y_pred, y)
+    updatemetrics(workout, loss, y, y_pred)
+end

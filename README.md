@@ -1,10 +1,24 @@
 
 # Photon
 
-Photon is a developer friendly framework for Deep Learning in Julia. Under the hood it leverages **KNet** and it provides a **Keras** like API on top of that.
+Photon is a developer friendly framework for Deep Learning in Julia. Under the hood it leverages **Knet** and it provides a **Keras** like API on top of that.
 
-Defining a model couldn't be much simpler and should look familiar if you used
-Keras in the past:  
+It is right now still very much alpha quality and the main goal of the current version is to see what API's work best. So expect still to see some changes in the API the upcoming releases.
+
+
+## Usage
+Defining a model couldn't be much simpler and should look familiar if you used Keras in the past:  
+
+A two layers fully connected network:
+
+```
+model = Sequential(
+      Dense(256, activation=relu),
+      Dense(10)
+  )
+```
+
+A convolutional network:
 
 ```
 model = Sequential(
@@ -12,9 +26,32 @@ model = Sequential(
       Conv2D(16, 3, activation=relu),
       MaxPool2D(),
       Dense(256, activation=relu),
-      Dense()
+      Dense(10)
   )
 ```
+
+Or a recurrent LSTM network:
+
+```
+model = Sequential(
+      LSTM(256,3),
+      Dense(64, activation=relu),
+      Dense(10)
+  )
+```
+
+
+But also the training of the model can be done through an
+easy API:
+
+```
+workout = Workout(model, ADAM(), nll)
+fit!(workout, data, epochs=50)
+```
+
+## Installation
+
+
 
 
 ## Features
@@ -27,18 +64,32 @@ Some of the features:
 - If the dimensionality is not matching and there is a sensible default, that will be
 applied.
 
-
-## License
-Provided under MIT open source license.
-
-
 ## Todo
-Still many things to do:
+This software is still alpha quality and there remain many things to do:
 
-- Add typing to assist development
-- Extend unit test to cover more scenarios
+- Add typing to assist the compiler development
+- Extend unit tests to cover more scenarios
 - Implement dataset + dataloader
 - Implement more models (resnet,...)
 - Write documentation
+- Finalise Workout API
 
-And btw, we are accepting contributions ;)
+And btw, we are always open in accepting contributions ;)
+
+## License
+Photon is provided under the MIT open source license.
+
+
+## References
+We also used several other open source frameworks for code and inspiration
+
+
+
+- Knet (pronounced "kay-net") is the Koç University deep learning framework
+  implemented in Julia by Deniz Yuret and collaborators. It is right now the backend
+  for Photon due to its excellent performance on GPU.
+
+- FluxML, we used some of their optimise code. This has to be one of the more
+  beautiful code bases out there.
+
+- Keras and MXNet for their well thought out API's.

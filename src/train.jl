@@ -26,19 +26,42 @@ function back(J)
     ps
 end
 
+
+function updatemetrics(workout, loss, y, y_pred)
+    println("$(workout.epochs):$(workout.steps) => loss=$loss")
+    return loss
+end
+
+
 """
-Take a single step in updating the model, so for the minibatch x,y
-do:
-- the forward pass
-- calculate the loss
-- do the backpropagation
-- and update the weights of the model
+Take a single step in updating the weights of a model. So for the minibatch (x,y)
+the folowing sequence will be executed:
+
+1. the forward pass
+2. calculate the loss
+3. Calculate additional metrics, if any
+4. do the backpropagation and calculate the gradients
+5. update the weights of the model
 """
 function step!(workout::Workout, x, y)
-    J = @diff workout.loss(workout.model(x),y)
+    workout.steps += 1
+    J = @diff begin
+        y_pred = workout.model(x)
+        loss = workout.loss(y_pred, y)
+        updatemetrics(workout, loss, y, y_pred)
+    end
     ps = back(J)
     update!(workout.opt, ps)
-    workout.steps += 1
+end
+
+
+"""
+Predict a minibatch and calculate the defined metrics
+"""
+function predict(workout::Workout, x, y)
+    y_pred = workout.model(x)
+    loss = workout.loss(y_pred, y)
+    updatemetrics(workout, loss, y, y_pred)
 end
 
 
@@ -46,13 +69,21 @@ end
 Train the model based on a supervised dataset and the number of
 epochs to run.
 """
-function fit!(workout, data, epochs::Int=1)
+function fit!(workout, data, validation=nothing; epochs=1)
 
     for epoch in 1:epochs
-        for (x,y) in data
+        workout.epochs += 1
+        d = data isa Function ? data() : data
+        for (x,y) in d
             step!(workout, x, y)
         end
-        workout.epochs += 1
+
+        if validation != nothing
+            d = validation isa Function ? validation() : validation
+            for (x,y) in d
+                predict(workout, x, y)
+            end
+        end
     end
 end
 
