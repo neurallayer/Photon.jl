@@ -1,4 +1,22 @@
 
+
+struct SmartReducer
+    history
+    momentum
+    SmartReducer(momentum=0.9) = new(Dict(), momentum)
+end
+
+function update!(r::SmartReducer, step::Int, value::Number)
+    if haskey(r.history, step)
+        r.history[step] = r.momentum * r.history[step] + (1-r.momentum) * value
+    else
+        r.history[step] = value
+    end
+end
+
+
+
+
 mutable struct Workout
     model
     loss
@@ -7,7 +25,7 @@ mutable struct Workout
     steps
     epochs
 
-    function Workout(model, loss, opt; metrics=[])
+    function Workout(model, loss, opt; metrics=Dict())
         new(model, loss, opt, metrics, 0, 0)
     end
 end
@@ -27,8 +45,10 @@ function back(J)
 end
 
 
-function updatemetrics(workout, loss, y, y_pred)
-    println("$(workout.epochs):$(workout.steps) => loss=$loss")
+function updatemetrics(workout, loss, y, y_pred, prefix="")
+    metricname = Symbol(prefix, "loss")
+    e = get!(workout.metrics, metricname, SmartReducer())
+    update!(e, workout.steps, value(loss))
     return loss
 end
 
@@ -56,12 +76,12 @@ end
 
 
 """
-Predict a minibatch and calculate the defined metrics
+Predict a minibatch and calculate the loss and defined metrics
 """
 function predict(workout::Workout, x, y)
     y_pred = workout.model(x)
     loss = workout.loss(y_pred, y)
-    updatemetrics(workout, loss, y, y_pred)
+    updatemetrics(workout, loss, y, y_pred, "valid_")
 end
 
 
@@ -69,7 +89,7 @@ end
 Train the model based on a supervised dataset and the number of
 epochs to run.
 """
-function fit!(workout, data, validation=nothing; epochs=1)
+function fit!(workout::Workout, data, validation=nothing; epochs=1)
 
     for epoch in 1:epochs
         workout.epochs += 1

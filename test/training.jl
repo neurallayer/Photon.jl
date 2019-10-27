@@ -29,7 +29,7 @@ function test_train()
     workout = Workout(model, mse, ADAM())
 
     data = getdata()
-    fit!(workout, data, 100)
+    fit!(workout, data, epochs=100)
 
     @test workout.epochs == 100
     @test workout.steps == (100 * length(data))
@@ -52,7 +52,7 @@ function test_densenet(epochs, device)
         end
     end
 
-    fit!(workout, randomdata, epochs)
+    fit!(workout, randomdata, epochs= epochs)
 
 end
 

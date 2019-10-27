@@ -12,6 +12,21 @@ function (c::Momentum)(x_prev, x_new)
 end
 
 
+struct SmartReducer
+    history
+    momentum
+    SmartReducer(momentum=0.9) = new(Dict(), momentum)
+end
+
+function update!(r:SmartReducer, step, metric, value)
+    key = (step, metric)
+    if haskey(r.history)
+        r.history[key] = r.momentum * r.history[key] + (1-r.momentum) * value
+    else
+        r.history[key] = value
+    end
+end
+
 
 mutable struct BinaryAccuracy
 

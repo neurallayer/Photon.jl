@@ -17,6 +17,26 @@ model = Sequential(
 workout = Workout(model, nll, ADAM())
 
 # Run the training for 10 epochs
-fit!(workout, trndata, 10)
+fit!(workout, trndata, tstdata; epochs=10)
 
 println("Trained the model in $(workout.epochs) epochs.")
+
+
+# Not lets plot some results. If you haven't installed plots, you need to run
+#     using Pkg; Pkg.add("Plots")
+
+using Plots
+
+function history(workout::Workout, symbol::Symbol)
+      h = workout.metrics[symbol].history
+      steps = sort(collect(keys(h)))
+      return (steps, [h[step] for step in steps])
+end
+
+
+h1 = history(workout, :loss)
+h2 = history(workout, :valid_loss)
+
+
+plot(h1...)
+plot!(h2...)
