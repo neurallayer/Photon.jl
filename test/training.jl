@@ -46,13 +46,13 @@ function test_densenet(epochs, device)
 
     function randomdata()
         Channel() do channel
-            for i in 1:5
+            for i in 1:2
                 put!(channel, minibatch)
             end
         end
     end
 
-    fit!(workout, randomdata, epochs= epochs)
+    fit!(workout, randomdata, epochs=epochs)
 
 end
 

@@ -1,6 +1,6 @@
 
 
-
+"""
 resnet_spec = Dict(
                 18 => ("basic_block", [2, 2, 2, 2], [64, 64, 128, 256, 512]),
                 34 => ("basic_block", [3, 4, 6, 3], [64, 64, 128, 256, 512]),
@@ -52,3 +52,5 @@ function forward(self::BottleneckV2, F, x)
 
        return x + residual
 end
+
+"""
