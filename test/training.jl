@@ -42,7 +42,7 @@ function test_densenet(epochs, device)
     model = DenseNet121()
     workout = Workout(model, mse, ADAM())
 
-    minibatch = (KorA(randn(Float32,224,224,3,4)), KorA(randn(Float32,1000,4)))
+    minibatch = (KorA(randn(Float32,224,224,3,2)), KorA(randn(Float32,1000,2)))
 
     function randomdata()
         Channel() do channel
