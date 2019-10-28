@@ -6,9 +6,10 @@ const ϵ = 10e-8
 
 mutable struct SGD
   eta::Float64
+
+  SGD(lr=0.01) = new(lr)
 end
 
-SGD(lr=0.01) = SGD(lr)
 
 function update!(o::SGD, params)
     for x in params

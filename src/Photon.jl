@@ -20,6 +20,9 @@ export Layer, LazyLayer, Dense, BatchNorm, RNN_RELU, RNN_TANH,
 	  LSTM, GRU, Residual, Concurrent, AdaptiveAvgPool, AdaptiveMaxPool,
 	  Activation, add, forward, ContextSwitch, ADAM, Workout, fit!
 
+
+dir(path...) = joinpath(dirname(@__DIR__),path...)
+
 @info "Loaded Photon"
 
 end
