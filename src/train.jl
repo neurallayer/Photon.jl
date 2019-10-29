@@ -1,4 +1,6 @@
 
+export Workout, predict, fit!, validate
+
 """
 The Workout keeps track of the progress of a training session.
 
@@ -65,6 +67,7 @@ For a minibatch (x,y) of data, the folowing sequence will be executed:
 """
 function step!(workout::Workout, x, y; zerograd=true)
     workout.steps += 1
+    x,y = KorA(x), KorA(y)
     J = Knet.@diff begin
         y_pred = workout.model(x)
         loss = workout.loss(y_pred, y)
@@ -77,9 +80,21 @@ end
 
 
 """
-Predict a minibatch and calculate the loss and defined metrics.
+Predict a sample, either a single value or a batch
 """
-function predict(workout::Workout, x, y)
+function predict(model, x, batch=false)
+    x = KorA(x)
+    x = batch ? x : addlast(x)
+    y = model(x)
+    batch ? y : droplast(y)
+end
+
+
+
+"""
+Validate a minibatch and calculate the loss and defined metrics.
+"""
+function validate(workout::Workout, x, y)
     y_pred = workout.model(x)
     loss = workout.loss(y_pred, y)
     updatemetrics(workout, loss, y, y_pred, "valid_")
@@ -102,14 +117,16 @@ function fit!(workout::Workout, data, validation=nothing; epochs=1)
     for epoch in 1:epochs
         workout.epochs += 1
         d = data isa Function ? data() : data
-        for (x,y) in d
+        for minibatch in d
+            x, y = KorA(minibatch)
             step!(workout, x, y)
         end
 
         if validation != nothing
             d = validation isa Function ? validation() : validation
-            for (x,y) in d
-                predict(workout, x, y)
+            for minibatch in d
+                x, y = KorA(minibatch)
+                validate(workout, x, y)
             end
         end
     end

@@ -33,6 +33,22 @@ function setContext(;device=ctx.devType, deviceId=ctx.devId, dtype=ctx.dataType)
   getctx()
 end
 
-function KorA(arr)
+"""
+KorA makes it easy to move an array to the GPU or the other way around
+"""
+function KorA(arr::Array)
     (ctx.devType == :gpu) ? Knet.KnetArray(arr) : arr
 end
+
+function KorA(arr::Knet.KnetArray)
+    (ctx.devType == :cpu) ? Array(arr) : arr
+end
+
+function KorA(arr::Tuple)
+    (KorA(elem) for elem in arr)
+end
+
+
+addlast(x) = reshape(x, (size(x)...,1))
+
+droplast(x) = reshape(x, (size(x)[1:end-1]...))
