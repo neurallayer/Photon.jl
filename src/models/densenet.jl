@@ -1,5 +1,5 @@
 
-
+using Knet:relu
 
 function _make_dense_block(
     num_layers,

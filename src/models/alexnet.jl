@@ -1,3 +1,6 @@
+
+using Knet:relu
+
 mutable struct AlexNet <: Layer
     features
     output

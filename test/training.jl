@@ -13,9 +13,7 @@ function simple_conv_model()
     return model
 end
 
-function KorA(arr)
-    (ctx.devType == :gpu) ? KnetArray(arr) : arr
-end
+
 
 function getdata(s=28)
     [(

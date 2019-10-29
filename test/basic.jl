@@ -143,10 +143,11 @@ function dense_model()
     ctx.dataType = Float32
     ctx.devType = :gpu
     data = randn(Float32, 10,16)
-    data = gpu() >= 0 ? KnetArray(data) : data
+    data = KnetArray(data)
     pred = run_model(data)
     @test size(pred) == (1,16)
     @test typeof(pred) == KnetArray{Float32,2}
+
 
 end
 
@@ -163,7 +164,7 @@ function splitted_dense_model()
 
     ctx.devType = :gpu
     data = randn(Float32, 10,16)
-    data = gpu() >= 0 ? KnetArray(data) : data
+    data = KnetArray(data)
     pred = run_model(data)
     @test size(pred) == (1,16)
     @test typeof(pred) == Array{Float32,2}
@@ -171,7 +172,7 @@ function splitted_dense_model()
 end
 
 @testset "Dense" begin
-    if gpu() >= 0
+    if hasgpu()
         dense_model()
         splitted_dense_model()
     end

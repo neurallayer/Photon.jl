@@ -1,7 +1,8 @@
 
 module Photon
 
-using Knet
+import Knet
+using Knet: KnetArray, Param
 using Statistics
 
 include("core.jl")

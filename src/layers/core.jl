@@ -1,5 +1,6 @@
 
-function getparam(d...;init=xavier)
+
+function getparam(d...;init=Knet.xavier)
 	et = ctx.dataType
 	atype = ctx.devType == :gpu ? KnetArray{et} : Array{et}
 	Param(atype(init(d...)))
@@ -68,7 +69,7 @@ mutable struct Dense <:LazyLayer
 end
 
 function call(layer::Dense, X)
-	X = mat(X) # Flatten if required
+	X = Knet.mat(X) # Flatten if required
 
 	w,b = layer.params
 	if layer.use_bias
@@ -100,7 +101,7 @@ mutable struct Flatten <: Layer
 end
 
 function call(layer::Flatten, X)
-	layer.dims == nothing ? mat(X) : mat(X, dims=layer.dims)
+	layer.dims == nothing ? Knet.mat(X) : Knet.mat(X, dims=layer.dims)
 end
 
 
@@ -129,7 +130,7 @@ struct Dropout <: Layer
 end
 
 function call(d::Dropout,X)
-	dropout(X, d.rate)
+	Knet.dropout(X, d.rate)
 end
 
 ## Batch Normalization Layer
@@ -138,12 +139,12 @@ struct BatchNorm <: Layer
   	moments
 
 	function BatchNorm()
-		new(bnmoments())
+		new(Knet.bnmoments())
 	end
 end
 
 function call(bn::BatchNorm, X)
-	batchnorm(X, bn.moments)
+	Knet.batchnorm(X, bn.moments)
 end
 
 

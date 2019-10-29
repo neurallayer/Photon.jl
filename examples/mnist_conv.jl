@@ -1,4 +1,5 @@
-using Photon, Knet
+using Photon
+using Knet:relu
 
 
 # Get the MNIST data set

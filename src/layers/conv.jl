@@ -54,7 +54,7 @@ end
 function call(c::Conv, x)
     w,b = c.params
 
-    x = conv4(
+    x = Knet.conv4(
         w,
         x,
         padding = c.padding,
@@ -153,7 +153,7 @@ function build(layer::ConvTranspose, shape::Tuple)
 end
 
 function call(c::ConvTranspose, x)
-    x = deconv4(
+    x = Knet.deconv4(
         c.w,
         x,
         padding = c.padding,
@@ -192,7 +192,7 @@ function AvgPool(;pool_size=2, padding = 0, strides = pool_size)
 end
 
 function call(p::AvgPool, X)
-    pool(
+    Knet.pool(
         X,
         window = p.pool_size,
         padding = p.padding,
@@ -216,7 +216,7 @@ function call(m::AdaptiveAvgPool, x)
         push!(s, size(x, idx) - m.output_size[idx] + 1)
     end
     s = tuple(s...)
-    return pool(x, window = s, padding = 0, stride = 1, mode = 0)
+    return Knet.pool(x, window = s, padding = 0, stride = 1, mode = 0)
 end
 
 
@@ -234,7 +234,7 @@ function MaxPool( ;pool_size=2, padding = 0, strides = pool_size, nanOpt = 0)
 end
 
 function call(p::MaxPool, X)
-    pool(
+    Knet.pool(
         X,
         window = p.pool_size,
         padding = p.padding,
@@ -259,7 +259,7 @@ function call(m::AdaptiveMaxPool, x)
         push!(s, size(x, idx) - m.output_size[idx] + 1)
     end
     s = tuple(s...)
-    return pool(x, window = s, padding = 0, stride = 1, mode = 1)
+    return Knet.pool(x, window = s, padding = 0, stride = 1, mode = 1)
 end
 
 

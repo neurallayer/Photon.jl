@@ -30,10 +30,10 @@ updated, that is the role of the optimizers. For now the gradients are stored
 with the weights.
 """
 function back(J)
-    ps = params(J)
+    ps = Knet.params(J)
     for param in ps
         # ugly hack, reuse opt attribute for storing gradients ;)
-        param.opt = grad(J,param)
+        param.opt = Knet.grad(J,param)
     end
     ps
 end
@@ -44,7 +44,7 @@ Invoke the configured metrics. The loss metric will always be logged and availab
 function updatemetrics(workout::Workout, loss, y, y_pred, prefix="")
     metricname = Symbol(prefix, "loss")
     e = get!(workout.metrics, metricname, SmartReducer())
-    update!(e, workout.steps, value(loss))
+    update!(e, workout.steps, Knet.value(loss))
     return loss
 end
 
@@ -65,7 +65,7 @@ For a minibatch (x,y) of data, the folowing sequence will be executed:
 """
 function step!(workout::Workout, x, y; zerograd=true)
     workout.steps += 1
-    J = @diff begin
+    J = Knet.@diff begin
         y_pred = workout.model(x)
         loss = workout.loss(y_pred, y)
         updatemetrics(workout, loss, y, y_pred)

@@ -1,6 +1,6 @@
 
 
-export getContext, setContext, ctx
+export getContext, setContext, ctx, hasgpu, KorA
 
 mutable struct Context
 	devType::Symbol
@@ -8,7 +8,7 @@ mutable struct Context
 	dataType::Type
 
 	function Context()
-		devType = gpu() >= 0 ? :gpu : :cpu
+		devType = Knet.gpu() >= 0 ? :gpu : :cpu
 		new(devType, 0, Float32)
 	end
 end
@@ -20,7 +20,7 @@ function is_on_gpu()
 	ctx.devType == :gpu
 end
 
-
+hasgpu() = Knet.gpu() >= 0
 
 function getContext()
   ctx
@@ -31,4 +31,8 @@ function setContext(;device=ctx.devType, deviceId=ctx.devId, dtype=ctx.dataType)
   ctx.devId = deviceId
   ctx.dataType= dtype
   getctx()
+end
+
+function KorA(arr)
+    (ctx.devType == :gpu) ? Knet.KnetArray(arr) : arr
 end
