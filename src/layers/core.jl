@@ -2,8 +2,8 @@
 
 function getparam(d...;init=Knet.xavier)
 	et = ctx.dataType
-	atype = ctx.devType == :gpu ? KnetArray{et} : Array{et}
-	Param(atype(init(d...)))
+	atype = ctx.devType == :gpu ? Knet.KnetArray{et} : Array{et}
+	Knet.Param(atype(init(d...)))
 end
 
 
@@ -174,7 +174,7 @@ function call(c::ContextSwitch, X)
 	if c.devType == :cpu
 		X = convert(Array{c.dataType},X)
 	elseif c.devType == :gpu
-		X = convert(KnetArray{c.dataType},X)
+		X = convert(Knet.KnetArray{c.dataType},X)
 	end
 	X
 end

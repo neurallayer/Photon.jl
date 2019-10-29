@@ -13,11 +13,7 @@ include("../src/models/densenet.jl")
 ############################################
 """
 
-function getimages(s=224)
-    images = randn(ctx.dataType,s,s,3,4)
-    images = ctx.devType == :gpu ? KnetArray(images) : images
-end
-
+getimages(s=224) = KorA(randn(ctx.dataType,s,s,3,4))
 
 function test_vgg()
     model = VGG16()

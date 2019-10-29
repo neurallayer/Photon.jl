@@ -2,7 +2,7 @@
 module PhotonTest
 
 using Photon
-using Knet
+using Knet: relu
 
 
 function test()
@@ -27,10 +27,10 @@ function test()
   ctx.devType = :gpu
   data = randn(Float32,224,224,3,16)
 
-  model(KnetArray(data))
+  model(KorA(data))
 
   @time for i in 1:1000
-    X = KnetArray(data)
+    X = KorA(data)
     model(X)
   end
 end

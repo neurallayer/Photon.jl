@@ -2,15 +2,9 @@ module BasicTests
 
 using Photon, Knet, Test
 
-function getimages(s=224)
-    images = randn(ctx.dataType,s,s,3,4)
-    images = ctx.devType == :gpu ? KnetArray(images) : images
-end
+getimages(s=224) = KorA(randn(ctx.dataType,s,s,3,4))
 
-function gethistoric(steps=100, features=10)
-    images = randn(ctx.dataType,features,steps,4)
-    images = ctx.devType == :gpu ? KnetArray(images) : images
-end
+gethistoric(steps=100, features=10) = KorA(randn(ctx.dataType,features,steps,4))
 
 
 function simple_conv_model()
@@ -142,11 +136,10 @@ function dense_model()
 
     ctx.dataType = Float32
     ctx.devType = :gpu
-    data = randn(Float32, 10,16)
-    data = KnetArray(data)
+    data = KorA(randn(Float32, 10,16))
     pred = run_model(data)
     @test size(pred) == (1,16)
-    @test typeof(pred) == KnetArray{Float32,2}
+    @test typeof(pred) == Knet.KnetArray{Float32,2}
 
 
 end
@@ -163,8 +156,7 @@ function splitted_dense_model()
     end
 
     ctx.devType = :gpu
-    data = randn(Float32, 10,16)
-    data = KnetArray(data)
+    data = KorA(randn(Float32, 10,16))
     pred = run_model(data)
     @test size(pred) == (1,16)
     @test typeof(pred) == Array{Float32,2}

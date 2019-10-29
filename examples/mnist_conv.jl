@@ -1,6 +1,7 @@
 using Photon
-using Knet:relu
+using Knet:relu, nll
 
+import Knet
 
 # Get the MNIST data set
 include(Knet.dir("data", "mnist.jl"))

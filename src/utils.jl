@@ -13,7 +13,7 @@ function weights(layer, d=Dict(), root="", mode=0)
             continue
         end
         field = getfield(layer,name)
-        if field isa Param
+        if field isa Knet.Param
             fqn = "$root:$c:$name:$(size(field))"
             if mode == 0
                 old_key = getEntry(d,field)
@@ -40,18 +40,4 @@ function weights(layer, d=Dict(), root="", mode=0)
         end
     end
 	d
-end
-
-
-
-"""
-Beginning of allowing for a single model instance to run on multiple devices
-(expiremental)
-"""
-function move2gpu(X)
-	isa(X, Array) ? KnetArray(X) : X
-end
-
-function move2cpu(X)
-	isa(X, KnetArray) ? Array(X) : X
 end
