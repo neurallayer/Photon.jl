@@ -37,7 +37,7 @@ end
 
 include("../src/models/densenet.jl")
 
-function test_densenet(epochs, device)
+function test_densenet(epochs, batches, device)
     ctx.devType = device
     model = DenseNet121()
     workout = Workout(model, mse, ADAM())
@@ -46,22 +46,21 @@ function test_densenet(epochs, device)
 
     function randomdata()
         Channel() do channel
-            for i in 1:2
+            for i in 1:batches
                 put!(channel, minibatch)
             end
         end
     end
 
     fit!(workout, randomdata, epochs=epochs)
-
 end
 
 @testset "Training" begin
     test_train()
     if gpu() >= 0
-        test_densenet(10,:gpu)
+        test_densenet(10,10,:gpu)
     end
-    test_densenet(1,:cpu)
+    test_densenet(1,1,:cpu)
 end
 
 end
