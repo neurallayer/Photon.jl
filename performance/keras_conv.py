@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+import time
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, BatchNormalization
@@ -25,7 +26,9 @@ model = Sequential([
 X = np.float32(np.random.randn(16,224,224,3))
 model(X)
 
-for i in 1:10000
-  X = Tensor(data)
+start=time.time()
+
+for i in range(1,1000):
   model(X)
-end
+
+print("Time spend:", (time.time() - start))
