@@ -1,5 +1,5 @@
 using Photon
-using Knet:relu
+using Knet:relu, softmax
 
 # Define a model with fully connected layers.
 model = Sequential(

@@ -1,5 +1,6 @@
 using Photon
-using Knet:relu, nll
+using Knet:relu, nll, softmax
+using Statistics
 
 import Knet
 
@@ -14,13 +15,15 @@ model = Sequential(
       MaxPool2D(),
       Dense(256, relu),
       Dense(10),
+      softmax
 )
+
 
 # Create a workout containing the model, a loss function and the optimizer
 workout = Workout(model, nll, ADAM())
 
 # Run the training for 10 epochs
-fit!(workout, trndata, tstdata; epochs=10)
+fit!(workout, trndata, tstdata; epochs=2)
 
 println("Trained the model in $(workout.epochs) epochs.")
 
