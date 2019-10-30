@@ -11,7 +11,7 @@ It is right now still very much alpha quality and the main goal of the current v
 ## Installation
 
 ```julia
-julia> Pkg.add("Photon")
+julia> using Pkg; Pkg.add("Photon")
 ```
 
 
@@ -22,7 +22,7 @@ A two layers fully connected network:
 
 ```julia
 model = Sequential(
-      Dense(256, activation=relu),
+      Dense(256, relu),
       Dense(10)
   )
 ```
@@ -31,10 +31,10 @@ A convolutional network:
 
 ```julia
 model = Sequential(
-      Conv2D(16, 3, activation=relu),
-      Conv2D(16, 3, activation=relu),
+      Conv2D(16, 3, relu),
+      Conv2D(16, 3, relu),
       MaxPool2D(),
-      Dense(256, activation=relu),
+      Dense(256, relu),
       Dense(10)
   )
 ```
@@ -44,7 +44,7 @@ Or a recurrent LSTM network:
 ```julia
 model = Sequential(
       LSTM(256, 3),
-      Dense(64, activation=relu),
+      Dense(64, relu),
       Dense(10)
   )
 ```
@@ -57,7 +57,7 @@ workout = Workout(model, nll, ADAM())
 fit!(workout, data, epochs=50)
 ```
 
-## Perfomance
+## Performance
 The combination of Deep Learning and Julia is a very performant one. Especially
 when running the models on a GPU. Some tests reveal **speedups of up to 100%** when
 compared one of the most popular framework Keras/Tensorflow 2.0.
@@ -72,7 +72,7 @@ GTX 1080TI NVidia graphics card installed and running Ubuntu 18.04:
 | LSTM predict | todo | todo | todo |
 | LSTM train | todo | todo | todo |
 
-The code that has been used is available in the performance directory subdirectory.
+The code that has been used is available in the *performance* subdirectory.
 
 ## Features
 The goal is to provide a user friendly API for Machine Learning that enables

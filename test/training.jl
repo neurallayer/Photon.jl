@@ -5,10 +5,10 @@ using Knet:relu
 
 function simple_conv_model()
     model = Sequential(
-        Conv2D(16, 3, activation=relu),
-        Conv2D(32, 3, activation=relu),
+        Conv2D(16, 3, relu),
+        Conv2D(32, 3, relu),
         MaxPool2D(),
-        Dense(100, activation=relu),
+        Dense(100, relu),
         Dense(10)
     )
     return model

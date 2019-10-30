@@ -9,10 +9,10 @@ trndata, tstdata = mnistdata()
 
 # Create a simple COnvolutional network
 model = Sequential(
-      Conv2D(16, 3, activation = relu),
-      Conv2D(16, 3, activation = relu),
+      Conv2D(16, 3, relu),
+      Conv2D(16, 3, relu),
       MaxPool2D(),
-      Dense(256, activation = relu),
+      Dense(256, relu),
       Dense(10),
 )
 

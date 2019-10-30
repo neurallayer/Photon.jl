@@ -19,8 +19,8 @@ end
 
 function Conv(
     channels,
-    kernel_size;
-    activation = identity,
+    kernel_size,
+    activation = identity;
     padding = 0,
     strides = 1,
     dilation = 1,

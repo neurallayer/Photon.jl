@@ -11,10 +11,10 @@ getimages(s=224) = KorA(randn(ctx.dtype,s,s,3,4))
 
 function simple_conv_model()
     model = Sequential(
-        Conv2D(16, (3,3), activation=relu),
-        Conv2D(32, (5,5), activation=relu),
+        Conv2D(16, (3,3), relu),
+        Conv2D(32, (5,5), relu),
         Flatten(),
-        Dense(100, activation=relu),
+        Dense(100, relu),
         Dense(10)
     )
     pred = model(getimages())
@@ -24,13 +24,13 @@ end
 function adaptive_model()
     # Adaptive model
     model = Sequential(
-        Conv2D(16, (3,3), activation=relu),
+        Conv2D(16, (3,3), relu),
         MaxPool2D(),
-        Conv2D(32, (5,5), activation=relu),
+        Conv2D(32, (5,5), relu),
         AvgPool2D(),
         AdaptiveAvgPool((10,10)),
         Flatten(),
-        Dense(100, activation=relu),
+        Dense(100, relu),
         Dense(10)
     )
 

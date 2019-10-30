@@ -1,7 +1,6 @@
 module DenseTests
 
 using Photon, Test
-using Knet:relu
 import Knet
 
 

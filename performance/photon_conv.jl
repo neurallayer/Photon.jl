@@ -8,23 +8,22 @@ using Knet: relu
 function test()
 
   model = Sequential(
-    Conv2D(16, (3,3), activation=relu),
-    Conv2D(16, (3,3), activation=relu),
+    Conv2D(16, (3,3), relu),
+    Conv2D(16, (3,3), relu),
     BatchNorm(),
     MaxPool2D(pool_size=4),
-    Conv2D(64, (3,3), activation=relu),
-    Conv2D(64, (3,3), activation=relu),
+    Conv2D(64, (3,3), relu),
+    Conv2D(64, (3,3), relu),
     BatchNorm(),
     MaxPool2D(pool_size=4),
-    Conv2D(256, (3,3), activation=relu),
-    Conv2D(256, (3,3), activation=relu),
+    Conv2D(256, (3,3), relu),
+    Conv2D(256, (3,3), relu),
     BatchNorm(),
     MaxPool2D(pool_size=4),
-    Dense(64, activation=relu),
-    Dense(10, activation=relu)
+    Dense(64, relu),
+    Dense(10, relu)
   )
 
-  ctx.devType = :gpu
   data = randn(Float32,224,224,3,16)
 
   model(KorA(data))

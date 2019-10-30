@@ -61,7 +61,7 @@ mutable struct Dense <:LazyLayer
 	built::Bool
 	params::NamedTuple
 
-	function Dense(units::Int; activation=identity, use_bias=true, kwargs...)
+	function Dense(units::Int, activation=identity; use_bias=true, kwargs...)
 		@assert units > 0
 		name = get_layername("dense"; kwargs...)
 	    new(units, activation, use_bias, name, false, (w=nothing, b=nothing))
