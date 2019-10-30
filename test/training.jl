@@ -38,10 +38,11 @@ include("../src/models/densenet.jl")
 
 function test_densenet(epochs, batches, device)
     setContext(device=device, dtype=Float32)
-    model = DenseNet121()
+    model = DenseNet121(classes=100)
     workout = Workout(model, mse, ADAM())
 
-    minibatch = (KorA(randn(Float32,224,224,3,2)), KorA(randn(Float32,1000,2)))
+    # use only 1 image per batch, otherwise Travis won't finish in time
+    minibatch = (KorA(randn(Float32,224,224,3,1)), KorA(randn(Float32,100,1)))
 
     function randomdata()
         Channel() do channel
