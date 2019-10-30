@@ -57,6 +57,7 @@ function test_densenet(epochs, batches, device)
 end
 
 @testset "Training" begin
+    resetContext()
     test_train()
     if hasgpu()
         test_densenet(10,10,:gpu)
