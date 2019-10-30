@@ -1,8 +1,8 @@
 
 
 function getparam(d...;init=Knet.xavier)
-	et = ctx.dataType
-	atype = ctx.devType == :gpu ? Knet.KnetArray{et} : Array{et}
+	et = ctx.dtype
+	atype = ctx.device == :gpu ? Knet.KnetArray{et} : Array{et}
 	Knet.Param(atype(init(d...)))
 end
 
@@ -157,24 +157,22 @@ Beginning of allowing for a single model instance to run on multiple devices
 """
 struct ContextSwitch <: Layer
 
-  	devType
-	devId
-	dataType
+  	device
+	deviceId
+	dtype
 
-	function ContextSwitch(;devType=:gpu,devId=0,dataType=Float32)
-		new(devType,devId,dataType)
+	function ContextSwitch(;device=ctx.device,deviceId=ctx.deviceId,dtype=ctx.dtype)
+		new(device,deviceId,dtype)
 	end
 end
 
 function call(c::ContextSwitch, X)
-	ctx.devType = c.devType
-	ctx.dataType = c.dataType
-	ctx.devId = c.devId
+	setContext(device=c.device, deviceId=c.deviceId, dtype=c.dtype)
 
-	if c.devType == :cpu
-		X = convert(Array{c.dataType},X)
-	elseif c.devType == :gpu
-		X = convert(Knet.KnetArray{c.dataType},X)
+	if c.device == :cpu
+		X = convert(Array{c.dtype},X)
+	elseif c.device == :gpu
+		X = convert(Knet.KnetArray{c.dtype},X)
 	end
 	X
 end

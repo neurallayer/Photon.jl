@@ -1,7 +1,7 @@
 using Photon
 using Knet
 
-## Simple conv model
+
 using Test
 
 @testset "Photon" begin

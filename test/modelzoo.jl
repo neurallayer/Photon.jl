@@ -13,7 +13,7 @@ include("../src/models/densenet.jl")
 ############################################
 """
 
-getimages(s=224) = KorA(randn(ctx.dataType,s,s,3,4))
+getimages(s=224) = KorA(randn(ctx.dtype,s,s,3,4))
 
 function test_vgg()
     model = VGG16()

@@ -36,7 +36,7 @@ end
 include("../src/models/densenet.jl")
 
 function test_densenet(epochs, batches, device)
-    ctx.devType = device
+    setContext(device=:gpu)
     model = DenseNet121()
     workout = Workout(model, mse, ADAM())
 

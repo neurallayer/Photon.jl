@@ -69,7 +69,6 @@ For a minibatch (x,y) of data, the folowing sequence will be executed:
 """
 function step!(workout::Workout, x, y; zerograd=true)
     workout.steps += 1
-    x,y = KorA(x), KorA(y)
     J = Knet.@diff begin
         y_pred = workout.model(x)
         loss = workout.loss(y_pred, y)

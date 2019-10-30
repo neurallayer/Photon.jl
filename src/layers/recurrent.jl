@@ -87,7 +87,7 @@ function build(l::Recurrent, shape::Tuple)
         inputSize,
         l.hidden_size,
         numLayers = l.num_layers,
-        dataType = ctx.dataType,
+        dataType = ctx.dtype,
         usegpu = is_on_gpu(),
         rnnType = l.mode,
     )

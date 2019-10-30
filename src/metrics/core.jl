@@ -1,5 +1,5 @@
 
-export SmartReducer, history
+export SmartReducer, history, hasmetric
 
 struct SmartReducer
     history
@@ -14,6 +14,10 @@ function update!(r::SmartReducer, step::Int, value::Number)
         r.history[step] = value
     end
 end
+
+
+hasmetric(workout, metric) = haskey(workout.metrics, metric)
+
 
 """
 Get the history of a metric.
