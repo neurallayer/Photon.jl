@@ -6,7 +6,7 @@
 
 Photon is a developer friendly framework for Deep Learning in Julia. Under the hood it leverages **Knet** and it provides a **Keras** like API on top of that.
 
-It is right now still very much alpha quality and the main goal of the current version is to see what API's work best. So expect still to see some changes in the API the upcoming releases.
+It is right now still very much alpha quality and the main goal of the current version is to see what API's work best. So expect still to see some API changes in the upcoming releases.
 
 ## Installation
 
@@ -16,7 +16,7 @@ julia> using Pkg; Pkg.add("Photon")
 
 
 ## Usage
-Defining a model couldn't be much simpler and should look familiar if you used Keras in the past:  
+Defining a model is straightforward and should look familiar if you used Keras in the past:  
 
 A two layers fully connected network:
 
@@ -67,7 +67,7 @@ GTX 1080TI NVidia graphics card installed and running Ubuntu 18.04:
 
 |Scenario | Photon | Keras | Flux |
 | :---    |   ---: |  ---: | ---: |
-| Conv predict | 5.7 | 12.6 | 11.2 |
+| Conv predict | 5.7 | 12.3 | 9.1 |
 | Conv train | todo | todo | todo |
 | LSTM predict | todo | todo | todo |
 | LSTM train | todo | todo | todo |
@@ -85,17 +85,20 @@ Some of the features:
 
 - Where possible, sensible defaults are selected.
 
-- Make it easy to create reproducable results.
+- Make it easy to create reproducible results.
 
 ## Todo
 This software is still alpha quality and there remain many things to do:
 
-- Add typing to assist the compiler development
-- Extend unit tests to cover more scenarios
+- Add typing to assist the compiler and development
+- Extend unit tests to cover more code
 - Implement dataset + dataloader
 - Implement more models (resnet,...)
 - Write documentation
-- Finalize Workout API
+- Finalise the Workout API
+- Add more type of layers
+- Add more loss functions
+- Add more optimisers
 
 And b.t.w, we are always open in accepting contributions ;)
 
@@ -104,15 +107,15 @@ Photon is provided under the MIT open source license.
 
 
 ## References
-We also used several other open source frameworks for code and inspiration
+We used several other open source frameworks for code and inspiration
 
 - Knet (pronounced "kay-net") is the Koç University deep learning framework
   implemented in Julia by Deniz Yuret and collaborators. It is right now the backend
-  for Photon due to its excellent performance on GPU's.
+  for Photon partially due to its excellent performance on GPU's.
 
-- FluxML, we used some of their optimise code. This has to be one of the more
+- FluxML, we used some of their optimise code. This has to be one of the most
   beautiful code bases out there.
 
 - Keras and MXNet for their well thought out API's.
 
-- And of course Julia, that enables writing very fast data applications
+- And of course Julia, that enables writing very fast deap learning applications.
