@@ -37,12 +37,11 @@ end
 include("../src/models/densenet.jl")
 
 function test_densenet(epochs, batches, device)
-    setContext(device=device)
+    setContext(device=device, dtype=Float32)
     model = DenseNet121()
     workout = Workout(model, mse, ADAM())
 
-    dtype = getContext().dtype
-    minibatch = (KorA(randn(dtype,224,224,3,2)), KorA(randn(dtype,1000,2)))
+    minibatch = (KorA(randn(Float32,224,224,3,2)), KorA(randn(Float32,1000,2)))
 
     function randomdata()
         Channel() do channel
