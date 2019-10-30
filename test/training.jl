@@ -31,16 +31,18 @@ function test_train()
 
     @test workout.epochs == 100
     @test workout.steps == (100 * length(data))
+    @test hasmetric(workout, :loss)
 end
 
 include("../src/models/densenet.jl")
 
 function test_densenet(epochs, batches, device)
-    setContext(device=:gpu)
+    setContext(device=device)
     model = DenseNet121()
     workout = Workout(model, mse, ADAM())
 
-    minibatch = (KorA(randn(Float32,224,224,3,2)), KorA(randn(Float32,1000,2)))
+    dtype = getContext().dtype
+    minibatch = (KorA(randn(dtype,224,224,3,2)), KorA(randn(dtype,1000,2)))
 
     function randomdata()
         Channel() do channel
@@ -51,6 +53,8 @@ function test_densenet(epochs, batches, device)
     end
 
     fit!(workout, randomdata, epochs=epochs)
+    @test workout.epochs == epochs
+    @test hasmetric(workout, :loss)
 end
 
 @testset "Training" begin
