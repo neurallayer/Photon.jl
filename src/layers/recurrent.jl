@@ -1,3 +1,5 @@
+
+
 """
 RNN(inputSize, hiddenSize;
              h=nothing, c=nothing,
@@ -66,36 +68,27 @@ function GRU(
     Recurrent(hidden_size, num_layers, undef, false, last_only, :gru)
 end
 
-function RNN_TANH(
+function RNN(
     hidden_size,
     num_layers = 1;
+    activation=:tanh,
     dropout = 0.0,
     bidirectional = false,
     last_only = true,
 )
-    Recurrent(hidden_size, num_layers, undef, false, last_only, :tanh)
-end
-
-function RNN_RELU(
-    hidden_size,
-    num_layers = 1;
-    dropout = 0.0,
-    bidirectional = false,
-    last_only = true,
-)
-    Recurrent(hidden_size, num_layers, undef, false, last_only, :relu)
+    @assert activation in [:tanh, :relu] "Only :tanh and :relu are supported"
+    Recurrent(hidden_size, num_layers, undef, false, last_only, activation)
 end
 
 
 function build(l::Recurrent, shape::Tuple)
     inputSize = shape[1]
-    usegpu = ctx.devType == :gpu
     l.ops = Knet.RNN(
         inputSize,
         l.hidden_size,
         numLayers = l.num_layers,
         dataType = ctx.dataType,
-        usegpu = usegpu,
+        usegpu = is_on_gpu(),
         rnnType = l.mode,
     )
 end

@@ -8,13 +8,19 @@ Photon is a developer friendly framework for Deep Learning in Julia. Under the h
 
 It is right now still very much alpha quality and the main goal of the current version is to see what API's work best. So expect still to see some changes in the API the upcoming releases.
 
+## Installation
+
+```julia
+julia> Pkg.add("Photon")
+```
+
 
 ## Usage
 Defining a model couldn't be much simpler and should look familiar if you used Keras in the past:  
 
 A two layers fully connected network:
 
-```
+```julia
 model = Sequential(
       Dense(256, activation=relu),
       Dense(10)
@@ -23,7 +29,7 @@ model = Sequential(
 
 A convolutional network:
 
-```
+```julia
 model = Sequential(
       Conv2D(16, 3, activation=relu),
       Conv2D(16, 3, activation=relu),
@@ -35,7 +41,7 @@ model = Sequential(
 
 Or a recurrent LSTM network:
 
-```
+```julia
 model = Sequential(
       LSTM(256, 3),
       Dense(64, activation=relu),
@@ -43,23 +49,34 @@ model = Sequential(
   )
 ```
 
-
 And also the training of the model can be done through an
 easy API:
 
-```
+```julia
 workout = Workout(model, nll, ADAM())
 fit!(workout, data, epochs=50)
 ```
 
-## Installation
+## Perfomance
+The combination of Deep Learning and Julia is a very performant one. Especially
+when running the models on a GPU. Some tests reveal **speedups of up to 100%** when
+compared one of the most popular framework Keras/Tensorflow 2.0.
 
+Some early results based on running models on an Intel 7820X machine with a
+GTX 1080TI NVidia graphics card installed and running Ubuntu 18.04:
 
+|Scenario | Photon | Keras | Flux |
+| :---    |   ---: |  ---: | ---: |
+| Conv predict | 5.7 | 12.6 | 11.2 |
+| Conv train | todo | todo | todo |
+| LSTM predict | todo | todo | todo |
+| LSTM train | todo | todo | todo |
 
+The code that has been used is available in the performance directory subdirectory.
 
 ## Features
-The goal is to provide a user friendly API for Machine Learning that enables both prototyping
-and production ready solutions, while remaining fast.
+The goal is to provide a user friendly API for Machine Learning that enables
+both prototyping and production ready solutions, while remaining fast.
 
 Some of the features:
 

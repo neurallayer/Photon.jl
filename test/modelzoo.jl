@@ -1,6 +1,6 @@
 module ZooTests
 
-using Photon, Knet, Test
+using Photon, Test
 
 include("../src/models/vgg.jl")
 include("../src/models/alexnet.jl")

@@ -50,7 +50,9 @@ function updatemetrics(workout::Workout, loss, y, y_pred, prefix="")
     return loss
 end
 
-
+"""
+Reset the gradients of the provided paramters.
+"""
 zerograd!(ps) = for param in ps; param.opt = nothing; end
 
 """
@@ -80,9 +82,20 @@ end
 
 
 """
-Predict a sample, either a single value or a batch
+Predict a sample, either a single value or a batch. Compared to invoking
+the model directory with model(x), predit takes care of:
+
+- Moving the data to the GPU if required.
+- Making the data into a batch (controlled by isbatch parameter)
+
+Examples:
+=========
+
+    x = randn(Float32, 224, 224, 3)
+    predict(model, x)
+
 """
-function predict(model, x, batch=false)
+function predict(model, x, isbatch=false)
     x = KorA(x)
     x = batch ? x : addlast(x)
     y = model(x)

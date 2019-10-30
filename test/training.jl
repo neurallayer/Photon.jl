@@ -1,6 +1,7 @@
 module TrainingTests
 
-using Photon, Knet, Test
+using Photon, Test
+using Knet:relu
 
 function simple_conv_model()
     model = Sequential(
@@ -12,7 +13,6 @@ function simple_conv_model()
     )
     return model
 end
-
 
 
 function getdata(s=28)
@@ -55,7 +55,7 @@ end
 
 @testset "Training" begin
     test_train()
-    if gpu() >= 0
+    if hasgpu()
         test_densenet(10,10,:gpu)
     end
     test_densenet(1,1,:cpu)

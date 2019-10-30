@@ -1,6 +1,8 @@
 module BasicTests
 
-using Photon, Knet, Test
+using Photon, Test
+using Knet:relu
+import Knet
 
 getimages(s=224) = KorA(randn(ctx.dataType,s,s,3,4))
 
@@ -92,7 +94,7 @@ end
 function rnn_model()
     # Adaptive model
     model = Sequential(
-        RNN_RELU(20,2;dropout=0.5),
+        RNN(20,2;activation=:relu, dropout=0.5),
         Dense(100, activation=relu),
         Dense(10)
     )
@@ -110,7 +112,7 @@ end
 end
 
 
-function dense_model()
+function dense_model_cpu()
     function run_model(data)
         model = Sequential(
             Dense(10),
@@ -134,6 +136,19 @@ function dense_model()
     @test typeof(pred) == Array{Float64,2}
 
 
+
+end
+
+
+function dense_model_gpu()
+    function run_model(data)
+        model = Sequential(
+            Dense(10),
+            Dense(1)
+        )
+        model(data)
+    end
+
     ctx.dataType = Float32
     ctx.devType = :gpu
     data = KorA(randn(Float32, 10,16))
@@ -141,9 +156,7 @@ function dense_model()
     @test size(pred) == (1,16)
     @test typeof(pred) == Knet.KnetArray{Float32,2}
 
-
 end
-
 
 function splitted_dense_model()
     function run_model(data)
@@ -164,8 +177,9 @@ function splitted_dense_model()
 end
 
 @testset "Dense" begin
+    dense_model_cpu()
     if hasgpu()
-        dense_model()
+        dense_model_gpu()
         splitted_dense_model()
     end
 end
