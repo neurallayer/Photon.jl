@@ -1,7 +1,4 @@
 using Photon
-using Knet
-
-
 using Test
 
 @testset "Photon" begin
@@ -19,6 +16,8 @@ include("./modelzoo.jl")
 
 @info "Testing training of models"
 include("./training.jl")
+include("./optimise.jl")
+include("./loss.jl")
 
 @info "Testing complex traiing scenarios"
 include("./complex.jl")

@@ -2,7 +2,6 @@
 
 export SGD, ADAM, Momentum
 
-const ϵ = 10e-8
 
 mutable struct SGD
   eta::Float64
@@ -23,11 +22,8 @@ mutable struct Momentum
   eta::Float64
   rho::Float64
   velocity::IdDict
-end
 
-
-function Momentum(η = 0.01, ρ = 0.9)
-    Momentum2(η, ρ, IdDict())
+  Momentum(η = 0.01, ρ = 0.9) = new(η, ρ, IdDict())
 end
 
 function update!(o::Momentum, params)

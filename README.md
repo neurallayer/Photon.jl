@@ -1,22 +1,26 @@
 
 # Photon
 
+[![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE.md)
 [![Build Status](https://travis-ci.org/neurallayer/Photon.jl.svg?branch=master)](https://travis-ci.org/neurallayer/Photon.jl)
 [![codecov](https://codecov.io/gh/neurallayer/Photon.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/neurallayer/Photon.jl)
 
-Photon is a developer friendly framework for Deep Learning in Julia. Under the hood it leverages **Knet** and it provides a **Keras** like API on top of that.
+**Photon** is a developer friendly framework for Deep Learning in Julia. Under the hood
+it leverages **Knet** and it provides a Keras like API on top of that.
 
-It is right now still very much alpha quality and the main goal of the current version is to see what API's work best. So expect still to see some API changes in the upcoming releases.
+Photon is right now still very much alpha quality and the main goal of the current
+version is to see what API's work best. So expect still to see some API changes
+in the upcoming releases.
 
 ## Installation
-
 ```julia
 julia> using Pkg; Pkg.add("Photon")
 ```
 
 
 ## Usage
-Defining a model is straightforward and should look familiar if you used Keras in the past:  
+Defining a model is straightforward and should look familiar if you used Keras
+in the past:  
 
 A two layers fully connected network:
 
@@ -63,16 +67,16 @@ when running the models on a GPU. Some tests reveal **speedups of up to 100%** w
 compared one of the most popular framework Keras/Tensorflow 2.0.
 
 Some early results based on running models on an Intel 7820X machine with a
-GTX 1080TI NVidia graphics card installed and running Ubuntu 18.04:
+GTX-1080TI NVidia graphics card installed and running Ubuntu 18.04:
 
 |Scenario | Photon | Keras | Flux |
 | :---    |   ---: |  ---: | ---: |
-| Conv predict | 5.7 | 12.3 | 9.1 |
+| Conv predict | 5.7s | 12.3s | 9.1s |
 | Conv train | todo | todo | todo |
 | LSTM predict | todo | todo | todo |
 | LSTM train | todo | todo | todo |
 
-The code that has been used is available in the *performance* subdirectory.
+The code that has been used is available in the *performance* sub directory.
 
 ## Features
 The goal is to provide a user friendly API for Machine Learning that enables
@@ -88,14 +92,14 @@ Some of the features:
 - Make it easy to create reproducible results.
 
 ## Todo
-This software is still alpha quality and there remain many things to do:
+This software is still alpha quality and there remain many things to do.
 
 - Add typing to assist the compiler and development
 - Extend unit tests to cover more code
 - Implement dataset + dataloader
 - Implement more models (resnet,...)
 - Write documentation
-- Finalise the Workout API
+- Finalize the Workout API
 - Add more type of layers
 - Add more loss functions
 - Add more optimisers
@@ -110,10 +114,10 @@ Photon is provided under the MIT open source license.
 We used several other open source frameworks for code and inspiration
 
 - Knet (pronounced "kay-net") is the Koç University deep learning framework
-  implemented in Julia by Deniz Yuret and collaborators. It is right now the backend
-  for Photon partially due to its excellent performance on GPU's.
+  implemented in Julia by Deniz Yuret and collaborators. It is right now the
+  back-end for Photon, partially due to its excellent performance on GPU's.
 
-- FluxML, we used some of their optimise code. This has to be one of the most
+- Flux, we used some of their code. This has to be one of the most
   beautiful code bases out there.
 
 - Keras and MXNet for their well thought out API's.

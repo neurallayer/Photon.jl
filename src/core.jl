@@ -1,6 +1,8 @@
 
 
-export getContext, setContext, resetContext, ctx, hasgpu, is_on_gpu, KorA
+export getContext, setContext, resetContext, ctx, hasgpu, is_on_gpu, KorA, ϵ
+
+const ϵ = 10e-8
 
 mutable struct Context
 	device::Symbol
