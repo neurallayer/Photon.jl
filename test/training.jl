@@ -8,7 +8,7 @@ function simple_conv_model()
         Conv2D(16, 3, relu),
         Conv2D(32, 3, relu),
         MaxPool2D(),
-        Dense(100, relu),
+        Dense(50, relu),
         Dense(10)
     )
     return model
@@ -27,10 +27,10 @@ function test_train()
     workout = Workout(model, mse, ADAM())
 
     data = getdata()
-    fit!(workout, data, epochs=100)
+    fit!(workout, data, epochs=10)
 
-    @test workout.epochs == 100
-    @test workout.steps == (100 * length(data))
+    @test workout.epochs == 10
+    @test workout.steps == (10 * length(data))
     @test hasmetric(workout, :loss)
 end
 
