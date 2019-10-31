@@ -42,11 +42,12 @@ end
 
 function build(layer::Conv, shape::Tuple)
     input_channels = shape[end]
-    kernel_size = expand(length(shape) - 1, layer.kernel_size)
+    rank = length(shape) - 1
+    kernel_size = expand(rank, layer.kernel_size)
     w = getparam(kernel_size..., input_channels, layer.channels)
     b = nothing
     if layer.use_bias
-        b = getparam(1, 1, layer.channels, 1, init = zeros)
+        b = getparam(repeat([1],rank)..., layer.channels, 1, init = zeros)
     end
     layer.params = (w=w,b=b)
 end
@@ -105,8 +106,6 @@ Conv3D = Conv
 ConvTranspose layer
 """
 mutable struct ConvTranspose <: LazyLayer
-    w
-    b
     channels
     kernel_size
     activation
@@ -115,6 +114,7 @@ mutable struct ConvTranspose <: LazyLayer
     dilation
     built::Bool
     use_bias::Bool
+    params::NamedTuple
 end
 
 function ConvTranspose(
@@ -127,9 +127,7 @@ function ConvTranspose(
     use_bias = true,
 )
     @assert channels > 0
-    Conv(
-        undef,
-        undef,
+    ConvTranspose(
         channels,
         kernel_size,
         activation,
@@ -138,30 +136,33 @@ function ConvTranspose(
         dilation,
         false,
         use_bias,
+        (w=nothing, b=nothing)
     )
 end
 
 function build(layer::ConvTranspose, shape::Tuple)
     input_channels = shape[end]
     kernel_size = expand(length(shape) - 1, layer.kernel_size)
-    layer.w = getparam(kernel_size..., input_channels, layer.channels)
+    w = getparam(kernel_size..., input_channels, layer.channels)
+    b = nothing
     if layer.use_bias
-        layer.b = getparam(1, 1, layer.channels, 1, init = zeros)
-    else
-        layer.b = nothing
+        b = getparam(1, 1, layer.channels, 1, init = zeros)
     end
+    layer.params = (w=w,b=b)
 end
 
 function call(c::ConvTranspose, x)
+    w,b = c.params
+
     x = Knet.deconv4(
-        c.w,
+        w,
         x,
         padding = c.padding,
         stride = c.strides,
         dilation = c.dilation,
     )
     if c.use_bias
-        c.activation.(x .+ c.b)
+        c.activation.(x .+ b)
     else
         c.activation.(x)
     end
@@ -169,11 +170,6 @@ end
 
 Conv2DTranspose = ConvTranspose
 Conv3DTranspose = ConvTranspose
-
-
-
-
-
 
 ## AvgPool layer
 """
