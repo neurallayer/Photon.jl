@@ -44,19 +44,16 @@ end
 """
 KorA makes it easy to move an array to the GPU or the other way around
 """
-function KorA(arr::Array)
-    (ctx.device == :gpu) ? Knet.KnetArray(arr) : arr
-end
+KorA(arr::Array) = (ctx.device == :gpu) ? Knet.KnetArray(arr) : arr
+KorA(arr::Knet.KnetArray)= (ctx.device == :cpu) ? Array(arr) : arr
+KorA(arr::Tuple)= (KorA(elem) for elem in arr)
 
-function KorA(arr::Knet.KnetArray)
-    (ctx.device == :cpu) ? Array(arr) : arr
-end
 
-function KorA(arr::Tuple)
-    (KorA(elem) for elem in arr)
-end
+# TODO: Make more generic
+toFloat32(arr::Array) = convert(Array{Float32}, arr)
+toFloat32(arr::Knet.KnetArray) = convert(Knet.KnetArray{Float32}, arr)
+toFloat32(arr::Tuple) = (toFloat32(elem) for elem in arr)
 
 
 addlast(x) = reshape(x, (size(x)...,1))
-
 droplast(x) = reshape(x, (size(x)[1:end-1]...))
