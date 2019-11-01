@@ -62,7 +62,37 @@ function simple_conv_model()
     @test size(pred) == (10,4)
 end
 
-function adaptive_model()
+
+function get_output_sizeTest()
+    layer = Conv2D(16, (3,3), padding=1, strides=2, dilation=2)
+    s = output_size(layer,(224,224))
+    @test length(s) == 2
+end
+
+
+function adaptive_max_model()
+    # Adaptive model
+    model = Sequential(
+        Conv2D(16, (3,3), relu),
+        MaxPool2D(),
+        Conv2D(32, (5,5), relu),
+        AvgPool2D(),
+        AdaptiveMaxPool((10,10)),
+        Flatten(),
+        Dense(100, relu),
+        Dense(10)
+    )
+
+    pred = model(getimages(224))
+    @test size(pred) == (10,4)
+
+    pred = model(getimages(100))
+    @test size(pred) == (10,4)
+
+end
+
+
+function adaptive_avg_model()
     # Adaptive model
     model = Sequential(
         Conv2D(16, (3,3), relu),
@@ -85,9 +115,12 @@ end
 
 @testset "Conv" begin
     simple_conv_model()
-    # convtranspose_model()
-    adaptive_model()
+    convtranspose_model()
+    adaptive_avg_model()
+    adaptive_max_model()
+    get_output_sizeTest()
     simple_3D_model()
 end
+
 
 end

@@ -16,7 +16,7 @@ include("losses.jl")
 include("metrics/core.jl")
 
 export Layer, LazyLayer, Dense, BatchNorm, RNN, Conv2DTranspose,
-	  Conv2D, Conv3D, Dropout, Sequential, Flatten, MaxPool2D, AvgPool2D,
+	  Conv2D, Conv3D, output_size, Dropout, Sequential, Flatten, MaxPool2D, AvgPool2D,
 	  LSTM, GRU, Residual, Concurrent, AdaptiveAvgPool, AdaptiveMaxPool,
 	  Activation, add, forward, ContextSwitch, ADAM
 

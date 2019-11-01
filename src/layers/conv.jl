@@ -142,11 +142,12 @@ end
 
 function build(layer::ConvTranspose, shape::Tuple)
     input_channels = shape[end]
-    kernel_size = expand(length(shape) - 1, layer.kernel_size)
-    w = getparam(kernel_size..., input_channels, layer.channels)
+    rank = length(shape) - 1
+    kernel_size = expand(rank, layer.kernel_size)
+    w = getparam(kernel_size..., layer.channels, input_channels)
     b = nothing
     if layer.use_bias
-        b = getparam(1, 1, layer.channels, 1, init = zeros)
+        b = getparam(repeat([1],rank)..., layer.channels, 1, init = zeros)
     end
     layer.params = (w=w,b=b)
 end
@@ -251,7 +252,7 @@ end
 
 function call(m::AdaptiveMaxPool, x)
     s = []
-    for idx = 1:length(m.ouput_size)
+    for idx = 1:length(m.output_size)
         push!(s, size(x, idx) - m.output_size[idx] + 1)
     end
     s = tuple(s...)
