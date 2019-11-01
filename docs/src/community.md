@@ -1,5 +1,3 @@
 # Community
 
-All Photon users are welcome to join our community on the [Julia forum](https://discourse.julialang.org/). If you have questions or issues we'll try to help you out.
-
-If you're interested in hacking on Photon, the [source code](https://github.com/neurallayer/Flux.jl) is available under MIT license.  
+All Photon users are welcome to ask questions on the [Julia forum](https://discourse.julialang.org/). Of course issues can be opened on [Github](https://github.com/neurallayer/Photon.jl) where you also can get the source code.
