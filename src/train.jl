@@ -115,30 +115,30 @@ end
 
 """
 Train the model based on a supervised dataset and the number of
-epochs to run.
+epochs to run. fit! can be called multiple times and will continue
+where is left of last time.
 
 Examples:
-========
+=========
 
     fit!(workout, traindata)
     fit!(workout, traindata, testdata, epochs=50)
 
 """
-function fit!(workout::Workout, data, validation=nothing; epochs=1)
+function fit!(workout::Workout, data, validation=nothing;
+    epochs=1, convertor=autoConvertor)
 
     for epoch in 1:epochs
         workout.epochs += 1
         d = data isa Function ? data() : data
         for minibatch in d
-            x, y = KorA(minibatch)
-            step!(workout, x, y)
+            step!(workout, convertor(minibatch)...)
         end
 
         if validation != nothing
             d = validation isa Function ? validation() : validation
             for minibatch in d
-                x, y = KorA(minibatch)
-                validate(workout, x, y)
+                validate(workout, convertor(minibatch)...)
             end
         end
     end

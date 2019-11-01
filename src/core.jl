@@ -57,3 +57,25 @@ toFloat32(arr::Tuple) = (toFloat32(elem) for elem in arr)
 
 addlast(x) = reshape(x, (size(x)...,1))
 droplast(x) = reshape(x, (size(x)[1:end-1]...))
+
+
+"""
+autoConvertor converts data to the right format for a model.
+It uses the context to determine the device (cpu or gpu) and datatype
+that the data needs to be.
+
+It supports Tuples, Arrays and KnetArrays and a combination of those.
+"""
+function autoConvertor(arr::Array)
+	arr = convert(Array{ctx.dtype},arr)
+	ctx.device == :gpu ? Knet.KnetArray(arr) : arr
+end
+
+function autoConvertor(arr::Knet.KnetArray)
+	arr = convert(Knet.KnetArrayray{ctx.dtype}, arr)
+	ctx.device == :gpu ? arr : Array(arr)
+end
+
+autoConvertor(arr::Tuple)= (autoConvertor(elem) for elem in arr)
+
+noConvertor(arr) = arr
