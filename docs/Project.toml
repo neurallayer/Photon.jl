@@ -1,5 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Photon = "0bf025f6-8a23-43ed-a0f8-ad988f0a8cd8"
 
 [compat]
-Documenter = "~0.21"
+Documenter = "~0.23"
