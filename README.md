@@ -13,8 +13,17 @@ version is to see what API's work best. So expect still to see some API changes
 in the upcoming releases.
 
 ## Installation
+The package can be installed with the Julia package manager.
+From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
+
+```
+pkg> add Photon
+```
+
+Or, equivalently, via the `Pkg` API:
+
 ```julia
-julia> using Pkg; Pkg.add("Photon")
+julia> import Pkg; Pkg.add("Photon")
 ```
 
 
