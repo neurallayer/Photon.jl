@@ -6,7 +6,7 @@ pushfirst!(LOAD_PATH, joinpath(@__DIR__, ".."))
 
 using Documenter, Photon
 
-makedocs(modules=[Flux, NNlib],
+makedocs(modules=[Photon],
          sitename = "Photon",
          pages = ["Home" => "index.md",
                   "Community" => "community.md"],
