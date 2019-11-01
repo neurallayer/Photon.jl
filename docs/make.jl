@@ -12,4 +12,6 @@ makedocs(modules=[Photon],
                   "Community" => "community.md"],
          format = Documenter.HTML())
 
-deploydocs(repo = "github.com/neurallayer/Photon.jl.git")
+deploydocs(
+        repo = "github.com/neurallayer/Photon.jl.git"
+        target = "build")
