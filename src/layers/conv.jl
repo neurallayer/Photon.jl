@@ -184,7 +184,7 @@ struct AvgPool <: PoolingLayer
     strides
 end
 
-function AvgPool(;pool_size=2, padding = 0, strides = pool_size)
+function AvgPool(pool_size=2; padding = 0, strides = pool_size)
     AvgPool(pool_size, padding, strides)
 end
 
@@ -226,7 +226,7 @@ struct MaxPool <: PoolingLayer
     nanOpt
 end
 
-function MaxPool( ;pool_size=2, padding = 0, strides = pool_size, nanOpt = 0)
+function MaxPool(pool_size=2; padding = 0, strides = pool_size, nanOpt = 0)
     MaxPool(pool_size, padding, strides, nanOpt)
 end
 

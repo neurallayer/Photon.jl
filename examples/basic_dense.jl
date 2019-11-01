@@ -8,11 +8,15 @@ model = Sequential(
       softmax,
 )
 
-# Lets use the cpu for this
+# Lets use the CPU for this, even if we have a GPU.
 setContext(device=:cpu)
 
-# How to use the model to predict a minibatch
+# We can call the model to predict a minibatch
 x = randn(Float32, 10, 16)
 y = model(x)
+
+
+# Or use predict for a single sample.
+predict(model, randn(10))
 
 println("### Done ###")

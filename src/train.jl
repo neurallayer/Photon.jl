@@ -85,7 +85,7 @@ Predict a sample, either a single value or a batch. Compared to invoking
 the model directory with model(x), predit takes care of:
 
 - Moving the data to the GPU if required.
-- Making the data into a batch (controlled by isbatch parameter)
+- Making the data into a batch (controlled by makebatch parameter)
 
 Examples:
 =========
@@ -94,11 +94,10 @@ Examples:
     predict(model, x)
 
 """
-function predict(model, x, isbatch=false)
-    x = KorA(x)
-    x = batch ? x : addlast(x)
-    y = model(x)
-    batch ? y : droplast(y)
+function predict(model, x; makebatch=true, convertor=autoConvertor)
+    x = makebatch ? addlast(x) : x
+    y = model(convertor(x))
+    makebatch ? droplast(y) : y
 end
 
 
@@ -118,11 +117,18 @@ Train the model based on a supervised dataset and the number of
 epochs to run. fit! can be called multiple times and will continue
 where is left of last time.
 
+Also it will try to make the data suitable for the model.
+
 Examples:
 =========
 
     fit!(workout, traindata)
     fit!(workout, traindata, testdata, epochs=50)
+
+If you don't want any data conversion, just pass the identity funciton
+as the convertor parameter:
+
+    fit!(workout, traindata, convertor=identity)
 
 """
 function fit!(workout::Workout, data, validation=nothing;

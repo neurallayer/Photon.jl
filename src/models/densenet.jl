@@ -74,7 +74,7 @@ function DenseNet(
     )
     add(features, BatchNorm())
     add(features, Activation(relu))
-    add(features, MaxPool2D(pool_size = 3, strides = 2, padding = 1))
+    add(features, MaxPool2D(3, strides = 2, padding = 1))
     # Add dense blocks
     num_features = num_init_features
     for (i, num_layers) in enumerate(block_config)
@@ -90,7 +90,7 @@ function DenseNet(
     end
     add(features, BatchNorm())
     add(features, Activation(relu))
-    add(features, AvgPool2D(pool_size = 7))
+    add(features, AvgPool2D(7))
     add(features, Flatten())
 
     output = Dense(classes)

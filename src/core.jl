@@ -77,5 +77,3 @@ function autoConvertor(arr::Knet.KnetArray)
 end
 
 autoConvertor(arr::Tuple)= (autoConvertor(elem) for elem in arr)
-
-noConvertor(arr) = arr

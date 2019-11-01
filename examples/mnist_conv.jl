@@ -22,8 +22,9 @@ model = Sequential(
 # Create a workout containing the model, a loss function and the optimizer
 workout = Workout(model, nll, ADAM())
 
-# Run the training for 10 epochs
-fit!(workout, trndata, tstdata; epochs=2)
+# Run the training for 10 epochs and we don't need a convertor since
+# mnist data already does the work.
+fit!(workout, trndata, tstdata; epochs=5, convertor=identity)
 
 println("Trained the model in $(workout.epochs) epochs.")
 
