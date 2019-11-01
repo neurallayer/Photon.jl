@@ -72,7 +72,7 @@ function autoConvertor(arr::Array)
 end
 
 function autoConvertor(arr::Knet.KnetArray)
-	arr = convert(Knet.KnetArrayray{ctx.dtype}, arr)
+	arr = convert(Knet.KnetArray{ctx.dtype}, arr)
 	ctx.device == :gpu ? arr : Array(arr)
 end
 

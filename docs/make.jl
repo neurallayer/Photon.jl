@@ -13,5 +13,5 @@ makedocs(modules=[Photon],
          format = Documenter.HTML())
 
 deploydocs(
-        repo = "github.com/neurallayer/Photon.jl.git"
+        repo = "github.com/neurallayer/Photon.jl.git",
         target = "build")
