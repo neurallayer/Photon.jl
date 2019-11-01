@@ -6,3 +6,4 @@
 *.jl.mem
 .ipynb_checkpoints
 docs/build
+tensorboard_logs
