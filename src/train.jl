@@ -17,11 +17,12 @@ mutable struct Workout
     loss
     opt
     metrics
+    history
     steps::Int
     epochs::Int
 
-    function Workout(model, loss, opt; metrics=Dict())
-        new(model, loss, opt, metrics, 0, 0)
+    function Workout(model, loss, opt; metrics=[])
+        new(model, loss, opt, metrics, IdDict(), 0, 0)
     end
 end
 
@@ -40,15 +41,26 @@ function back(J)
     ps
 end
 
+
 """
 Invoke the configured metrics. The loss metric will always be logged and available.
 """
-function updatemetrics(workout::Workout, loss, y, y_pred, prefix="")
+function updatemetrics!(workout::Workout, loss, y, y_pred, prefix="")
     metricname = Symbol(prefix, "loss")
-    e = get!(workout.metrics, metricname, SmartReducer())
+    e = get!(workout.history, metricname, SmartReducer())
     update!(e, workout.steps, Knet.value(loss))
     return loss
 end
+
+
+
+function display(workout::Workout, meters::Array, prefix="")
+    for meter in meters
+        display(meter::Meter, workout)
+    end
+end
+
+
 
 """
 Reset the gradients of the provided paramters.
@@ -72,7 +84,7 @@ function step!(workout::Workout, x, y; zerograd=true)
     J = Knet.@diff begin
         y_pred = workout.model(x)
         loss = workout.loss(y_pred, y)
-        updatemetrics(workout, loss, y, y_pred)
+        updatemetrics!(workout, loss, y, y_pred)
     end
     ps = back(J)
     update!(workout.opt, ps)
@@ -132,13 +144,14 @@ as the convertor parameter:
 
 """
 function fit!(workout::Workout, data, validation=nothing;
-    epochs=1, convertor=autoConvertor)
+    epochs=1, convertor=autoConvertor, meters=[])
 
     for epoch in 1:epochs
         workout.epochs += 1
         d = data isa Function ? data() : data
         for minibatch in d
             step!(workout, convertor(minibatch)...)
+            display(workout, meters)
         end
 
         if validation != nothing
@@ -146,6 +159,7 @@ function fit!(workout::Workout, data, validation=nothing;
             for minibatch in d
                 validate(workout, convertor(minibatch)...)
             end
+            display(workout, meters, "valid_")
         end
     end
 end
