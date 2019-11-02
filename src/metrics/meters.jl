@@ -25,18 +25,21 @@ end
 
 
 
-
-
 struct ConsoleMeter <: Meter
-    throttle::Float
-    last::Float
+    throttle::Float64
+    next::Float64
 
-    TensorBoardMeter(throttle::Float=1) = new(throttle, 0.0)
+    TensorBoardMeter(throttle=1.0) = new(throttle, 0.0)
 end
 
 
 function display(meter::ConsoleMeter, workout::Workout, phase="")
-    metricname = Symbol(prefix, :loss)
-    value = workout.history[metricname]
-    log_value(meter.logger,string(metric),value,step=workout.step)
+    now = time()
+    if now > meter.next
+        metricname = Symbol(prefix, :loss)
+        a = get(workout.history[metricname],workout.step) do
+            println(metricname, " => ", a)
+        end
+        meter.next = now + (throttle * 1000.0)
+    end
 end

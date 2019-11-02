@@ -17,7 +17,7 @@ mutable struct Workout
     loss
     opt
     metrics
-    history
+    history::IdDict
     steps::Int
     epochs::Int
 
