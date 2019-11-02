@@ -4,7 +4,7 @@ export SmartReducer, history, hasmetric, MetricStore
 """
 Stores the calculated metrics
 """
-abstract type MetricStore end
+
 
 struct SmartReducer <: MetricStore
     state::Dict{Int, Real}

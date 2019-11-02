@@ -24,7 +24,7 @@ function get_layername(layername; kwargs...)
 end
 
 
-abstract type Layer end
+
 abstract type LazyLayer <: Layer end
 
 function (layer::Layer)(X)

@@ -4,6 +4,11 @@ export getContext, setContext, resetContext, ctx, hasgpu, is_on_gpu, KorA, ϵ
 
 const ϵ = 10e-8
 
+abstract type Meter end
+abstract type MetricStore end
+abstract type Layer end
+
+
 mutable struct Context
 	device::Symbol
 	deviceId::Int
