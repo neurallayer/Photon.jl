@@ -24,7 +24,7 @@ workout = Workout(model, nll, ADAM())
 
 # Run the training for 10 epochs and we don't need a convertor since
 # mnist data already does the work.
-fit!(workout, trndata, tstdata; epochs=5, convertor=identity)
+fit!(workout, trndata, tstdata; epochs=3, convertor=identity)
 
 println("Trained the model in $(workout.epochs) epochs.")
 

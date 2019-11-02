@@ -1,5 +1,5 @@
 
-export SmartReducer, history, hasmetric, MetricStore
+export SmartReducer, history
 
 """
 Stores the calculated metrics
@@ -20,11 +20,6 @@ function update!(r::SmartReducer, step::Int, value::Real)
     end
 end
 
-
-"""
-Does the workout have recorded values for a certain metric
-"""
-hasmetric(workout, metric) = haskey(workout.history, metric)
 
 
 """

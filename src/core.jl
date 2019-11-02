@@ -7,6 +7,17 @@ const ϵ = 10e-8
 abstract type Meter end
 abstract type MetricStore end
 abstract type Layer end
+abstract type Metric end
+
+
+"""
+Base type for the loss functions. However Photon accepts
+any functoon as a loss function as long as it is callable and
+returns the loss as a scalar value.
+
+  fn(y_pred, y_true)
+"""
+abstract type Loss end
 
 
 mutable struct Context

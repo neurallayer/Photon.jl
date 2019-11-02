@@ -1,5 +1,5 @@
 
-export Workout, predict, fit!, validate
+export Workout, predict, fit!, validate, hasmetric
 
 """
 The Workout keeps track of the progress of a training session.
@@ -40,6 +40,13 @@ function back(J)
     end
     ps
 end
+
+
+"""
+Does the workout have recorded values for a certain metric
+"""
+hasmetric(workout::Workout, metricname::Symbol) = haskey(workout.history, metricname)
+
 
 
 """
@@ -120,7 +127,7 @@ Validate a minibatch and calculate the loss and defined metrics.
 function validate(workout::Workout, x, y)
     y_pred = workout.model(x)
     loss = workout.loss(y_pred, y)
-    updatemetrics(workout, loss, y, y_pred, "valid_")
+    updatemetrics!(workout, loss, y, y_pred, "valid_")
 end
 
 

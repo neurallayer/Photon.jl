@@ -18,15 +18,7 @@ function bce_loss(y_pred, y)
     mean(loss)
 end
 
-"""
-Base type for the loss functions. However Photon accepts
-any functoon as a loss function as long as it is callable:
 
-  fn(y_pred, y_true)
-
-and returns the loss as a scalar value.
-"""
-abstract type Loss end
 
 """
 Mean Square Error implementation, also referred to
