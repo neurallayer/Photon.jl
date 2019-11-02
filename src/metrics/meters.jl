@@ -21,7 +21,7 @@ function display(meter::TensorBoardMeter, workout::Workout, prefix="")
 end
 
 
-struct ConsoleMeter <: Meter
+mutable struct ConsoleMeter <: Meter
     throttle::Float64
     next::Float64
 
@@ -34,9 +34,10 @@ function display(meter::ConsoleMeter, workout::Workout, prefix="")
     if now > meter.next
         metricname = Symbol(prefix, :loss)
         if haskey(workout.history, metricname)
-            value = get(workout.history[metricname],workout.step, nothing)
+            m = workout.history[metricname]
+            value = get(m.state, workout.steps, nothing)
             if value != nothing
-                println(metricname, " => ", a)
+                println(metricname, " => ", value)
                 meter.next = now + meter.throttle
             end
         end

@@ -63,7 +63,7 @@ end
 
 function display(workout::Workout, meters::Array, prefix="")
     for meter in meters
-        display(meter::Meter, workout)
+        display(meter, workout)
     end
 end
 
