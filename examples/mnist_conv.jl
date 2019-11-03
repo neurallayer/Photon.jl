@@ -17,16 +17,17 @@ model = Sequential(
       Dense(10)
 )
 
-
 # Create a workout containing the model, a loss function and the optimizer
 workout = Workout(model, nll, ADAM())
 
+# create the loggers 
+meters = [ConsoleMeter(), TensorBoardMeter("/tmp/runs")]
+
 # Run the training for 10 epochs and we don't need a convertor since
 # mnist data already does the work.
-fit!(workout, trndata, tstdata; epochs=10,
-      convertor=identity, meters=[ConsoleMeter()])
+fit!(workout, trndata, tstdata; epochs=10, convertor=identity, meters=meters)
 
-println("Trained the model in $(workout.epochs) epochs.")
+println("\nTrained the model in $(workout.epochs) epochs.")
 
 
 # Now let's plot some results. If you haven't installed Plots yet, you'll
@@ -38,3 +39,5 @@ h2 = history(workout, :valid_loss)
 
 plot(h1..., xlabel = "steps", ylabel="loss", label="training")
 plot!(h2..., linewidth = 2, label="validation")
+
+module(tblogger.

@@ -27,10 +27,10 @@ function test_train()
     workout = Workout(model, mse, ADAM())
 
     data = getdata()
-    fit!(workout, data, epochs=10)
+    fit!(workout, data, epochs=2)
 
-    @test workout.epochs == 10
-    @test workout.steps == (10 * length(data))
+    @test workout.epochs == 2
+    @test workout.steps == (2 * length(data))
     @test hasmetric(workout, :loss)
 end
 
@@ -61,7 +61,7 @@ end
     resetContext()
     test_train()
     if hasgpu()
-        test_densenet(10,10,:gpu)
+        test_densenet(2,10,:gpu)
     end
     test_densenet(1,1,:cpu)
 end

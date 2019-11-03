@@ -1,3 +1,4 @@
+import Base:haslength
 
 export Workout, predict, fit!, validate, hasmetric
 
@@ -47,23 +48,31 @@ Does the workout have recorded values for a certain metric
 """
 hasmetric(workout::Workout, metricname::Symbol) = haskey(workout.history, metricname)
 
-
+function getmetricname(metric::Symbol, phase=:train)::Symbol
+    metricname = phase == :train ? metric : Symbol(phase, "_", metric)
+end
 
 """
 Invoke the configured metrics. The loss metric will always be logged and available.
 """
-function updatemetrics!(workout::Workout, loss, y, y_pred, prefix="")
-    metricname = Symbol(prefix, "loss")
+function updatemetrics!(workout::Workout, loss, y, y_pred, phase=:train)
+    metricname = getmetricname(:loss, phase)
     e = get!(workout.history, metricname, SmartReducer())
     update!(e, workout.steps, Knet.value(loss))
     return loss
 end
 
+function getmetricvalue(f::Function, workout::Workout, metricname, step=workout.steps)
+    if haskey(workout.history, metricname)
+        m = workout.history[metricname]
+        value = get(m.state, step, nothing)
+        value != nothing && f(value)
+    end
+end
 
-
-function display(workout::Workout, meters::Array, prefix="")
+function display(workout::Workout, meters, phase)
     for meter in meters
-        display(meter, workout)
+        display(meter, workout, phase)
     end
 end
 
@@ -92,6 +101,7 @@ function step!(workout::Workout, x, y; zerograd=true)
         y_pred = workout.model(x)
         loss = workout.loss(y_pred, y)
         updatemetrics!(workout, loss, y, y_pred)
+        loss
     end
     ps = back(J)
     update!(workout.opt, ps)
@@ -127,8 +137,24 @@ Validate a minibatch and calculate the loss and defined metrics.
 function validate(workout::Workout, x, y)
     y_pred = workout.model(x)
     loss = workout.loss(y_pred, y)
-    updatemetrics!(workout, loss, y, y_pred, "valid_")
+    updatemetrics!(workout, loss, y, y_pred, :valid)
 end
+
+"""
+Progress represents the state of a fit session and is passed to
+a meter as one of the parameters. Everytime you start a training, the
+progress is reset (as opposed to the Workout that remains its state)
+"""
+mutable struct Progress
+    epoch::Int
+    batch::Int
+    startotal::Float64
+    startepoch::Float64
+    maxbatch::Int
+    phase::Symbol
+    Progress(maxbatch=2) = new(0, 0, time(),time(),maxbatch, :train)
+end
+
 
 
 """
@@ -151,14 +177,14 @@ as the convertor parameter:
 
 """
 function fit!(workout::Workout, data, validation=nothing;
-    epochs=1, convertor=autoConvertor, meters=[])
+    epochs=1, convertor=autoConvertor, meters=[ConsoleMeter()])
 
     for epoch in 1:epochs
         workout.epochs += 1
         d = data isa Function ? data() : data
         for minibatch in d
             step!(workout, convertor(minibatch)...)
-            display(workout, meters)
+            display(workout, meters, :train)
         end
 
         if validation != nothing
@@ -166,8 +192,8 @@ function fit!(workout::Workout, data, validation=nothing;
             for minibatch in d
                 validate(workout, convertor(minibatch)...)
             end
-            display(workout, meters, "valid_")
         end
+        display(workout, meters, :valid)
     end
 end
 
