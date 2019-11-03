@@ -3,7 +3,7 @@
 export SGD, ADAM, Momentum
 
 
-mutable struct SGD
+mutable struct SGD <: Optimizer
   eta::Float64
 
   SGD(lr=0.01) = new(lr)
@@ -18,7 +18,7 @@ function update!(o::SGD, params)
 end
 
 
-mutable struct Momentum
+mutable struct Momentum <: Optimizer
   eta::Float64
   rho::Float64
   velocity::IdDict
@@ -56,7 +56,7 @@ opt = ADAM(0.001, (0.9, 0.8))
 
 
 
-mutable struct ADAM
+mutable struct ADAM <: Optimizer
   eta::Float64
   beta::Tuple{Float64,Float64}
   state::IdDict

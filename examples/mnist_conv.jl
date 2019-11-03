@@ -13,9 +13,8 @@ model = Sequential(
       Conv2D(16, 3, relu),
       Conv2D(16, 3, relu),
       MaxPool2D(),
-      Dense(256, relu),
-      Dense(10),
-      softmax
+      Dense(64, relu),
+      Dense(10)
 )
 
 
@@ -24,7 +23,8 @@ workout = Workout(model, nll, ADAM())
 
 # Run the training for 10 epochs and we don't need a convertor since
 # mnist data already does the work.
-fit!(workout, trndata, tstdata; epochs=10, convertor=identity, meters=[ConsoleMeter()])
+fit!(workout, trndata, tstdata; epochs=10,
+      convertor=identity, meters=[ConsoleMeter()])
 
 println("Trained the model in $(workout.epochs) epochs.")
 

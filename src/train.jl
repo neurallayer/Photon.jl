@@ -15,13 +15,13 @@ Examples
 mutable struct Workout
     model
     loss
-    opt
+    opt::Optimizer
     metrics
     history::IdDict{Symbol,MetricStore}
     steps::Int
     epochs::Int
 
-    function Workout(model, loss, opt; metrics=[])
+    function Workout(model, loss, opt::Optimizer; metrics=[])
         new(model, loss, opt, metrics, IdDict(), 0, 0)
     end
 end

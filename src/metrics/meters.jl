@@ -37,7 +37,8 @@ function display(meter::ConsoleMeter, workout::Workout, prefix="")
             m = workout.history[metricname]
             value = get(m.state, workout.steps, nothing)
             if value != nothing
-                println(metricname, " => ", value)
+                s = @sprintf "epoch:%4d step:%7d | %s => %2.6f" workout.epochs workout.steps metricname value
+                print("\r", s)
                 meter.next = now + meter.throttle
             end
         end

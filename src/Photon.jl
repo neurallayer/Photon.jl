@@ -1,7 +1,7 @@
 
 module Photon
 
-using Statistics
+using Statistics, Printf
 import Knet
 
 include("core.jl")
