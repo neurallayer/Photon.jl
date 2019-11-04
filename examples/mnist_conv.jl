@@ -1,8 +1,7 @@
 using Photon
 using Knet:relu, nll
-using Statistics
-
 import Knet
+
 
 # Get the MNIST data set
 include(Knet.dir("data", "mnist.jl"))
