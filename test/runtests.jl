@@ -1,9 +1,9 @@
+@info "Running Unit tests"
+
 using Photon
 using Test
 
 @testset "Photon" begin
-
-@info "Running Unit tests"
 
 @info "Testing Basics"
 include("./basic.jl")

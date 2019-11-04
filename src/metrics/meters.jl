@@ -1,29 +1,38 @@
 
 export TensorBoardMeter, ConsoleMeter
 
-using TensorBoardLogger
-
 """
 A meter is reponsible for presenting metric values. This can be
 printing it to the console output, showing it on TensorBoard of storing it
 in a database.
 """
 
-struct TensorBoardMeter <: Meter
+mutable struct TensorBoardMeter <: Meter
     logger
+    path::String
     metrics
     last_processed::IdDict{Symbol,Int}
 
-    TensorBoardMeter(path="./runs", metrics=[:loss, :valid_loss]) =
-        new(TBLogger(path), metrics, IdDict())
+    function TensorBoardMeter(path="./tensorboard_logs/runs", metrics=[:loss, :valid_loss])
+        try
+            @eval import TensorBoardLogger
+        catch
+            @warn "Package TensorBoardLogger not installed"
+        end
+        new(nothing, path, metrics, IdDict())
+    end
 end
 
-
 function display(meter::TensorBoardMeter, workout::Workout, phase)
+    if meter.logger == nothing
+        meter.logger = TensorBoardLogger.TBLogger(meter.path)
+    end
+
     for metric in meter.metrics
         getmetricvalue(workout, metric) do value
             last = get(meter.last_processed, metric, -1)
-            workout.steps > last && log_value(meter.logger,string(metric),value,step=workout.steps)
+            workout.steps > last && TensorBoardLogger.log_value(meter.logger,
+                string(metric), value, step=workout.steps)
             meter.last_processed[metric] = workout.steps
         end
     end
