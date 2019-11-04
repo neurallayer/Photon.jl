@@ -49,7 +49,7 @@ Does the workout have recorded values for a certain metric
 hasmetric(workout::Workout, metricname::Symbol) = haskey(workout.history, metricname)
 
 function getmetricname(metric::Symbol, phase=:train)::Symbol
-    metricname = phase == :train ? metric : Symbol(phase, "_", metric)
+    metricname = phase == :train ? metric : Symbol("val_", metric)
 end
 
 """
@@ -130,7 +130,6 @@ function predict(model, x; makebatch=true, convertor=autoConvertor)
 end
 
 
-
 """
 Validate a minibatch and calculate the loss and defined metrics.
 """
@@ -154,7 +153,6 @@ mutable struct Progress
     phase::Symbol
     Progress(maxbatch=2) = new(0, 0, time(),time(),maxbatch, :train)
 end
-
 
 
 """

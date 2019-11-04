@@ -9,8 +9,8 @@ when you run fit! without specifying your own meters.
 
 Example:
 
-    meter = ConsoleMeter([:loss, :valid_accuracy, :accuracy]; epochOnly=false)
-    fit!(workout, data, valid_data; epochs=5, meters=[meter])
+    meter = ConsoleMeter([:loss, :val_accuracy, :accuracy]; epochOnly=false)
+    fit!(workout, data, val_data; epochs=5, meters=[meter])
 
 """
 mutable struct ConsoleMeter <: Meter
@@ -19,7 +19,7 @@ mutable struct ConsoleMeter <: Meter
     metricnames::Vector{Symbol}
     epochOnly
 
-    function ConsoleMeter(metrics=[:loss, :valid_loss]; throttle=1.0, epochOnly=true)
+    function ConsoleMeter(metrics=[:loss, :val_loss]; throttle=1.0, epochOnly=true)
         new(throttle, 0.0, metrics, epochOnly)
     end
 end
@@ -32,11 +32,11 @@ function display(meter::ConsoleMeter, workout::Workout, phase::Symbol)
         result = ""
         for metricname in meter.metricnames
             getmetricvalue(workout, metricname) do value
-                    result *= @sprintf  " %s=%2.6f" metricname value
+                    result *= @sprintf  " - %s: %1.4f" metricname value
             end
         end
         if result != ""
-            s = @sprintf "epoch:%4d step:%7d |" workout.epochs workout.steps
+            s = @sprintf "[%4d:%7d]" workout.epochs workout.steps
             print("\r", s, result)
             meter.next = now + meter.throttle
         end
@@ -47,7 +47,7 @@ end
 
 """
 Logs metrics to a TensorBoard file so it can be viewed with TensorBoard. By default
-it will log the metrics loss and valid_loss at the end of each training step
+it will log the metrics loss and val_loss at the end of each training step
 and end of the validation phase.
 
 This meter depends on the TensorBoardLogger to be installed. So if you didn't do so
@@ -61,7 +61,7 @@ mutable struct TensorBoardMeter <: Meter
     metrics
     last_processed::IdDict{Symbol,Int}
 
-    function TensorBoardMeter(path="./tensorboard_logs/runs", metrics=[:loss, :valid_loss])
+    function TensorBoardMeter(path="./tensorboard_logs/runs", metrics=[:loss, :val_loss])
         try
             @eval import TensorBoardLogger
         catch

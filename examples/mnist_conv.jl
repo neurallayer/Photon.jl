@@ -1,5 +1,5 @@
 using Photon
-using Knet:relu, nll, softmax
+using Knet:relu, nll
 using Statistics
 
 import Knet
@@ -22,18 +22,16 @@ workout = Workout(model, nll, ADAM())
 
 # Run the training for 10 epochs and we don't need a convertor since
 # mnist data already does the work.
-fit!(workout, trndata, tstdata; epochs=2, convertor=identity)
+fit!(workout, trndata, tstdata; epochs=10, convertor=identity)
 
 println("\nTrained the model in $(workout.epochs) epochs.")
 
-
-plotmetrics(workout, [:loss, :valid_loss])
 # Now let's plot some results. If you haven't installed Plots yet, you'll
 # need to run:  using Pkg; Pkg.add("Plots")
-#using Plots
+using Plots
 
-#h1 = history(workout, :loss)
-#h2 = history(workout, :valid_loss)
+h1 = history(workout, :loss)
+h2 = history(workout, :val_loss)
 
-#plot(h1..., xlabel = "steps", ylabel="loss", label="training")
-#plot!(h2..., linewidth = 2, label="validation")
+plot(h1..., xlabel = "steps", ylabel="loss", label="training")
+plot!(h2..., linewidth = 2, label="validation")
