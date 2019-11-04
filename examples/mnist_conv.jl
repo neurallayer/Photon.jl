@@ -29,6 +29,9 @@ println("\nTrained the model in $(workout.epochs) epochs.")
 # need to run:  using Pkg; Pkg.add("Plots")
 using Plots
 
+# Optional nice theme for Juno in dark mode
+# using PlotThemes; theme(:juno)
+
 h1 = history(workout, :loss)
 h2 = history(workout, :val_loss)
 
