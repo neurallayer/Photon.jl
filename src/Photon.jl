@@ -5,7 +5,6 @@ using Statistics, Printf
 import Knet
 
 include("core.jl")
-include("utils.jl")
 include("layers/core.jl")
 include("layers/conv.jl")
 include("layers/recurrent.jl")
@@ -15,6 +14,7 @@ include("train.jl")
 include("losses.jl")
 include("metrics/core.jl")
 include("metrics/meters.jl")
+include("utils.jl")
 
 export Layer, LazyLayer, Dense, BatchNorm, RNN, Conv2DTranspose,
 	  Conv2D, Conv3D, output_size, Dropout, Sequential, Flatten, MaxPool2D, AvgPool2D,

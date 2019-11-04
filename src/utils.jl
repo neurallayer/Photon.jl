@@ -1,3 +1,6 @@
+
+export plotmetrics
+
 function getEntry(d, val)
     for (k,v) in d
         if v == val return k end
@@ -40,4 +43,23 @@ function weights(layer, d=Dict(), root="", mode=0)
         end
     end
 	d
+end
+
+
+"""
+Plot the metrics using the Plots package. This function can plot multiple
+metrics in a single graph, each with measuremetns a different steps.
+"""
+function plotmetrics(workout::Workout, metrics=[:loss, :valid_loss])
+	@eval using Plots
+		m = metrics[1]
+		h1 = history(workout, m)
+		plot(h1..., xlabel = "steps", ylabel="value", label=string(m))
+
+		for idx in 2:length(metrics)
+			m = metrics[idx]
+			h2 = history(workout, m)
+			plot!(h2..., label=string(m))
+		end
+	end
 end
