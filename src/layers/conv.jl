@@ -14,6 +14,7 @@ mutable struct Conv <: LazyLayer
     dilation
     built::Bool
     use_bias::Bool
+	init::NamedTuple
     params::NamedTuple
 end
 
@@ -25,6 +26,8 @@ function Conv(
     strides = 1,
     dilation = 1,
     use_bias = true,
+	initw = Knet.xavier,
+	initb = zeros
 )
     @assert channels > 0 "Conv layer should have more then 0 channels"
     Conv(
@@ -36,6 +39,7 @@ function Conv(
         dilation,
         false,
         use_bias,
+		(w=initw, b=initb),
         (w=nothing, b=nothing)
     )
 end
@@ -44,10 +48,10 @@ function build(layer::Conv, shape::Tuple)
     input_channels = shape[end]
     rank = length(shape) - 1
     kernel_size = expand(rank, layer.kernel_size)
-    w = getparam(kernel_size..., input_channels, layer.channels)
+    w = getparam(kernel_size..., input_channels, layer.channels, init=layer.init.w)
     b = nothing
     if layer.use_bias
-        b = getparam(repeat([1],rank)..., layer.channels, 1, init = zeros)
+        b = getparam(repeat([1],rank)..., layer.channels, 1, init = layer.init.b)
     end
     layer.params = (w=w,b=b)
 end

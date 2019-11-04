@@ -48,8 +48,6 @@ function (layer::LazyLayer)(X)
 end
 
 
-
-
 """
 Fully connected layer with an optinal bias
 """
@@ -59,12 +57,15 @@ mutable struct Dense <:LazyLayer
 	use_bias::Bool
 	name::String
 	built::Bool
+	init::NamedTuple
 	params::NamedTuple
 
-	function Dense(units::Int, activation=identity; use_bias=true, kwargs...)
-		@assert units > 0
+	function Dense(units::Int, activation=identity; use_bias=true,
+		initw = Knet.xavier, initb = zeros, kwargs...)
+		@assert units > 0 "Units of a Dense layer should be > 0"
 		name = get_layername("dense"; kwargs...)
-	    new(units, activation, use_bias, name, false, (w=nothing, b=nothing))
+	    new(units, activation, use_bias, name, false,
+		(w=initw, b=initb), (w=nothing, b=nothing))
 	end
 end
 
@@ -80,12 +81,13 @@ function call(layer::Dense, X)
 end
 
 function build(layer::Dense, shape::Tuple)
-	nInput = length(shape) > 1 ? *(shape...) : shape[1]
+	# nInput = length(shape) > 1 ? *(shape...) : shape[1]
+	nInput = *(shape...)
 
-    w = getparam(layer.units, nInput)
+    w = getparam(layer.units, nInput, init=layer.init.w)
 	b = nothing
     if layer.use_bias
-		b = getparam(layer.units, init=zeros)
+		b = getparam(layer.units, init=layer.init.b)
 	end
 	layer.params = (w=w,b=b)
 end
@@ -103,7 +105,6 @@ end
 function call(layer::Flatten, X)
 	layer.dims == nothing ? Knet.mat(X) : Knet.mat(X, dims=layer.dims)
 end
-
 
 
 ## Activation

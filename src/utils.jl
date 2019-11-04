@@ -52,14 +52,13 @@ metrics in a single graph, each with measuremetns a different steps.
 """
 function plotmetrics(workout::Workout, metrics=[:loss, :valid_loss])
 	@eval using Plots
-		m = metrics[1]
-		h1 = history(workout, m)
-		plot(h1..., xlabel = "steps", ylabel="value", label=string(m))
+	m = metrics[1]
+	h1 = history(workout, m)
+	plot(h1..., xlabel = "steps", ylabel="value", label=string(m))
 
-		for idx in 2:length(metrics)
-			m = metrics[idx]
-			h2 = history(workout, m)
-			plot!(h2..., label=string(m))
-		end
+	for idx in 2:length(metrics)
+		m = metrics[idx]
+		h2 = history(workout, m)
+		plot!(h2..., label=string(m))
 	end
 end
