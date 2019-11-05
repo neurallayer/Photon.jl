@@ -1,6 +1,12 @@
 
 
 """
+Quick thin wrapper around the Knet RNN implementation. Ideally would like to bring
+it more inline with other layers, so Photon creates the weights and use Knet
+as a stateless function.
+
+The Knet API:
+
 RNN(inputSize, hiddenSize;
              h=nothing, c=nothing,
              handle=gethandle(),
@@ -26,11 +32,57 @@ mutable struct Recurrent <: LazyLayer
     ops
     built::Bool
     last_only::Bool
+    init::NamedTuple
     mode
 end
 
+
+function build(l::Recurrent, shape::Tuple)
+    inputSize = shape[1]
+
+    l.ops = Knet.RNN(
+        inputSize,
+        l.hidden_size,
+        numLayers = l.num_layers,
+        dataType = ctx.dtype,
+        usegpu = is_on_gpu(),
+        rnnType = l.mode,
+        winit = l.init.w,
+        binit = l.init.b,
+        finit = l.init.f,
+    )
+end
+
+function call(layer::Recurrent, X)
+    output = layer.ops(X)
+    if layer.last_only
+        output[:, end, :]
+    else
+        output
+    end
+end
+
 """
-Create a LSTM layer
+A simple RNN layer.
+"""
+function RNN(
+    hidden_size,
+    num_layers = 1;
+    activation=:tanh,
+    dropout = 0.0,
+    bidirectional = false,
+    last_only = true,
+    initw = Knet.xavier,
+    initb = zeros,
+    initf = ones
+)
+    @assert activation in [:tanh, :relu] "Only :tanh and :relu are supported"
+    Recurrent(hidden_size, num_layers, undef, false, last_only,
+    (w=initw, b=initb, f=initf), activation)
+end
+
+"""
+Create a LSTM layer.
 
 Examples:
 =========
@@ -44,8 +96,12 @@ function LSTM(
     dropout = 0.0,
     bidirectional = false,
     last_only = true,
+    initw = Knet.xavier,
+    initb = zeros,
+    initf = ones
 )
-    Recurrent(hidden_size, num_layers, undef, false, last_only, :lstm)
+    Recurrent(hidden_size, num_layers, undef, false, last_only,
+    (w=initw, b=initb, f=initf), :lstm)
 end
 
 
@@ -64,42 +120,16 @@ function GRU(
     dropout = 0.0,
     bidirectional = false,
     last_only = true,
+    initw = Knet.xavier,
+    initb = zeros,
+    initf = ones
 )
-    Recurrent(hidden_size, num_layers, undef, false, last_only, :gru)
-end
-
-function RNN(
-    hidden_size,
-    num_layers = 1;
-    activation=:tanh,
-    dropout = 0.0,
-    bidirectional = false,
-    last_only = true,
-)
-    @assert activation in [:tanh, :relu] "Only :tanh and :relu are supported"
-    Recurrent(hidden_size, num_layers, undef, false, last_only, activation)
+    Recurrent(hidden_size, num_layers, undef, false, last_only,
+    (w=initw, b=initb, f=initf), :gru)
 end
 
 
-function build(l::Recurrent, shape::Tuple)
-    inputSize = shape[1]
-    l.ops = Knet.RNN(
-        inputSize,
-        l.hidden_size,
-        numLayers = l.num_layers,
-        dataType = ctx.dtype,
-        usegpu = is_on_gpu(),
-        rnnType = l.mode,
-    )
-end
 
-function call(layer::Recurrent, X)
-    output = layer.ops(X)
-    if layer.last_only
-        output[:, end, :]
-    else
-        output
-    end
-end
+
 
 @info "Loaded Recurrent modules"

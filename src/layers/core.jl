@@ -95,7 +95,9 @@ end
 
 
 """
-Flattening Layer
+Flattening Layer. Photon by default already has flattening funcitonality
+build into the Dense layer, so you won't need to include a separate Flatten
+layer for those scenarios.
 """
 mutable struct Flatten <: Layer
 	dims
@@ -134,18 +136,21 @@ function call(d::Dropout,X)
 	Knet.dropout(X, d.rate)
 end
 
-## Batch Normalization Layer
+"""
+BatchNorm layer with support for an optional activation function
+"""
 struct BatchNorm <: Layer
 
   	moments
+	activation
 
-	function BatchNorm()
-		new(Knet.bnmoments())
+	function BatchNorm(activation=identity)
+		new(Knet.bnmoments(), activation)
 	end
 end
 
 function call(bn::BatchNorm, X)
-	Knet.batchnorm(X, bn.moments)
+	bn.activation.(Knet.batchnorm(X, bn.moments))
 end
 
 

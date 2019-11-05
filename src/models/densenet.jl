@@ -18,11 +18,9 @@ end
 
 function _make_dense_layer(growth_rate, bn_size, dropout)
     new_features = Sequential()
-    add(new_features, BatchNorm())
-    add(new_features, Activation(relu))
+    add(new_features, BatchNorm(relu))
     add(new_features, Conv2D(bn_size * growth_rate, (1, 1), use_bias = false))
-    add(new_features, BatchNorm())
-    add(new_features, Activation(relu))
+    add(new_features, BatchNorm(relu))
     add(
         new_features,
         Conv2D(growth_rate, (3, 3), padding = 1, use_bias = false),
@@ -39,8 +37,7 @@ end
 
 function _make_transition(num_output_features)
     out = Sequential()
-    add(out, BatchNorm())
-    add(out, Activation(relu))
+    add(out, BatchNorm(relu))
     add(out, Conv2D(num_output_features, (1, 1), use_bias = false))
     add(out, AvgPool2D())
     return out
@@ -72,8 +69,7 @@ function DenseNet(
             use_bias = false,
         ),
     )
-    add(features, BatchNorm())
-    add(features, Activation(relu))
+    add(features, BatchNorm(relu))
     add(features, MaxPool2D(3, strides = 2, padding = 1))
     # Add dense blocks
     num_features = num_init_features
@@ -88,8 +84,7 @@ function DenseNet(
             add(features, _make_transition(num_features))
         end
     end
-    add(features, BatchNorm())
-    add(features, Activation(relu))
+    add(features, BatchNorm(relu))
     add(features, AvgPool2D(7))
     add(features, Flatten())
 
