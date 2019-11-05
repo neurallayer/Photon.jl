@@ -42,5 +42,5 @@ function weights(layer, d=Dict(), root="", mode=0)
             weights(field, d, "$root:$c:$name", mode)
         end
     end
-	d
+    return d
 end

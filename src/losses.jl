@@ -19,7 +19,6 @@ function bce_loss(y_pred, y)
 end
 
 
-
 """
 Mean Square Error implementation, also referred to
 as the L2 Loss.
