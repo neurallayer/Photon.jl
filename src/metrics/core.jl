@@ -1,5 +1,5 @@
 
-export SmartReducer, history
+export SmartReducer, history, BinaryAccuracy
 
 """
 Stores the calculated metrics
@@ -29,4 +29,20 @@ function history(workout::Workout, symbol::Symbol)
       h = workout.history[symbol].state
       steps = sort(collect(keys(h)))
       return (steps, [h[step] for step in steps])
+end
+
+
+"""
+Binary accuracy calculation
+"""
+struct BinaryAccuracy
+    name::Symbol
+    threshold
+
+    BinaryAccuracy(;threshold=0.5, name=:acc) = new(name,threshold)
+end
+
+function (a::BinaryAccuracy)(y_pred, y_true)
+    y_pred = y_pred .> a.threshold
+    return mean(y_true .== y_pred)
 end

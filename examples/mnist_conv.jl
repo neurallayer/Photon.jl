@@ -17,6 +17,7 @@ model = Sequential(
 )
 
 # Create a workout containing the model, a loss function and the optimizer
+# workout = Workout(model, nll, ADAM(), metrics=[BinaryAccuracy()])
 workout = Workout(model, nll, ADAM())
 
 # Run the training for 10 epochs and we don't need a convertor since

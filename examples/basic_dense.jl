@@ -16,7 +16,7 @@ x = randn(Float32, 10, 16)
 y = model(x)
 
 
-# Or use predict for a single sample.
+# Or use the predict function for a single sample.
 predict(model, randn(10))
 
 println("### Done ###")

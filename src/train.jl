@@ -56,9 +56,19 @@ end
 Invoke the configured metrics. The loss metric will always be logged and available.
 """
 function updatemetrics!(workout::Workout, loss, y, y_pred, phase=:train)
+
+    # First register the loss
     metricname = getmetricname(:loss, phase)
     e = get!(workout.history, metricname, SmartReducer())
     update!(e, workout.steps, Knet.value(loss))
+
+    # And now run and register any additional metrics
+    for metric in workout.metrics
+        metricname = getmetricname(metric.name, phase)
+        metricvalue = metric(y_pred, y)
+        e = get!(workout.history, metricname, SmartReducer())
+        update!(e, workout.steps, Knet.value(metricvalue))
+    end
     return loss
 end
 
