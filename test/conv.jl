@@ -36,6 +36,20 @@ function simple_3D_model()
 
 end
 
+function test_base_Conv2D()
+    X = getimages()
+
+    Y = Conv2D(16, (3,3))(X)
+    @test Y != nothing
+
+    Y = Conv2D(16, (3,3), relu)(X)
+    @test Y != nothing
+
+    Y = Conv2D(16, 3; padding=1, strides=2, dilation=2)(X)
+    @test Y != nothing
+    
+end
+
 function convtranspose_model()
     model = Sequential(
         Conv2D(16, (3,3), relu; padding=1, strides=2, dilation=2),
@@ -114,6 +128,7 @@ function adaptive_avg_model()
 end
 
 @testset "Conv" begin
+    test_base_Conv2D()
     simple_conv_model()
     convtranspose_model()
     adaptive_avg_model()
