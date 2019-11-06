@@ -27,23 +27,24 @@ end
 
 abstract type LazyLayer <: Layer end
 
+## Generic code, X can be a Tensor or a Tuple
 function (layer::Layer)(X)
-	@debug "Calling $(typeof(layer))" size(X)
+	@debug "Calling $(typeof(layer))" layer
     call(layer, X)
 end
 
 
-## Generic code
+## Generic code, X can be a Tensor or a Tuple
 function (layer::LazyLayer)(X)
 	@assert hasproperty(layer, :built) "LazyLayer $layer without built property detected"
 	@assert isa(layer.built, Bool) "LazyLayer $layer built property not a boolean"
 
     if ! layer.built
-		@debug "Initializing $(typeof(layer))" size(X) layer
+		@debug "Building $(typeof(layer))" layer
         build(layer, size(X)[1:end-1])
 		layer.built = true
     end
-	@debug "Calling $(typeof(layer))" size(X)
+	@debug "Calling $(typeof(layer))" layer
     call(layer, X)
 end
 
@@ -69,7 +70,7 @@ mutable struct Dense <:LazyLayer
 	end
 end
 
-function call(layer::Dense, X)
+function call(layer::Dense, X::Tensor)
 	X = Knet.mat(X) # Flatten if required
 
 	w,b = layer.params
@@ -80,7 +81,7 @@ function call(layer::Dense, X)
 	end
 end
 
-function build(layer::Dense, shape::Tuple)
+function build(layer::Dense, shape::Shape)
 	# nInput = length(shape) > 1 ? *(shape...) : shape[1]
 	nInput = *(shape...)
 
@@ -104,7 +105,7 @@ mutable struct Flatten <: Layer
 	Flatten(dims=nothing) = new(dims)
 end
 
-function call(layer::Flatten, X)
+function call(layer::Flatten, X::Tensor)
 	layer.dims == nothing ? Knet.mat(X) : Knet.mat(X, dims=layer.dims)
 end
 
@@ -114,8 +115,8 @@ mutable struct Activation <:Layer
 	activation
 end
 
-function call(c::Activation, x)
-	c.activation.(x)
+function call(c::Activation, X::Tensor)
+	c.activation.(X)
 end
 
 
@@ -132,7 +133,7 @@ struct Dropout <: Layer
 	end
 end
 
-function call(d::Dropout,X)
+function call(d::Dropout, X::Tensor)
 	Knet.dropout(X, d.rate)
 end
 
@@ -149,7 +150,7 @@ struct BatchNorm <: Layer
 	end
 end
 
-function call(bn::BatchNorm, X)
+function call(bn::BatchNorm, X::Tensor)
 	bn.activation.(Knet.batchnorm(X, bn.moments))
 end
 
@@ -163,16 +164,16 @@ Beginning of allowing for a single model instance to run on multiple devices
 """
 struct ContextSwitch <: Layer
 
-  	device
-	deviceId
-	dtype
+  	device::Symbol
+	deviceId::Int
+	dtype::Type
 
 	function ContextSwitch(;device=ctx.device,deviceId=ctx.deviceId,dtype=ctx.dtype)
 		new(device,deviceId,dtype)
 	end
 end
 
-function call(c::ContextSwitch, X)
+function call(c::ContextSwitch, X::Tensor)
 	setContext(device=c.device, deviceId=c.deviceId, dtype=c.dtype)
 
 	if c.device == :cpu

@@ -104,14 +104,16 @@ Some of the features:
 This software is still alpha quality and there remain many things to do.
 
 - Add typing to assist the compiler and development
-- Extend unit tests to cover more code
-- Implement dataset + dataloader
+- Extend unit tests to cover more code (> 90%)
+- Implement dataset + dataloader with support for threading
 - Implement more models (resnet,...)
-- Write documentation
-- Finalize the Workout API
-- Add more type of layers
-- Add more loss functions
-- Add more optimisers
+- Write tutorials and improve code documentation
+- Finalize the API's so we can release 1.0
+- Implement more complex layers like attention
+- Saving and restoring workout state
+- More loss functions
+- More optimisers
+- Once stable, create proper back-end abstraction to support other frameworks
 
 And b.t.w, we are always open in accepting contributions ;)
 

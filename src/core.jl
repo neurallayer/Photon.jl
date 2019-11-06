@@ -19,11 +19,12 @@ abstract type Optimizer end
 
 abstract type Loss <: Function end
 
+const Shape = Tuple{Vararg{Int}}
 
 const Tensor{T,N} = Union{
 						AbstractArray{T,N},
 						Knet.KnetArray{T,N},
-						Knet.Value{AbstractArray{T,N}},
+						Knet.Value{Array{T,N}},
 						Knet.Value{Knet.KnetArray{T,N}}}
 
 const Tensors = Union{Tensor, Tuple{Tensor}}

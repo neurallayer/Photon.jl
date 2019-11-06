@@ -44,7 +44,7 @@ function Conv(
     )
 end
 
-function build(layer::Conv, shape::Tuple)
+function build(layer::Conv, shape::Shape)
     input_channels = shape[end]
     rank = length(shape) - 1
     kernel_size = expand(rank, layer.kernel_size)
