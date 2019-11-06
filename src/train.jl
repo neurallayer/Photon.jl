@@ -1,6 +1,6 @@
 import Base:haslength
 
-export Workout, predict, fit!, validate, hasmetric
+export Workout, save, load, predict, fit!, validate, hasmetric
 
 """
 The Workout keeps track of the progress of a training session.
@@ -27,6 +27,19 @@ mutable struct Workout
     end
 end
 
+"""
+Save a workout. Right now doesn't fully work
+"""
+function save(workout::Workout, filename::String)
+    serialize(filename, workout)
+end
+
+"""
+Load a workout. Right now doesn't fully work
+"""
+function load(filename::String)::Workout
+    deserialize(filename)
+end
 
 """
 Perform the back propagation and update the gradients. The weights are not yet

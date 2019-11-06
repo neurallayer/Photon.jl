@@ -15,7 +15,6 @@ setContext(device=:cpu)
 x = randn(Float32, 10, 16)
 y = model(x)
 
-
 # Or use the predict function for a single sample.
 predict(model, randn(10))
 

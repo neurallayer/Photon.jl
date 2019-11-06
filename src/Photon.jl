@@ -1,7 +1,7 @@
 
 module Photon
 
-using Statistics, Printf
+using Statistics, Printf, Serialization
 import Knet
 
 include("core.jl")
