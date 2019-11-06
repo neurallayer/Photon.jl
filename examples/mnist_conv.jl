@@ -7,7 +7,7 @@ import Knet
 include(Knet.dir("data", "mnist.jl"))
 trndata, tstdata = mnistdata()
 
-# Create a simple COnvolutional network
+# Create a simple Convolutional network
 model = Sequential(
       Conv2D(16, 3, relu),
       Conv2D(16, 3, relu),
