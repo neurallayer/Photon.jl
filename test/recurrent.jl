@@ -9,8 +9,36 @@ import Knet
 gethistoric(steps=100, features=10) = KorA(randn(ctx.dtype,features,steps,4))
 
 
+function basic_layer(T)
+
+    d = gethistoric(100)
+
+    l = T(20)
+    pred = l(d)
+    @test size(pred) == (20,4)
+
+    l = T(20,2)
+    pred = l(d)
+    @test size(pred) == (20,4)
+
+    l = T(20;dropout=0.5, bidirectional=true)
+    pred = l(d)
+    @test size(pred) == (20,4)
+
+    l = T(20;dropout=0.5, last_only=false)
+    pred = l(d)
+    @test size(pred) == (20,100,4)
+
+    l = T(20; initw=zeros, initb=zeros, initf=zeros)
+    pred = l(d)
+    @test size(pred) == (20,4)
+    @test sum(pred) == 0.0
+
+end
+
+
 function lstm_model()
-    # Adaptive model
+
     model = Sequential(
         LSTM(20),
         Dense(100, relu),
@@ -26,7 +54,7 @@ function lstm_model()
 end
 
 function lstm_model2()
-    # Adaptive model
+
     model = Sequential(
         LSTM(20, last_only=false),
         Dense(100, relu),
@@ -40,7 +68,7 @@ function lstm_model2()
 end
 
 function gru_model()
-    # Adaptive model
+
     model = Sequential(
         GRU(20,2;dropout=0.5),
         Dense(100, relu),
@@ -53,7 +81,7 @@ end
 
 
 function rnn_model()
-    # Adaptive model
+
     model = Sequential(
         RNN(20,2;activation=:relu, dropout=0.5),
         Dense(100, relu),
@@ -66,6 +94,9 @@ end
 
 
 @testset "Recurrent" begin
+    basic_layer(LSTM)
+    basic_layer(GRU)
+    basic_layer(RNN)
     lstm_model()
     lstm_model2()
     gru_model()

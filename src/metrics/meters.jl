@@ -1,5 +1,5 @@
 
-export TensorBoardMeter, ConsoleMeter
+export TensorBoardMeter, ConsoleMeter, FileMeter
 
 
 """
@@ -71,7 +71,7 @@ mutable struct TensorBoardMeter <: Meter
     end
 end
 
-function display(meter::TensorBoardMeter, workout::Workout, phase)
+function display(meter::TensorBoardMeter, workout::Workout, phase::Symbol)
     if meter.logger == nothing
         meter.logger = TensorBoardLogger.TBLogger(meter.path)
     end
@@ -84,4 +84,41 @@ function display(meter::TensorBoardMeter, workout::Workout, phase)
             meter.last_processed[metric] = workout.steps
         end
     end
+end
+
+
+"""
+Logs metrics to a delimeted text file. By default it will log the metrics loss and
+val_loss at the end of each training step and end of the validation phase.
+
+"""
+mutable struct FileMeter <: Meter
+    fileio
+    filename::String
+    metrics
+    last_processed::IdDict{Symbol,Int}
+    epochOnly::Bool
+
+    function FileMeter(filename="traininglog.txt", metrics=[:loss, :val_loss], epochOnly=true)
+        try
+            @eval import DelimitedFiles
+        catch
+            @warn "Package DelimitedFiles not installed"
+        end
+        io = open(filename, "w")
+        new(io, filename, metrics, IdDict(), epochOnly)
+    end
+end
+
+function display(meter::FileMeter, workout::Workout, phase::Symbol)
+    meter.epochOnly && phase == :train && return
+    for metric in meter.metrics
+        getmetricvalue(workout, metric) do value
+            last = get(meter.last_processed, metric, -1)
+            workout.steps > last && DelimitedFiles.writedlm(meter.fileio,
+                [(metric, value, workout.steps)])
+            meter.last_processed[metric] = workout.steps
+        end
+    end
+    flush(meter.fileio)
 end
