@@ -17,11 +17,11 @@ model = Sequential(
 )
 
 # Create a workout containing the model, a loss function and the optimizer
-# workout = Workout(model, nll, ADAM(), metrics=[BinaryAccuracy()])
-workout = Workout(model, nll, ADAM())
+metric  = OneHotBinaryAccuracy()
+workout = Workout(model, nll, ADAM(), metrics=[metric])
 
 # Run the training for 10 epochs and we don't need a convertor since
-# mnist data already does the work.
+# mnistdata function already does the work.
 fit!(workout, trndata, tstdata; epochs=10, convertor=identity)
 
 println("\nTrained the model in $(workout.epochs) epochs.")
@@ -33,8 +33,14 @@ using Plots
 # Optional nice theme for Juno in dark mode
 # using PlotThemes; theme(:juno)
 
+# Plot the training loss
 h1 = history(workout, :loss)
-h2 = history(workout, :val_loss)
+plot(h1..., xlabel = "steps", ylabel="value", label="loss")
 
-plot(h1..., xlabel = "steps", ylabel="loss", label="training")
-plot!(h2..., linewidth = 2, label="validation")
+# Plot the validation loss
+h2 = history(workout, :val_loss)
+plot!(h2..., linewidth = 2, label="validation loss")
+
+# Plot the validation accuracy
+h3 = history(workout, :val_acc)
+plot!(h3..., linewidth = 2, label="validation accuracy")

@@ -1,5 +1,5 @@
 
-export SmartReducer, history, BinaryAccuracy
+export SmartReducer, history, BinaryAccuracy, OneHotBinaryAccuracy
 
 """
 Stores the calculated metrics
@@ -45,4 +45,22 @@ end
 function (a::BinaryAccuracy)(y_pred, y_true)
     y_pred = y_pred .> a.threshold
     return mean(y_true .== y_pred)
+end
+
+"""
+Binary accuracy for a onehot classification.
+"""
+struct OneHotBinaryAccuracy
+    name::Symbol
+
+    OneHotBinaryAccuracy(name=:acc) = new(name)
+end
+
+function (a::OneHotBinaryAccuracy)(y_pred, y_true)
+    y_pred, y_true = Knet.mat(y_pred), Knet.mat(y_true)
+
+    y_pred = mapslices(argmax,Knet.value(Array(y_pred)),dims=1)
+    y_true = Array(y_true)
+
+    mean(y_pred .== y_true)
 end
