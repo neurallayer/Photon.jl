@@ -1,6 +1,6 @@
 
 
-export getContext, setContext, resetContext, ctx, hasgpu, is_on_gpu, KorA, ϵ
+export Tensor, getContext, setContext, resetContext, ctx, hasgpu, is_on_gpu, KorA, ϵ
 
 const ϵ = 10e-8
 
@@ -13,9 +13,20 @@ in a database.
 abstract type Meter end
 
 abstract type MetricStore end
-abstract type Layer end
+abstract type Layer <: Function end
 abstract type Metric end
 abstract type Optimizer end
+
+abstract type Loss <: Function end
+
+
+const Tensor{T,N} = Union{
+						AbstractArray{T,N},
+						Knet.KnetArray{T,N},
+						Knet.Value{AbstractArray{T,N}},
+						Knet.Value{Knet.KnetArray{T,N}}}
+
+const Tensors = Union{Tensor, Tuple{Tensor}}
 
 
 """
@@ -25,8 +36,6 @@ returns the loss as a scalar value.
 
   fn(y_pred, y_true)
 """
-abstract type Loss end
-
 
 mutable struct Context
 	device::Symbol

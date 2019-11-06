@@ -52,3 +52,16 @@ import Knet
 Knet.argmaxarray(a)
 
 @doc Knet.argmaxarray
+
+import Knet
+
+Tensor{T} = Union{AbstractArray{T}, Knet.KnetArray{T}, Knet.Result{T}}
+
+
+function test(p::Tensor3)
+    a::Tensor3 = rand(10,10)
+    a = Knet.KnetArray(a)
+    a
+end
+
+test(randn(12))

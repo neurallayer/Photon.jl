@@ -14,16 +14,16 @@ Examples
 
 """
 mutable struct Workout
-    model
-    loss
+    model::Function
+    loss::Function
     opt::Optimizer
-    metrics
+    metrics::Vector{Pair}
     history::IdDict{Symbol,MetricStore}
     steps::Int
     epochs::Int
 
-    function Workout(model, loss, opt::Optimizer; metrics=[])
-        new(model, loss, opt, metrics, IdDict(), 0, 0)
+    function Workout(model::Function, loss::Function, opt::Optimizer; metrics...)
+        new(model, loss, opt, collect(metrics), IdDict(), 0, 0)
     end
 end
 
@@ -33,7 +33,7 @@ Perform the back propagation and update the gradients. The weights are not yet
 updated, that is the role of the optimizers. For now the gradients are stored
 with the weights.
 """
-function back(J)
+function back(J::Knet.Tape)
     ps = Knet.params(J)
     for param in ps
         # ugly hack, reuse opt attribute for storing gradients ;)
@@ -52,22 +52,23 @@ function getmetricname(metric::Symbol, phase=:train)::Symbol
     metricname = phase == :train ? metric : Symbol("val_", metric)
 end
 
+
 """
 Invoke the configured metrics. The loss metric will always be logged and available.
 """
-function updatemetrics!(workout::Workout, loss, y, y_pred, phase=:train)
+function updatemetrics!(workout::Workout, loss::Number, y, y_pred, phase=:train)
 
     # First register the loss
     metricname = getmetricname(:loss, phase)
     e = get!(workout.history, metricname, SmartReducer())
-    update!(e, workout.steps, Knet.value(loss))
+    update!(e, workout.steps, loss)
 
     # And now run and register any additional metrics
-    for metric in workout.metrics
-        metricname = getmetricname(metric.name, phase)
-        metricvalue = metric(y_pred, y)
+    for (name,fn) in workout.metrics
+        metricname = getmetricname(name, phase)
+        metricvalue = fn(y_pred, y)
         e = get!(workout.history, metricname, SmartReducer())
-        update!(e, workout.steps, Knet.value(metricvalue))
+        update!(e, workout.steps, metricvalue)
     end
     return loss
 end
@@ -110,7 +111,7 @@ function step!(workout::Workout, x, y; zerograd=true)
     J = Knet.@diff begin
         y_pred = workout.model(x)
         loss = workout.loss(y_pred, y)
-        updatemetrics!(workout, loss, y, y_pred)
+        updatemetrics!(workout, Knet.value(loss), y, y_pred)
         loss
     end
     ps = back(J)
@@ -147,21 +148,6 @@ function validate(workout::Workout, x, y)
     y_pred = workout.model(x)
     loss = workout.loss(y_pred, y)
     updatemetrics!(workout, loss, y, y_pred, :valid)
-end
-
-"""
-Progress represents the state of a fit session and is passed to
-a meter as one of the parameters. Everytime you start a training, the
-progress is reset (as opposed to the Workout that remains its state)
-"""
-mutable struct Progress
-    epoch::Int
-    batch::Int
-    startotal::Float64
-    startepoch::Float64
-    maxbatch::Int
-    phase::Symbol
-    Progress(maxbatch=2) = new(0, 0, time(),time(),maxbatch, :train)
 end
 
 

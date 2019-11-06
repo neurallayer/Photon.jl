@@ -17,8 +17,7 @@ model = Sequential(
 )
 
 # Create a workout containing the model, a loss function and the optimizer
-metric  = OneHotBinaryAccuracy()
-workout = Workout(model, nll, ADAM(), metrics=[metric])
+workout = Workout(model, nll, ADAM(), acc=OneHotBinaryAccuracy())
 
 # Run the training for 10 epochs and we don't need a convertor since
 # mnistdata function already does the work.
@@ -35,7 +34,7 @@ using Plots
 
 # Plot the training loss
 h1 = history(workout, :loss)
-plot(h1..., xlabel = "steps", ylabel="value", label="loss")
+plot(h1..., xlabel = "steps", ylabel="values", label="loss")
 
 # Plot the validation loss
 h2 = history(workout, :val_loss)

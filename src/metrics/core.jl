@@ -42,7 +42,7 @@ struct BinaryAccuracy
     BinaryAccuracy(;threshold=0.5, name=:acc) = new(name,threshold)
 end
 
-function (a::BinaryAccuracy)(y_pred, y_true)
+function (a::BinaryAccuracy)(y_pred::Tensor, y_true::Tensor)
     y_pred = y_pred .> a.threshold
     return mean(y_true .== y_pred)
 end
@@ -56,7 +56,7 @@ struct OneHotBinaryAccuracy
     OneHotBinaryAccuracy(name=:acc) = new(name)
 end
 
-function (a::OneHotBinaryAccuracy)(y_pred, y_true)
+function (a::OneHotBinaryAccuracy)(y_pred::Tensor, y_true::Tensor)
     y_pred, y_true = Knet.mat(y_pred), Knet.mat(y_true)
 
     y_pred = mapslices(argmax,Knet.value(Array(y_pred)),dims=1)
