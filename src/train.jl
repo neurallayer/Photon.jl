@@ -1,7 +1,7 @@
 import Base:haslength
 import Serialization
 
-export Workout, save, load, predict, fit!, validate, hasmetric
+export Workout, saveWorkout, loadWorkout, predict, fit!, validate, hasmetric
 
 """
 The Workout keeps track of the progress of a training session.
