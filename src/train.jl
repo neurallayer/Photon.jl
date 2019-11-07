@@ -1,4 +1,5 @@
 import Base:haslength
+import Serialization
 
 export Workout, save, load, predict, fit!, validate, hasmetric
 
@@ -29,17 +30,55 @@ end
 
 """
 Save a workout. Right now doesn't fully work
+
+Before the model within the workout is saved, the weights are moved to the
+CPU. Also gradients will be zerod before storing the model.
 """
-function save(workout::Workout, filename::String)
-    serialize(filename, workout)
+function saveWorkout(workout::Workout, filename="workout.sav")
+
+    ps = Knet.params(workout.model)
+
+    # Lets not store gradients
+    zerograd!(ps)
+
+    # Move weights to CPU so the serialization contains all
+    tmp_ps = IdDict()
+    for p in ps
+        tmp_ps[p] = p.value
+        p.value = Array(p.value)
+    end
+
+    # serialize
+    Serialization.serialize(filename, workout)
+
+    # set back the weights to their orginal value
+    for p in ps
+        p.value = tmp_ps[p]
+    end
+
+    return filename
 end
 
 """
-Load a workout. Right now doesn't fully work
+Load a workout. Right now doesn't fully work.
+
+When the workout is loaded, the weights are located on the CPU. The convertor
+will move them to the right device. The default provided convertor will use the
+ctx to determine what the right device and type is.
 """
-function load(filename::String)::Workout
-    deserialize(filename)
+function loadWorkout(filename="workout.sav"; convertor=autoConvertor)::Workout
+
+    # serialize
+    workout = Serialization.deserialize(filename)
+
+    # Move weights to desired type and device
+    ps = Knet.params(workout.model)
+    for p in ps
+        p.value = convertor(p.value)
+    end
+    return workout
 end
+
 
 """
 Perform the back propagation and update the gradients. The weights are not yet
@@ -78,15 +117,31 @@ function updatemetrics!(workout::Workout, loss::Number, y, y_pred, phase=:train)
 
     # And now run and register any additional metrics
     for (name,fn) in workout.metrics
-        metricname = getmetricname(name, phase)
-        metricvalue = fn(y_pred, y)
-        e = get!(workout.history, metricname, SmartReducer())
-        update!(e, workout.steps, metricvalue)
+        try
+            metricname = getmetricname(name, phase)
+            metricvalue = fn(y_pred, y)
+            e = get!(workout.history, metricname, SmartReducer())
+            update!(e, workout.steps, metricvalue)
+        catch
+            @warn "Failed executing metric." metricname maxlog=1
+        end
     end
     return loss
 end
 
-function getmetricvalue(f::Function, workout::Workout, metricname, step=workout.steps)
+"""
+Get the metric value for a fully qualified metric name and a certain step. If
+step is not provided the last known step is used.
+
+Examples:
+=========
+
+    getmetricvalue(workout, :val_loss) do value
+        println("validation loss", value)
+    end
+
+"""
+function getmetricvalue(f::Function, workout::Workout, metricname::Symbol, step=workout.steps)
     if haskey(workout.history, metricname)
         m = workout.history[metricname]
         value = get(m.state, step, nothing)
@@ -94,12 +149,16 @@ function getmetricvalue(f::Function, workout::Workout, metricname, step=workout.
     end
 end
 
+
 function display(workout::Workout, meters, phase)
     for meter in meters
-        display(meter, workout, phase)
+        try
+            display(meter, workout, phase)
+        catch
+            @warn "Failed executing meter" meter maxlog=1
+        end
     end
 end
-
 
 
 """
