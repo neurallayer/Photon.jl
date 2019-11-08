@@ -17,81 +17,73 @@ Examples
 mutable struct Workout
     model::Layer
     loss::Function
-    opt::Optimizer
+    opt
     metrics::Vector{Pair}
     history::IdDict{Symbol,MetricStore}
     steps::Int
     epochs::Int
 
-    function Workout(model::Layer, loss::Function, opt::Optimizer; metrics...)
+    function Workout(model::Layer, loss::Function, opt=Knet.SGD(); metrics...)
         new(model, loss, opt, collect(metrics), IdDict(), 0, 0)
     end
 end
 
-"""
-Save a workout. Right now doesn't fully work
 
-Before the model within the workout is saved, the weights are moved to the
-CPU. Also gradients will be zerod before storing the model.
+function Serialization.serialize(s::Serialization.AbstractSerializer, p::Knet.KnetArray)
+    Serialization.serialize_type(s, typeof(p))
+    Serialization.serialize(s, Array(p))
+end
+
+function Serialization.deserialize(s::Serialization.AbstractSerializer, t::Type{Knet.KnetArray})
+    arr = Serialization.deserialize(s)
+    return Knet.KnetArray(arr)
+end
+
+
+"""
+Save a workout.
 """
 function saveWorkout(workout::Workout, filename="workout.sav")
-
-    ps = Knet.params(workout.model)
-
-    # Lets not store gradients
-    zerograd!(ps)
-
-    # Move weights to CPU so the serialization contains all
-    tmp_ps = IdDict()
-    for p in ps
-        tmp_ps[p] = p.value
-        p.value = Array(p.value)
-    end
-
     # serialize
     Serialization.serialize(filename, workout)
-
-    # set back the weights to their orginal value
-    for p in ps
-        p.value = tmp_ps[p]
-    end
-
     return filename
 end
 
 """
-Load a workout. Right now doesn't fully work.
-
-When the workout is loaded, the weights are located on the CPU. The convertor
-will move them to the right device. The default provided convertor will use the
-ctx to determine what the right device and type is.
+Load a workout.
 """
-function loadWorkout(filename="workout.sav"; convertor=autoConvertor)::Workout
-
-    # serialize
+function loadWorkout(filename="workout.sav")::Workout
     workout = Serialization.deserialize(filename)
-
-    # Move weights to desired type and device
-    ps = Knet.params(workout.model)
-    for p in ps
-        p.value = convertor(p.value)
-    end
     return workout
 end
 
+
+function back!(J::Knet.Tape, opt)
+    for p in Knet.params(J)
+        if p.opt == nothing; p.opt = Knet.clone(opt); end
+        Knet.update!(p, Knet.grad(J,p))
+    end
+end
 
 """
 Perform the back propagation and update the gradients. The weights are not yet
 updated, that is the role of the optimizers. For now the gradients are stored
 with the weights.
 """
-function back(J::Knet.Tape)
+function back2(J::Knet.Tape)
     ps = Knet.params(J)
     for param in ps
         # ugly hack, reuse opt attribute for storing gradients ;)
         param.opt = Knet.grad(J,param)
     end
     ps
+end
+
+function update2!(params, opt)
+    for (p,g) in params
+        p.opt == nothing && p.opt == clone(opt)
+        p.value += p.opt(g)
+    end
 end
 
 
@@ -186,9 +178,10 @@ function step!(workout::Workout, x, y; zerograd=true)
         updatemetrics!(workout, Knet.value(loss), y, y_pred)
         loss
     end
-    ps = back(J)
-    update!(workout.opt, ps)
-    zerograd && zerograd!(ps)
+    # ps = back(J)
+    # update!(workout.opt, ps)
+    # zerograd && zerograd!(ps)
+    back!(J, workout.opt)
 end
 
 

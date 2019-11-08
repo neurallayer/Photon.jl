@@ -40,7 +40,7 @@ function multi_input_output()
 
     model = MyModel()
 
-    workout = Workout(model, myloss, SGD())
+    workout = Workout(model, myloss)
     dtype = getContext().dtype
 
     # Two inputs

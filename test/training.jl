@@ -1,14 +1,14 @@
 module TrainingTests
 
 using Photon, Test
-using Knet:relu
+using Knet:relu, Adam
 
 function simple_conv_model()
     model = Sequential(
         Conv2D(16, 3, relu),
         Conv2D(32, 3, relu),
         MaxPool2D(),
-        Dense(50, relu),
+        Dense(32, relu),
         Dense(10)
     )
     return model
@@ -24,7 +24,7 @@ end
 
 function test_train()
     model = simple_conv_model()
-    workout = Workout(model, mse, ADAM())
+    workout = Workout(model, mse)
 
     data = getdata()
     fit!(workout, data, epochs=2)
@@ -34,36 +34,29 @@ function test_train()
     @test hasmetric(workout, :loss)
 end
 
-include("../src/models/densenet.jl")
+function test_channel()
+    model = simple_conv_model()
+    workout = Workout(model, mse)
 
-function test_densenet(epochs, batches, device)
-    setContext(device=device, dtype=Float32)
-    model = DenseNet121(classes=100)
-    workout = Workout(model, mse, ADAM())
-
-    # use only 1 image per batch, otherwise Travis won't finish in time
-    minibatch = (KorA(randn(Float32,224,224,3,1)), KorA(randn(Float32,100,1)))
+    minibatch = (KorA(randn(Float32,30,30,3,4)), KorA(randn(Float32,10,4)))
 
     function randomdata()
         Channel() do channel
-            for i in 1:batches
+            for i in 1:4
                 put!(channel, minibatch)
             end
         end
     end
 
-    fit!(workout, randomdata, epochs=epochs)
-    @test workout.epochs == epochs
+    fit!(workout, randomdata, epochs=2)
+    @test workout.epochs == 2
     @test hasmetric(workout, :loss)
 end
 
 @testset "Training" begin
     resetContext()
     test_train()
-    if hasgpu()
-        test_densenet(2,10,:gpu)
-    end
-    test_densenet(1,1,:cpu)
+    test_channel()
 end
 
 end

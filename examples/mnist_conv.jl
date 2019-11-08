@@ -16,8 +16,9 @@ model = Sequential(
       Dense(10)
 )
 
-# Create a workout containing the model, a loss function and the optimizer
-workout = Workout(model, nll, ADAM(), acc=OneHotBinaryAccuracy())
+# Create a workout containing the model, a loss function and
+# the optimizer (default SGD) and accuracy meter
+workout = Workout(model, nll, acc=OneHotBinaryAccuracy())
 
 # Run the training for 10 epochs and we don't need a convertor since
 # mnistdata function already does the work.
