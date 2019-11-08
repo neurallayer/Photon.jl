@@ -1,9 +1,6 @@
 module BasicTests
 
 using Photon, Test
-using Knet:relu
-import Knet
-
 
 function KorATest()
     a = randn(10,10)

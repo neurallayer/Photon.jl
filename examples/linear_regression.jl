@@ -23,7 +23,7 @@ Y = [fn(x[1,:], x[2,:], x[3,:]) for x in X]
 And finally we create the workout and start the training.
 We use Mean Square Error loss and SGD as the optimizer.
 """
-workout = Workout(model, mse, SGD())
-fit!(workout, zip(X,Y), epochs=10)
+workout = Workout(model, mse)
+fit!(workout, zip(X,Y), epochs=5)
 
 @printf "%.1fx + %.1fy  + %.1fz + %.1f\n" Array(value(model.params.w))... Array(value(model.params.b))...

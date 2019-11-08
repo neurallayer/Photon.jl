@@ -2,7 +2,6 @@
 module PhotonTest
 
 using Photon
-using Knet: relu
 
 
 function test()

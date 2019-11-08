@@ -2,8 +2,7 @@
 module ConvTests
 
 using Photon, Test
-using Knet:relu
-import Knet
+
 
 getimages(s=224) = KorA(randn(ctx.dtype,s,s,3,4))
 
@@ -47,7 +46,7 @@ function test_base_Conv2D()
 
     Y = Conv2D(16, 3; padding=1, strides=2, dilation=2)(X)
     @test Y != nothing
-    
+
 end
 
 function convtranspose_model()

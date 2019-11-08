@@ -1,7 +1,7 @@
 module TrainingTests
 
 using Photon, Test
-using Knet:relu, Adam
+
 
 function simple_conv_model()
     model = Sequential(

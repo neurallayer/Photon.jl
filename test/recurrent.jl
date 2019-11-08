@@ -1,9 +1,6 @@
 module RecurrentTests
 
 using Photon, Test
-using Knet:relu
-import Knet
-
 
 
 gethistoric(steps=100, features=10) = KorA(randn(ctx.dtype,features,steps,4))

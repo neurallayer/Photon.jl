@@ -1,5 +1,6 @@
 
-using Knet:relu
+
+
 
 function _make_features(layers, filters, batch_norm)
     featurizer = Sequential()
@@ -17,7 +18,7 @@ function _make_features(layers, filters, batch_norm)
 end
 
 
-struct VGG <: Layer
+struct VGG <: Photon.Layer
     features
     output
 

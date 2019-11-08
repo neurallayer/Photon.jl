@@ -1,7 +1,6 @@
 module OptimTests
 
 using Photon, Test
-using Knet:relu, Adam, SGD, Momentum
 
 
 function get_model()

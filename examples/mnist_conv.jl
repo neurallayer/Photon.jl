@@ -1,7 +1,5 @@
 using Photon
-using Knet:relu, nll
 import Knet
-
 
 # Get the MNIST data set
 include(Knet.dir("data", "mnist.jl"))
@@ -29,9 +27,6 @@ println("\nTrained the model in $(workout.epochs) epochs.")
 # Now let's plot some results. If you haven't installed Plots yet, you'll
 # need to run:  using Pkg; Pkg.add("Plots")
 using Plots
-
-# Optional nice theme for Juno in dark mode
-# using PlotThemes; theme(:juno)
 
 # Plot the training loss
 h1 = history(workout, :loss)

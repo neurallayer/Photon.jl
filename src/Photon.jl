@@ -1,7 +1,7 @@
 
 module Photon
 
-using Statistics, Printf, Serialization
+using Statistics, Printf
 import Knet
 
 include("core.jl")
@@ -15,13 +15,28 @@ include("metrics/core.jl")
 include("metrics/meters.jl")
 include("utils.jl")
 
-export Layer, LazyLayer, Dense, BatchNorm, RNN, Conv2DTranspose,
+export Dense, BatchNorm, RNN, Conv2DTranspose,
 	  Conv2D, Conv3D, output_size, Dropout, Sequential, Flatten, MaxPool2D, AvgPool2D,
 	  LSTM, GRU, Residual, Concurrent, AdaptiveAvgPool, AdaptiveMaxPool,
-	  Activation, add, forward, ContextSwitch, ADAM
+	  Activation, add, forward, ContextSwitch
 
 
 dir(path...) = joinpath(dirname(@__DIR__),path...)
+
+# Rexport some of the Knet features
+module K
+	using Knet
+	export relu, softmax, nll
+	export Adam, SGD, Momentum
+	export xavier
+end
+
+using .K
+
+export relu, softmax, nll
+export Adam, SGD, Momentum
+export xavier
+
 
 @info "Loaded Photon"
 

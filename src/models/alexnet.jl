@@ -1,7 +1,6 @@
 
-using Knet:relu
 
-mutable struct AlexNet <: Layer
+mutable struct AlexNet <: Photon.Layer
     features::Sequential
     output::Dense
 

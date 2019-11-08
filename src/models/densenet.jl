@@ -1,5 +1,4 @@
 
-using Knet:relu
 
 function _make_dense_block(
     num_layers,
@@ -44,7 +43,7 @@ function _make_transition(num_output_features)
 end
 
 
-mutable struct DenseNet <: Layer
+mutable struct DenseNet <: Photon.Layer
     features
     output
 end
