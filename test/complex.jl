@@ -4,8 +4,9 @@ using Photon, Test
 
 
 """
-Model that has contains two sequential submodels in order to
-test a two input, two output scenario.
+Model that contains two sequential submodels in order to
+test a two-input, two-output scenario. The model itself
+is not very meaningful ;)
 """
 struct MyModel <: Photon.Layer
     a
@@ -34,7 +35,9 @@ function myloss(y_pred, y)
 end
 
 """
-Test a model that has multiple input and outputs
+Test a model that has multiple input and outputs. The default convertor
+(autoConvertor) will take care of handling this data while preserving this
+structure.
 """
 function multi_input_output()
 
