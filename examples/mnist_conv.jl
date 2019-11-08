@@ -26,9 +26,11 @@ println("\nTrained the model in $(workout.epochs) epochs.")
 
 # Now let's plot some results. If you haven't installed Plots yet, you'll
 # need to run:  using Pkg; Pkg.add("Plots")
-using Plots
 
-# Plot the training loss
+import Plots
+plotmetrics(Plots, workout, [:loss, :val_loss, :val_acc])
+
+#= Plot the training loss
 h1 = history(workout, :loss)
 plot(h1..., xlabel = "steps", ylabel="values", label="loss")
 
@@ -39,3 +41,4 @@ plot!(h2..., linewidth = 2, label="validation loss")
 # Plot the validation accuracy
 h3 = history(workout, :val_acc)
 plot!(h3..., linewidth = 2, label="validation accuracy")
+=#

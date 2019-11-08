@@ -23,19 +23,21 @@ export Dense, BatchNorm, RNN, Conv2DTranspose,
 
 dir(path...) = joinpath(dirname(@__DIR__),path...)
 
-# Rexport some of the Knet features
+# Re-export some of the Knet features
 module K
 	using Knet
-	export relu, softmax, nll
-	export Adam, SGD, Momentum
-	export xavier
+	export relu, elu, selu, sigm
+	export softmax, nll
+	export Adam, SGD, Momentum, Nesterov, Adagrad, Rmsprop, Adadelta
+	export xavier, gaussian, bilinear
 end
 
 using .K
 
-export relu, softmax, nll
-export Adam, SGD, Momentum
-export xavier
+export relu, elu, selu, sigm
+export softmax, nll
+export Adam, SGD, Momentum, Nesterov, Adagrad, Rmsprop, Adadelta
+export xavier, gaussian, bilinear
 
 
 @info "Loaded Photon"
