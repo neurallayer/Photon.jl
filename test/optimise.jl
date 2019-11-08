@@ -15,8 +15,10 @@ end
 
 function testOptim(opt)
     model = get_model()
-    X = [randn(ctx.dtype,50,50,3,4) for _=1:5]
-    Y = [randn(ctx.dtype,10,4) for _=1:5]
+    dtype = getContext().dtype
+
+    X = [randn(dtype,50,50,3,4) for _=1:5]
+    Y = [randn(dtype,10,4) for _=1:5]
 
     workout = Workout(model, mse, opt)
     fit!(workout, zip(X,Y), epochs=2)

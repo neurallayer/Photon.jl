@@ -1,6 +1,6 @@
 
 
-export Tensor, getContext, setContext, resetContext, ctx, hasgpu, is_on_gpu, KorA, ϵ
+export getContext, setContext, resetContext, hasgpu, is_on_gpu, KorA
 
 const ϵ = 10e-8
 

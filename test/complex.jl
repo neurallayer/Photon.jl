@@ -30,7 +30,7 @@ loss value.
 function myloss(y_pred, y)
     p1, p2 = y_pred
     y1, y2 = y
-    mse(p1, y1) + mae(p2, y2)
+    (mse(p1, y1) + mae(p2, y2))/2
 end
 
 """

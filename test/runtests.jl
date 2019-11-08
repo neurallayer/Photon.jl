@@ -19,7 +19,7 @@ include("./training.jl")
 include("./optimise.jl")
 include("./loss.jl")
 
-@info "Testing complex traiing scenarios"
+@info "Testing complex training scenarios"
 include("./complex.jl")
 
 end

@@ -3,7 +3,8 @@ module DenseTests
 using Photon, Test
 import Knet
 
-
+resetContext()
+ctx = getContext()
 
 function dense_model_cpu()
     function run_model(data)

@@ -4,14 +4,21 @@ import Serialization
 export Workout, saveWorkout, loadWorkout, predict, fit!, validate, hasmetric
 
 """
-The Workout keeps track of the progress of a training session.
+The Workout keeps track of the progress of a training session. At least a model
+and a loss function needs to be provided. Optional an optimizer and one or more
+metrics can be provided.
+
+If no optimizer is provided, SGD will be used. If no metrics are provided only
+the loss during training and validation will be registered (:loss and :val_loss).
 
 Examples
 ========
 
-    workout = Workout(model, mse, SGD())
+    workout = Workout(model, mse)
 
-    workout = Workout(model, nll, ADAM())
+    workout = Workout(model, nll, SGD())
+
+    workout = Workout(model, nll, SGD(); acc=BinaryAccuracy())
 
 """
 mutable struct Workout
@@ -29,6 +36,9 @@ mutable struct Workout
 end
 
 
+"""
+Enable savign and loading of models by specialized functions for Julia serialization
+"""
 function Serialization.serialize(s::Serialization.AbstractSerializer, p::Knet.KnetArray)
     Serialization.serialize_type(s, typeof(p))
     Serialization.serialize(s, Array(p))
@@ -41,7 +51,8 @@ end
 
 
 """
-Save a workout.
+Save a workout to file. This will save all the state that is captured in teh workout
+and enables to continue at a later stage.
 """
 function saveWorkout(workout::Workout, filename="workout.sav")
     # serialize
@@ -57,32 +68,13 @@ function loadWorkout(filename="workout.sav")::Workout
     return workout
 end
 
-
+"""
+Do the back propagation and update of weights in one go.
+"""
 function back!(J::Knet.Tape, opt)
     for p in Knet.params(J)
         if p.opt == nothing; p.opt = Knet.clone(opt); end
         Knet.update!(p, Knet.grad(J,p))
-    end
-end
-
-"""
-Perform the back propagation and update the gradients. The weights are not yet
-updated, that is the role of the optimizers. For now the gradients are stored
-with the weights.
-"""
-function back2(J::Knet.Tape)
-    ps = Knet.params(J)
-    for param in ps
-        # ugly hack, reuse opt attribute for storing gradients ;)
-        param.opt = Knet.grad(J,param)
-    end
-    ps
-end
-
-function update2!(params, opt)
-    for (p,g) in params
-        p.opt == nothing && p.opt == clone(opt)
-        p.value += p.opt(g)
     end
 end
 
@@ -92,6 +84,10 @@ Does the workout have recorded values for a certain metric
 """
 hasmetric(workout::Workout, metricname::Symbol) = haskey(workout.history, metricname)
 
+
+"""
+Function to determine the metric name.
+"""
 function getmetricname(metric::Symbol, phase=:train)::Symbol
     metricname = phase == :train ? metric : Symbol("val_", metric)
 end
@@ -99,6 +95,7 @@ end
 
 """
 Invoke the configured metrics. The loss metric will always be logged and available.
+Metrics are stored in the history attribute of the workout.
 """
 function updatemetrics!(workout::Workout, loss::Number, y, y_pred, phase=:train)
 
@@ -154,21 +151,15 @@ end
 
 
 """
-Reset the gradients of the provided paramters.
-"""
-zerograd!(ps) = for param in ps; param.opt = nothing; end
-
-"""
 Take a single step in updating the weights of a model. This function
 will be invoked from fit! to do the actual learning.
 
 For a minibatch (x,y) of data, the folowing sequence will be executed:
 
-1. the forward pass
+1. perform the forward pass
 2. calculate the loss
-3. Calculate additional metrics, if any
-4. do the backpropagation and calculate the gradients
-5. update the weights of the model
+3. update and remember the metrics, if any
+4. do the backpropagation and update the weights
 """
 function step!(workout::Workout, x, y; zerograd=true)
     workout.steps += 1
@@ -178,9 +169,6 @@ function step!(workout::Workout, x, y; zerograd=true)
         updatemetrics!(workout, Knet.value(loss), y, y_pred)
         loss
     end
-    # ps = back(J)
-    # update!(workout.opt, ps)
-    # zerograd && zerograd!(ps)
     back!(J, workout.opt)
 end
 
@@ -207,7 +195,8 @@ end
 
 
 """
-Validate a minibatch and calculate the loss and defined metrics.
+Validate a minibatch and calculate the loss and metrics. Typically this function
+is called from the fit! method.
 """
 function validate(workout::Workout, x, y)
     y_pred = workout.model(x)
@@ -217,11 +206,13 @@ end
 
 
 """
-Train the model based on a supervised dataset and the number of
-epochs to run. fit! can be called multiple times and will continue
-where is left of last time.
+Train the model based on a supervised dataset and for a number
+of epochs. fit! can be called multiple times and will continue
+to train where is left of last time.
 
-Also it will try to make the data suitable for the model.
+By default the fit! function will try to ensure the data is of the right
+type (e.g. Float32) and on the right device (e.g. GPU) before feeding it to
+the model.
 
 Examples:
 =========
@@ -230,7 +221,7 @@ Examples:
     fit!(workout, traindata, testdata, epochs=50)
 
 If you don't want any data conversion, just pass the identity funciton
-as the convertor parameter:
+as the convertor:
 
     fit!(workout, traindata, convertor=identity)
 

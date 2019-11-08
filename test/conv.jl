@@ -3,6 +3,8 @@ module ConvTests
 
 using Photon, Test
 
+resetContext()
+ctx = getContext()
 
 getimages(s=224) = KorA(randn(ctx.dtype,s,s,3,4))
 

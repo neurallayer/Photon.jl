@@ -1,7 +1,5 @@
 
 
-
-
 function _make_features(layers, filters, batch_norm)
     featurizer = Sequential()
     for (filter, num) in zip(filters, layers)

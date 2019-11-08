@@ -8,9 +8,8 @@
 **Photon** is a developer friendly framework for Deep Learning in Julia. Under the hood
 it leverages **Knet** and it provides a Keras like API on top of that.
 
-Photon is right now still very much alpha quality and the main goal of the current
-version is to see what API's work best. So expect still to see some API changes
-in the upcoming releases.
+Photon is right now still alpha quality and the main goal is to see what API's work best.
+So expect still to see some API changes in the upcoming releases.
 
 ## Installation
 The package can be installed with the Julia package manager.
@@ -26,10 +25,9 @@ Or, equivalently, via the `Pkg` API:
 julia> import Pkg; Pkg.add("Photon")
 ```
 
-
 ## Usage
 Defining a model is straightforward and should look familiar if you used Keras
-in the past:  
+or MXnet in the past:  
 
 A two layers fully connected network:
 
@@ -40,7 +38,9 @@ model = Sequential(
   )
 ```
 
-A convolutional network:
+A convolutional network with maxpooling (note that Photon takes care
+of the flattening so you can connect a Dense layer directly to a convolutional
+layer):
 
 ```julia
 model = Sequential(
@@ -66,8 +66,8 @@ And also the training of the model can be done through an
 easy API:
 
 ```julia
-workout = Workout(model, nll, ADAM())
-fit!(workout, data, epochs=50)
+workout = Workout(model, nll)
+fit!(workout, data, epochs=10)
 ```
 
 ## Performance
@@ -94,25 +94,24 @@ both prototyping and production ready solutions, while remaining fast.
 Some of the features:
 
 - The framework will infer the input sizes the first time it is being invoked. This
-  makes it quicker to get started, but also making the layers more reusable.
+  makes it quicker to get started, but also makes code more reusable.
 
 - Where possible, sensible defaults are selected.
 
-- Make it easy to create reproducible results.
+- Support for iterative/discovery type of development with Notebooks or Juno.
+
 
 ## Todo
-This software is still alpha quality and there remain many things to do.
+There remain many things to do.
 
-- Add typing to assist the compiler and development
+- Add more typing to assist the compiler and development
 - Extend unit tests to cover more code (> 90%)
 - Implement dataset + dataloader with support for threading
-- Implement more models (resnet,...)
+- Implement more models including trained weights (resnet,...)
 - Write tutorials and improve code documentation
 - Finalize the API's so we can release 1.0
 - Implement more complex layers like attention
-- Saving and restoring workout state
 - More loss functions
-- More optimisers
 - Once stable, create proper back-end abstraction to support other frameworks
 
 And b.t.w, we are always open in accepting contributions ;)
@@ -128,9 +127,9 @@ We used several other open source frameworks for code and inspiration
   implemented in Julia by Deniz Yuret and collaborators. It is right now the
   back-end for Photon, partially due to its excellent performance on GPU's.
 
-- Flux, we used some of their code. This has to be one of the most
+- Flux, we use it for inspiration. This has to be one of the most
   beautiful code bases out there.
 
 - Keras and MXNet for their well thought out API's.
 
-- And of course Julia, that enables writing very fast deap learning applications.
+- And of course Julia, that enables writing very fast deep learning applications.
