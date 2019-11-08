@@ -17,11 +17,9 @@ add(model::StackedLayer, layer...) = push!(model::StackedLayer, layer...)
 Sequential
 """
 struct Sequential <:StackedLayer
-    layers
+    layers::Vector
 
-	function Sequential(blocks...)
-		new([blocks...])
-	end
+	Sequential(blocks...) = new([blocks...])
 end
 
 function call(model::Sequential,X)
@@ -36,11 +34,9 @@ end
 Concurrrent
 """
 struct Concurrent <:StackedLayer
-    layers
+    layers::Vector
 
-	function Concurrent(blocks...)
-		new([blocks...])
-	end
+	Concurrent(blocks...) = new([blocks...])
 end
 
 function call(model::Concurrent, X)
@@ -57,11 +53,9 @@ Residual Layer. This will stack on the second last dimension. So with
 and 2D convolution this will be the channel layer (WxHxCxN)
 """
 struct Residual <:StackedLayer
-    layers
+    layers::Vector
 
-	function Residual(blocks...)
-		new([blocks...])
-	end
+	Residual(blocks...) = new([blocks...])
 end
 
 function call(model::Residual, X)

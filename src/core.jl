@@ -13,7 +13,7 @@ in a database.
 abstract type Meter end
 
 abstract type MetricStore end
-abstract type Layer <: Function end
+abstract type Layer end
 abstract type Metric end
 abstract type Optimizer end
 

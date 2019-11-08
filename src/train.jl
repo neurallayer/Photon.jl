@@ -15,7 +15,7 @@ Examples
 
 """
 mutable struct Workout
-    model::Function
+    model::Layer
     loss::Function
     opt::Optimizer
     metrics::Vector{Pair}
@@ -23,7 +23,7 @@ mutable struct Workout
     steps::Int
     epochs::Int
 
-    function Workout(model::Function, loss::Function, opt::Optimizer; metrics...)
+    function Workout(model::Layer, loss::Function, opt::Optimizer; metrics...)
         new(model, loss, opt, collect(metrics), IdDict(), 0, 0)
     end
 end
