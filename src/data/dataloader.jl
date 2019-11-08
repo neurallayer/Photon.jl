@@ -1,29 +1,34 @@
 
 using Random
-struct Dataset{A,B}
-    x::A
-    y::B
+
+abstract type Dataset end
+
+
+function update_mb!(arr::Array, elem::Array, idx)
+	@assert size(arr)[1:end-1] == size(elem)
+	idxs = Base.OneTo.(size(elem))
+	arr[idxs..., idx] = elem
 end
 
-Base.length(ds::Dataset) = length(ds.x)
-Base.getindex(ds::Dataset, idx) = return (ds.x[idx], ds.y[idx,:])
+
+function update_mb!(t::Tuple, elems::Tuple, idx)
+	@assert length(t) == length(elems)
+	for (arr,elem) in zip(t,elems)
+		update_mb!(arr, elem, idx)
+	end
+end
+
+create_mb(arr::Array, batchsize) = similar(arr, size(arr)..., batchsize)
+create_mb(t::Tuple, batchsize)= Tuple(collect(create_mb(elem, batchsize) for elem in t))
 
 
 struct Dataloader
-    dataset
+    dataset::Dataset
     batchsize::Int
     shuffle::Bool
-    datatypes::Tuple
-    datasizes::Tuple
-    dataaxes::Tuple
 
-    function Dataloader(dataset, batchsize=16, shuffle=true)
-        sample = dataset[1]
-        datatypes = typeof.(sample)
-        datasizes = size.(sample)
-        dataaxes = axes.(sample)
-        new(dataset, batchsize, shuffle, datatypes, datasizes, dataaxes)
-    end
+    Dataloader(dataset::Dataset, batchsize=16, shuffle=true) =
+        new(dataset, batchsize, shuffle)
 end
 
 function Base.iterate(dl::Dataloader, state=undef)
@@ -38,26 +43,47 @@ function Base.iterate(dl::Dataloader, state=undef)
 
         if count > (maxl-bs) return nothing end
 
-        minibatch = [Vector{datatype}(undef, bs) for datatype in dl.datatypes]
+		l = Threads.SpinLock()
+		minibatch = nothing
 
         Threads.@threads for i in 1:bs
-            idx = i + count - 1
-            sample = dl.dataset[idx]
-            for idx in 1:length(sample)
-                minibatch[idx][i] = sample[idx]
-            end
-        end
 
+			idx = i + count - 1
+			sample = dl.dataset[idx]
+
+			if minibatch == nothing
+				Threads.lock(l)
+				if minibatch == nothing
+					minibatch = create_mb(sample, bs)
+				end
+				Threads.unlock(l)
+			end
+
+			update_mb!(minibatch, sample, i)
+        end
+		Threads.unlock(l)
         return ((minibatch), (idxs, count + bs))
 end
 
-samples = 1000
-X = [randn(Float32,28,28,1) for i = 1:samples]
-Y = [UInt8(2) for i = 1:samples]
+struct MyDataset{A,B} <: Dataset
+    x::A
+    y::B
+end
 
-ds = Dataset(X,Y)
+Base.length(ds::MyDataset) = length(ds.x)
+Base.getindex(ds::MyDataset, idx) = return (ds.x[idx], ds.y[idx])
+
+
+samples = 1000
+X = [zeros(Float32,28,28,1) for _ = 1:samples]
+Y = [ones(2) for _ = 1:samples]
+ds = MyDataset(X,Y)
+
 dataloader = Dataloader(ds)
 for batch in dataloader
+	println(size.(batch))
+	@assert sum(batch[1]) == 0.0
+	@assert sum(batch[2]) == 1.0 * 2 * dataloader.batchsize
 end
 
 first(dataloader)
