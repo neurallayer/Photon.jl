@@ -13,12 +13,15 @@ include("train.jl")
 include("losses.jl")
 include("metrics/core.jl")
 include("metrics/meters.jl")
+include("data/dataloader.jl")
+include("data/dataset.jl")
 include("utils.jl")
 
 export Dense, BatchNorm, RNN, Conv2DTranspose,
 	  Conv2D, Conv3D, output_size, Dropout, Sequential, Flatten, MaxPool2D, AvgPool2D,
 	  LSTM, GRU, Residual, Concurrent, AdaptiveAvgPool, AdaptiveMaxPool,
-	  Activation, add, forward, ContextSwitch
+	  Activation, add, forward, ContextSwitch,
+	  Dataloader, Dataset, TestDataset, FileDataset, ArrayDataset
 
 
 dir(path...) = joinpath(dirname(@__DIR__),path...)

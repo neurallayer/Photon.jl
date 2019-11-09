@@ -1,8 +1,6 @@
 
 using Random
 
-abstract type Dataset end
-
 
 function update_mb!(arr::Array, elem::Array, idx)
 	@assert size(arr)[1:end-1] == size(elem)
@@ -64,26 +62,3 @@ function Base.iterate(dl::Dataloader, state=undef)
 		Threads.unlock(l)
         return ((minibatch), (idxs, count + bs))
 end
-
-struct MyDataset{A,B} <: Dataset
-    x::A
-    y::B
-end
-
-Base.length(ds::MyDataset) = length(ds.x)
-Base.getindex(ds::MyDataset, idx) = return (ds.x[idx], ds.y[idx])
-
-
-samples = 1000
-X = [zeros(Float32,28,28,1) for _ = 1:samples]
-Y = [ones(2) for _ = 1:samples]
-ds = MyDataset(X,Y)
-
-dataloader = Dataloader(ds)
-for batch in dataloader
-	println(size.(batch))
-	@assert sum(batch[1]) == 0.0
-	@assert sum(batch[2]) == 1.0 * 2 * dataloader.batchsize
-end
-
-first(dataloader)

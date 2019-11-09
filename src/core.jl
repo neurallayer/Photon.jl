@@ -16,6 +16,8 @@ abstract type MetricStore end
 abstract type Layer end
 abstract type Metric end
 abstract type Optimizer end
+abstract type Dataset end
+
 
 abstract type Loss <: Function end
 
