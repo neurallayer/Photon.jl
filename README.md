@@ -4,11 +4,13 @@
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE.md)
 [![Build Status](https://travis-ci.org/neurallayer/Photon.jl.svg?branch=master)](https://travis-ci.org/neurallayer/Photon.jl)
 [![codecov](https://codecov.io/gh/neurallayer/Photon.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/neurallayer/Photon.jl)
+[![Join the julia slack](https://img.shields.io/badge/chat-slack%23photon-yellow.svg)](https://slackinvite.julialang.org)
+
 
 **Photon** is a developer friendly framework for Deep Learning in Julia. Under the hood
 it leverages **Knet** and it provides a Keras like API on top of that.
 
-Photon is right now still alpha quality and the main goal is to see what API's work best.
+Photon is right now still beta quality and the main goal is to see what API's work best.
 So expect still to see some API changes in the upcoming releases.
 
 ## Installation

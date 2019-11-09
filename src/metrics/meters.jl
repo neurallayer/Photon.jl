@@ -1,5 +1,5 @@
 
-export TensorBoardMeter, ConsoleMeter, FileMeter
+export TensorBoardMeter, ConsoleMeter, FileMeter, PlotMeter
 
 
 """
@@ -121,4 +121,32 @@ function display(meter::FileMeter, workout::Workout, phase::Symbol)
         end
     end
     flush(meter.fileio)
+end
+
+
+
+"""
+Plot metrics using Plots module
+"""
+struct PlotMeter
+    plt
+    metrics::Vector{Symbol}
+    Plots::Module
+
+    function PlotMeter(Plots::Module, metrics=[:loss, :val_loss])
+        plt = Plots.plot(length(metrics),xlabel = "steps", ylabel="values", label=metrics)
+        Plots.display(plt)
+        new(plt, metrics, Plots)
+    end
+end
+
+
+function display(m::PlotMeter, workout::Workout, phase::Symbol)
+    phase == :train && return
+    for (i, metric) in enumerate(m.metrics)
+        if hasmetric(workout, metric)
+            m.plt[i] = history(workout, metric)
+        end
+    end
+    m.Plots.display(m.plt)
 end

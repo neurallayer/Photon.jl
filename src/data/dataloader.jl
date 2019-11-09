@@ -19,15 +19,31 @@ end
 create_mb(arr::Array, batchsize) = similar(arr, size(arr)..., batchsize)
 create_mb(t::Tuple, batchsize)= Tuple(collect(create_mb(elem, batchsize) for elem in t))
 
+"""
+A dataloader can be passed to the fit! function as data provider. It will call
+a dataset to get a single sample and combines them into a minibatch. The dataloader
+itself is an iterator.
 
+It will do this using threading, so when a dataset will read some samples from disk
+this won't become a botttleneck.
+
+Example:
+
+	ds = ImageDataset(filenames,labels)
+	dl = Dataloader(ds, 16, shuffle=false)
+	fit!(workout, dl)
+
+"""
 struct Dataloader
     dataset::Dataset
     batchsize::Int
     shuffle::Bool
 
-    Dataloader(dataset::Dataset, batchsize=16, shuffle=true) =
+    Dataloader(dataset::Dataset, batchsize=8; shuffle=true) =
         new(dataset, batchsize, shuffle)
 end
+
+Base.length(dl::Dataloader) = length(dl.dataset) ÷ dl.batchsize
 
 function Base.iterate(dl::Dataloader, state=undef)
         maxl = length(dl.dataset)

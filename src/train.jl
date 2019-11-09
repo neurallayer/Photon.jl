@@ -37,7 +37,9 @@ end
 
 
 """
-Enable savign and loading of models by specialized functions for Julia serialization
+Enable saving and loading of models by specialized KnetArray methods for Julia serialization
+This will effectively move a GPU weight to the CPU before serialing it and move it back to
+the GPU when deserializing.
 """
 function Serialization.serialize(s::Serialization.AbstractSerializer, p::Knet.KnetArray)
     Serialization.serialize_type(s, typeof(p))
@@ -51,19 +53,24 @@ end
 
 
 """
-Save a workout to file. This will save all the state that is captured in teh workout
+Save a workout to a file. This will save all the state that is captured in thr workout
 and enables to continue at a later stage.
 """
-function saveWorkout(workout::Workout, filename="workout.sav")
+function saveWorkout(workout::Workout, filename="workout_$(workout.steps).dat")::String
     # serialize
     Serialization.serialize(filename, workout)
     return filename
 end
 
 """
-Load a workout.
+Load a workout from file and return it.
+
+Example:
+
+    workout = loadWorkout("workout_1000.dat")
+    fit!(workout, mydata)
 """
-function loadWorkout(filename="workout.sav")::Workout
+function loadWorkout(filename)::Workout
     workout = Serialization.deserialize(filename)
     return workout
 end

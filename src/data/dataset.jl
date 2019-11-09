@@ -1,6 +1,6 @@
 """
-Test dataset that contains random generated samples.
-Ideal for testing.
+A dataset that contains random generated samples.
+Ideal for quick testing of a model.
 
 Examples:
 
@@ -9,18 +9,22 @@ Examples:
 struct TestDataset <: Dataset
     x
     y
+	sleep
 
-	function TestDataset(shapeX::Tuple, shapeY::Tuple, samples::Int)
+	function TestDataset(shapeX::Tuple, shapeY::Tuple, samples::Int; sleep=0)
 		dtype = getContext().dtype
 		x = [randn(dtype, shapeX...) for _ in 1:samples]
 		y = [randn(dtype, shapeY...) for _ in 1:samples]
-		new(x,y)
+		new(x,y,sleep)
 	end
 end
 
 Base.length(ds::TestDataset) = length(ds.x)
-Base.getindex(ds::TestDataset, idx) = return (ds.x[idx], ds.y[idx])
 
+function Base.getindex(ds::TestDataset, idx)
+	ds.sleep > 0 && sleep(ds.sleep)
+	return (ds.x[idx], ds.y[idx])
+end
 
 """
 Base dataset that contains two arrays.
@@ -35,15 +39,29 @@ Base.getindex(ds::ArrayDataset, idx) = return (ds.x[idx], ds.y[idx])
 
 
 """
-Dataset that loads the input from file.
+Dataset that loads an image from a file.
 """
-struct FileDataset{A,B} <: Dataset
+struct ImageDataset{A,B} <: Dataset
     filenames::A
     labels::B
 end
 
-Base.length(ds::FileDataset) = length(ds.filenames)
-function Base.getindex(ds::FileDataset, idx)
-	filename = ds.filenames[idx]
-	new(nothing, nothing)
+Base.length(ds::ImageDataset) = length(ds.filenames)
+
+function Base.getindex(ds::ImageDataset, idx)
+	# TODO
+end
+
+"""
+Dataset that loads data from a JuliaDB
+"""
+struct JuliaDBDataset{A,B} <: Dataset
+    filenames::A
+    labels::B
+end
+
+Base.length(ds::JuliaDBDataset) = length(ds.filenames)
+
+function Base.getindex(ds::JuliaDBDataset, idx)
+	# TODO
 end
