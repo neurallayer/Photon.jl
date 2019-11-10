@@ -1,7 +1,7 @@
 
 module DataTests
 
-using Photon, Test
+using Photon, Test, JLD2
 
 resetContext()
 ctx = getContext()
@@ -17,6 +17,23 @@ function test_dataset()
 	@test  size(sample[2]) == (10,)
 end
 
+
+function test_jld()
+	rm("example.jld2", force=true)
+
+	jldopen("example.jld2", "w") do file
+	    file["image4"] = (randn(Float32,28,28,1), rand(0:9,1))
+	    file["image5"] = (randn(Float32,28,28,1), rand(0:9,1))
+	end
+
+	f = jldopen("example.jld2", "r")
+	ds = JLDDataset(f)
+	(X,Y) = ds[1]
+	close(f)
+	@assert size(X) == (28,28,1)
+	@assert size(Y) == (1,)
+	rm("example.jld2", force=true)
+end
 
 function test_output()
 
@@ -85,6 +102,7 @@ end
 
 @testset "Data" begin
     test_dataset()
+	test_jld()
 	test_output()
 	test_dataloader()
 	test_training()
