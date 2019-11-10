@@ -14,18 +14,20 @@ Photon is right now still beta quality and the main goal is to see what API's wo
 So expect still to see some API changes in the upcoming releases.
 
 ## Installation
-The package can be installed with the Julia package manager.
+Since Photon is improving rapidly, the package can be best installed with the Julia package manager directly from the Github repository.
+
 From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
+
+```
+pkg> add https://github.com/neurallayer/Photon.jl
+```
+
+In the future it will be possible to use:
 
 ```
 pkg> add Photon
 ```
 
-Or, equivalently, via the `Pkg` API:
-
-```julia
-julia> import Pkg; Pkg.add("Photon")
-```
 
 ## Usage
 Defining a model is straightforward and should look familiar if you used Keras
@@ -108,10 +110,9 @@ There remain many things to do.
 
 - Add more typing to assist the compiler and development
 - Extend unit tests to cover more code (> 90%)
-- Implement dataset + dataloader with support for threading
 - Implement more models including trained weights (resnet,...)
 - Write tutorials and improve code documentation
-- Finalize the API's so we can release 1.0
+- Finalise the API's so we can release 1.0
 - Implement more complex layers like attention
 - More loss functions
 - Once stable, create proper back-end abstraction to support other frameworks
