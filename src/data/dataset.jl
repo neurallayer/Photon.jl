@@ -94,13 +94,29 @@ end
 """
 Dataset that loads an image from a file.
 """
-struct ImageDataset{A,B} <: Dataset
-    filenames::A
-    labels::B
+struct ImageDataset <: Dataset
+    filenames
+    labels
+
+	function ImageDataset(filenames, labels)
+		try
+			@eval import Images
+		catch
+			@warn "Package Images not installed"
+		end
+		new(filenames, labels)
+	end
+
 end
+
 
 Base.length(ds::ImageDataset) = length(ds.filenames)
 
 function Base.getindex(ds::ImageDataset, idx)
-	# TODO
+	filename = ds.filenames[idx]
+	img = Images.load("docs/src/assets/juno_printscreen.png");
+	img = Images.channelview(img);
+	img = permutedims(img, [2,3,1]);
+	img = convert(Array{Float32}, img);
+	return (img, ds.labels[idx])
 end
