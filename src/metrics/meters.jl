@@ -25,7 +25,7 @@ mutable struct ConsoleMeter <: Meter
 end
 
 
-function display(meter::ConsoleMeter, workout::Workout, phase::Symbol)
+function (meter::ConsoleMeter)(workout::Workout, phase::Symbol)
     meter.epochOnly && phase == :train && return
     now = time()
     if now > meter.next || phase == :valid
@@ -71,7 +71,7 @@ mutable struct TensorBoardMeter <: Meter
     end
 end
 
-function display(meter::TensorBoardMeter, workout::Workout, phase::Symbol)
+function (meter::TensorBoardMeter)(workout::Workout, phase::Symbol)
     if meter.logger == nothing
         meter.logger = TensorBoardLogger.TBLogger(meter.path)
     end
@@ -110,7 +110,7 @@ mutable struct FileMeter <: Meter
     end
 end
 
-function display(meter::FileMeter, workout::Workout, phase::Symbol)
+function (meter::FileMeter)(workout::Workout, phase::Symbol)
     meter.epochOnly && phase == :train && return
     for metric in meter.metrics
         getmetricvalue(workout, metric) do value
@@ -141,7 +141,7 @@ struct PlotMeter
 end
 
 
-function display(m::PlotMeter, workout::Workout, phase::Symbol)
+function (m::PlotMeter)(workout::Workout, phase::Symbol)
     phase == :train && return
     for (i, metric) in enumerate(m.metrics)
         if hasmetric(workout, metric)

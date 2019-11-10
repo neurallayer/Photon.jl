@@ -15,6 +15,19 @@ function simple_conv_model()
 end
 
 
+function test_save_load()
+    m = simple_conv_model()
+    X = KorA(randn(Float32,28,28,1,4))
+    pred = m(X)
+    workout = Workout(m, mse)
+    f = saveWorkout(workout)
+    workout2 = loadWorkout(f)
+    rm(f, force=true)
+    pred2 = workout2.model(X)
+    @assert pred == pred2
+end
+
+
 function getdata(s=28)
     [(
         KorA(randn(Float32,s,s,1,16)),
@@ -33,6 +46,19 @@ function test_train()
     @test workout.steps == (2 * length(data))
     @test hasmetric(workout, :loss)
 end
+
+function test_train_valid()
+    model = simple_conv_model()
+    workout = Workout(model, mse)
+
+    data_tr = getdata()
+    data_val = getdata()
+    fit!(workout, data_tr, data_val, epochs=2)
+
+    @test hasmetric(workout, :loss)
+    @test hasmetric(workout, :val_loss)
+end
+
 
 function test_channel()
     model = simple_conv_model()
@@ -56,7 +82,9 @@ end
 @testset "Training" begin
     resetContext()
     test_train()
+    test_train_valid()
     test_channel()
+    test_save_load()
 end
 
 end

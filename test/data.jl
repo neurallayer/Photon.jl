@@ -106,8 +106,8 @@ end
 	test_output()
 	test_dataloader()
 	test_training()
-	test_threading(0.1)
-	test_threading(0.2)
+	test_threading(0.01)
+	test_threading(0.02)
 end
 
 

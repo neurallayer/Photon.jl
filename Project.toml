@@ -1,7 +1,7 @@
 name = "Photon"
 uuid = "0bf025f6-8a23-43ed-a0f8-ad988f0a8cd8"
 authors = ["Peter Dekkers <peter@neurallayer.com>"]
-version = "0.3.0"
+version = "0.4.0"
 
 [deps]
 CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"

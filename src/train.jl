@@ -3,6 +3,13 @@ import Serialization
 
 export Workout, saveWorkout, loadWorkout, predict, fit!, validate, hasmetric
 
+
+# Callback niceties from Flux.jl
+call(f, xs...) = f(xs...)
+runall(f) = f
+runall(fs::AbstractVector) = () -> foreach(call, fs)
+
+
 """
 The Workout keeps track of the progress of a training session. At least a model
 and a loss function needs to be provided. Optional an optimizer and one or more
@@ -46,7 +53,7 @@ function Serialization.serialize(s::Serialization.AbstractSerializer, p::Knet.Kn
     Serialization.serialize(s, Array(p))
 end
 
-function Serialization.deserialize(s::Serialization.AbstractSerializer, t::Type{Knet.KnetArray})
+function Serialization.deserialize(s::Serialization.AbstractSerializer, t::Type{<:Knet.KnetArray})
     arr = Serialization.deserialize(s)
     return Knet.KnetArray(arr)
 end
@@ -75,15 +82,6 @@ function loadWorkout(filename)::Workout
     return workout
 end
 
-"""
-Do the back propagation and update of weights in one go.
-"""
-function back!(J::Knet.Tape, opt)
-    for p in Knet.params(J)
-        if p.opt == nothing; p.opt = Knet.clone(opt); end
-        Knet.update!(p, Knet.grad(J,p))
-    end
-end
 
 
 """
@@ -153,6 +151,17 @@ function display(workout::Workout, meters, phase)
         catch
             @warn "Failed executing meter" meter maxlog=1
         end
+    end
+end
+
+
+"""
+Do the back propagation and update of weights in one go.
+"""
+function back!(J::Knet.Tape, opt)
+    for p in Knet.params(J)
+        if p.opt == nothing; p.opt = Knet.clone(opt); end
+        Knet.update!(p, Knet.grad(J,p))
     end
 end
 
@@ -234,14 +243,16 @@ as the convertor:
 
 """
 function fit!(workout::Workout, data, validation=nothing;
-    epochs=1, convertor=autoConvertor, meters=[ConsoleMeter()])
+    epochs=1, convertor=autoConvertor, cb = ConsoleMeter())
+
+    cb = runall(cb)
 
     for epoch in 1:epochs
         workout.epochs += 1
         d = data isa Function ? data() : data
         for minibatch in d
             step!(workout, convertor(minibatch)...)
-            display(workout, meters, :train)
+            cb(workout, :train)
         end
 
         if validation != nothing
@@ -250,7 +261,7 @@ function fit!(workout::Workout, data, validation=nothing;
                 validate(workout, convertor(minibatch)...)
             end
         end
-        display(workout, meters, :valid)
+        cb(workout, :valid)
     end
 end
 
