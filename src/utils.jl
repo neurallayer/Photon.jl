@@ -9,12 +9,14 @@ in a single graph.
 In order to avoid Photon being dependend on Plots, the calling code will have
 to provide that module as the first parameter.
 
-Example:
+# Usage
 
-      fit!(workout, mydata, epochs=10)
+```julia
+fit!(workout, mydata, epochs=10)
 
-      import Plots
-      plotmetrics(Plots, workout)
+import Plots
+plotmetrics(Plots, workout)
+```
 """
 function plotmetrics(Plots::Module, workout::Workout, metrics=[:loss, :val_loss])
       p = nothing

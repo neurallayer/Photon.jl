@@ -1,5 +1,8 @@
 
-# Photon
+<p align="center">
+<img width="400px" src="https://raw.githubusercontent.com/neurallayer/Photon.jl/master/docs/src/assets/logo.png"/>
+</p>
+
 
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE.md)
 [![Build Status](https://travis-ci.org/neurallayer/Photon.jl.svg?branch=master)](https://travis-ci.org/neurallayer/Photon.jl)

@@ -50,7 +50,15 @@ end
 
 
 """
-Fully connected layer with an optinal bias
+Fully connected layer with an optional bias weight.
+
+# Usage
+
+```julia
+layer = Dense(10, relu)
+layer = Dense(100, use_bias=false)
+```
+
 """
 mutable struct Dense <:LazyLayer
     units::Int
@@ -98,7 +106,7 @@ end
 """
 Flattening Layer. Photon by default already has flattening funcitonality
 build into the Dense layer, so you won't need to include a separate Flatten
-layer for those scenarios.
+layer before a Dense layer.
 """
 mutable struct Flatten <: Layer
 	dims
@@ -121,7 +129,8 @@ end
 
 
 """
-Dropout layer
+Dropout layer with optional the rate (between 0 and 1) of dropout. If
+no rate is specified, 0.5 (so 50%) will be used.
 """
 struct Dropout <: Layer
 	rate
@@ -154,10 +163,6 @@ function call(bn::BatchNorm, X::Tensor)
 	bn.activation.(Knet.batchnorm(X, bn.moments))
 end
 
-
-
-## SwitchContext
-
 """
 Beginning of allowing for a single model instance to run on multiple devices
 (expiremental)
@@ -186,4 +191,4 @@ end
 
 
 
-@info "Loaded Core modules"
+@debug "Loaded Core modules"

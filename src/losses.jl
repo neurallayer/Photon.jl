@@ -23,9 +23,11 @@ end
 Mean Square Error implementation, also referred to
 as the L2 Loss.
 
-Examples:
+# Usage
 
-  workout = Workout(model, MSELoss(), SGD())
+```julia
+workout = Workout(model, MSELoss(), SGD())
+```
 """
 struct MSELoss <: Loss
   reduction::Symbol
@@ -77,8 +79,11 @@ CrossEntropy loss function with support for an optional weight parameter.
 The weight parameter can be static (for example to handle class inbalances)
 or dynamic (so passed every time when the lost function is invoked)
 
-Examples:
-  workout = Workout(model, CE(), SGD())
+# Usage
+
+```julia
+workout = Workout(model, CE(), SGD())
+```
 
 """
 struct CrossEntropyLoss <: Loss

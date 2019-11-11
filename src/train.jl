@@ -1,7 +1,7 @@
 import Base:haslength
 import Serialization
 
-export Workout, saveWorkout, loadWorkout, predict, fit!, validate, hasmetric
+export Workout, saveWorkout, loadWorkout, predict, fit!, hasmetric
 
 
 # Callback niceties from Flux.jl
@@ -18,14 +18,13 @@ metrics can be provided.
 If no optimizer is provided, SGD will be used. If no metrics are provided only
 the loss during training and validation will be registered (:loss and :val_loss).
 
-Examples
-========
+# Usage
 
-    workout = Workout(model, mse)
-
-    workout = Workout(model, nll, SGD())
-
-    workout = Workout(model, nll, SGD(); acc=BinaryAccuracy())
+```julia
+workout = Workout(model, mse)
+workout = Workout(model, nll, SGD())
+workout = Workout(model, nll, SGD(); acc=BinaryAccuracy())
+```
 
 """
 mutable struct Workout
@@ -72,10 +71,12 @@ end
 """
 Load a workout from file and return it.
 
-Example:
+# Usage
 
-    workout = loadWorkout("workout_1000.dat")
-    fit!(workout, mydata)
+```julia
+workout = loadWorkout("workout_1000.dat")
+fit!(workout, mydata)
+```
 """
 function loadWorkout(filename)::Workout
     workout = Serialization.deserialize(filename)
@@ -85,13 +86,14 @@ end
 
 
 """
-Does the workout have recorded values for a certain metric
+Does the workout have any recorded values for a certain metric
 """
-hasmetric(workout::Workout, metricname::Symbol) = haskey(workout.history, metricname)
+hasmetric(workout::Workout, metricname::Symbol)::Bool = haskey(workout.history, metricname)
 
 
 """
-Function to determine the metric name.
+Function to generate the fully qualified metric name. It uses the metric name
+and phase (train or valid) to come up with a unique name.
 """
 function getmetricname(metric::Symbol, phase=:train)::Symbol
     metricname = phase == :train ? metric : Symbol("val_", metric)
@@ -125,15 +127,16 @@ end
 
 """
 Get the metric value for a fully qualified metric name and a certain step. If
-step is not provided the last known step is used.
+step is not provided the last step is used. If no value is found the passed
+function will not be invoked.
 
-Examples:
-=========
+# Usage
 
-    getmetricvalue(workout, :val_loss) do value
-        println("validation loss", value)
-    end
-
+```julia
+getmetricvalue(workout, :val_loss) do value
+    println("validation loss", value)
+end
+```
 """
 function getmetricvalue(f::Function, workout::Workout, metricname::Symbol, step=workout.steps)
     if haskey(workout.history, metricname)
@@ -144,19 +147,27 @@ function getmetricvalue(f::Function, workout::Workout, metricname::Symbol, step=
 end
 
 
-function display(workout::Workout, meters, phase)
-    for meter in meters
-        try
-            display(meter, workout, phase)
-        catch
-            @warn "Failed executing meter" meter maxlog=1
-        end
+"""
+Utility function to calculate the gradients. Useful when checking for vanishing or
+exploding gradients. The returned value is a Vector of (Param, Gradient).
+"""
+function gradients(workout::Workout, minibatch=first(workout.dl); convertor=autoConvertor)
+    x, y = convertor(minibatch)
+    J = Knet.@diff begin
+        y_pred = workout.model(x)
+        workout.loss(y_pred, y)
     end
+    gradients = []
+    for p in Knet.params(J)
+        if p.opt == nothing; p.opt = Knet.clone(opt); end
+        push!(gradients, (p, Knet.grad(J,p)))
+    end
+    return gradients
 end
 
 
 """
-Do the back propagation and update of weights in one go.
+Perform the back propagation and update of weights in one go.
 """
 function back!(J::Knet.Tape, opt)
     for p in Knet.params(J)
@@ -196,12 +207,12 @@ the model directory with model(x), predit takes care of:
 - Moving the data to the GPU if required.
 - Making the data into a batch (controlled by makebatch parameter)
 
-Examples:
-=========
+# Usage
 
-    x = randn(Float32, 224, 224, 3)
-    predict(model, x)
-
+```julia
+x = randn(Float32, 224, 224, 3)
+predict(model, x)
+```
 """
 function predict(model, x; makebatch=true, convertor=autoConvertor)
     x = makebatch ? addlast(x) : x
@@ -230,16 +241,18 @@ By default the fit! function will try to ensure the data is of the right
 type (e.g. Float32) and on the right device (e.g. GPU) before feeding it to
 the model.
 
-Examples:
-=========
+# Usage
 
-    fit!(workout, traindata)
-    fit!(workout, traindata, testdata, epochs=50)
-
+```julia
+fit!(workout, traindata)
+fit!(workout, traindata, testdata, epochs=50)
+```
 If you don't want any data conversion, just pass the identity funciton
 as the convertor:
 
-    fit!(workout, traindata, convertor=identity)
+```julia
+fit!(workout, traindata, convertor=identity)
+```
 
 """
 function fit!(workout::Workout, data, validation=nothing;
@@ -265,4 +278,4 @@ function fit!(workout::Workout, data, validation=nothing;
     end
 end
 
-@info "Loaded Training module"
+@debug "Loaded Training module"

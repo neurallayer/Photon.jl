@@ -19,6 +19,15 @@ abstract type Optimizer end
 abstract type Dataset end
 
 
+"""
+Base type for the loss functions. However Photon accepts
+any functoon as a loss function as long as it is callable and
+returns the loss as a scalar value.
+
+```julia
+  fn(y_pred, y_true)
+```
+"""
 abstract type Loss <: Function end
 
 const Shape = Tuple{Vararg{Int}}
@@ -32,13 +41,7 @@ const Tensor{T,N} = Union{
 const Tensors = Union{Tensor, Tuple{Tensor}}
 
 
-"""
-Base type for the loss functions. However Photon accepts
-any functoon as a loss function as long as it is callable and
-returns the loss as a scalar value.
 
-  fn(y_pred, y_true)
-"""
 
 mutable struct Context
 	device::Symbol

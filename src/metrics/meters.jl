@@ -124,9 +124,10 @@ function (meter::FileMeter)(workout::Workout, phase::Symbol)
 end
 
 
-
 """
-Plot metrics using Plots module
+Plot metrics using the Plots module. At the end of each epoch the plot will
+be updated with the values of the metrics. This works especially nice if you
+are prototyping some model in an IDE like Juno.
 """
 struct PlotMeter
     plt

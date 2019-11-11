@@ -7,6 +7,7 @@ as a stateless function.
 
 The Knet API:
 
+```julia
 RNN(inputSize, hiddenSize;
              h=nothing, c=nothing,
              handle=gethandle(),
@@ -23,6 +24,7 @@ RNN(inputSize, hiddenSize;
              finit=ones,        # forget bias for lstm
              usegpu=(gpu()>=0),
              )
+```
 """
 
 
