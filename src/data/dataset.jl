@@ -97,26 +97,47 @@ Dataset that loads an image from a file.
 struct ImageDataset <: Dataset
     filenames
     labels
+	resize
 
-	function ImageDataset(filenames, labels)
+	function ImageDataset(filenames, labels; resize=nothing)
 		try
 			@eval import Images
 		catch
 			@warn "Package Images not installed"
 		end
-		new(filenames, labels)
+		new(filenames, labels, resize)
 	end
 
 end
-
 
 Base.length(ds::ImageDataset) = length(ds.filenames)
 
 function Base.getindex(ds::ImageDataset, idx)
 	filename = ds.filenames[idx]
-	img = Images.load("docs/src/assets/juno_printscreen.png");
+	img = Images.load(filename);
 	img = Images.channelview(img);
 	img = permutedims(img, [2,3,1]);
 	img = convert(Array{Float32}, img);
+	if ds.resize != nothing
+		img = img[1:ds.resize[1], 1:ds.resize[2], :]
+	end
 	return (img, ds.labels[idx])
+end
+
+
+
+
+"""
+Simple onehot encoder for a single sample.
+"""
+struct OneHot
+      labels
+      dtype
+      OneHot(labels; dtype=Float32) = new(label,dtype)
+end
+
+function (oh::OneHot)(x)
+      result = zeros(oh.dtype, length(oh.labels))
+      result[findfirst(x .== oh.labels)] = 1
+      result
 end

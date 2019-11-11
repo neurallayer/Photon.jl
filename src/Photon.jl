@@ -21,7 +21,7 @@ export Dense, BatchNorm, RNN, Conv2DTranspose,
 	  Conv2D, Conv3D, output_size, Dropout, Sequential, Flatten, MaxPool2D, AvgPool2D,
 	  LSTM, GRU, Residual, Concurrent, AdaptiveAvgPool, AdaptiveMaxPool,
 	  Activation, add, forward, ContextSwitch,
-	  Dataloader, Dataset, TestDataset, ImageDataset, ArrayDataset, JLDDataset
+	  Dataloader, Dataset, TestDataset, OneHot, ImageDataset, ArrayDataset, JLDDataset
 
 
 dir(path...) = joinpath(dirname(@__DIR__),path...)

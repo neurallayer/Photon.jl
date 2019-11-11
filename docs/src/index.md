@@ -112,3 +112,12 @@ ensure the provided data is already in the right format, you can pass the identi
 ```julia
 fit!(workout, data; convertor=identity)
 ```
+
+
+
+## API
+
+```@autodocs
+Modules = [Photon]
+Order   = [:function, :type]
+```
