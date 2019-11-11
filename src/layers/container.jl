@@ -66,4 +66,4 @@ function call(model::Residual, X)
 	cat(res, X, dims=ndims(res[1])-1)
 end
 
-@info "Loaded Container modules"
+@debug "Loaded Container modules"

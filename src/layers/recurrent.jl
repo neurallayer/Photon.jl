@@ -131,7 +131,4 @@ function GRU(
 end
 
 
-
-
-
-@info "Loaded Recurrent modules"
+@debug "Loaded Recurrent modules"

@@ -43,6 +43,6 @@ export Adam, SGD, Momentum, Nesterov, Adagrad, Rmsprop, Adadelta
 export xavier, gaussian, bilinear
 
 
-@info "Loaded Photon"
+@debug "Loaded Photon"
 
 end

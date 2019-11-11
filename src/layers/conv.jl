@@ -268,4 +268,4 @@ function call(m::AdaptiveMaxPool, x)
 end
 
 
-@info "Loaded Convolutional modules"
+@debug "Loaded Convolutional modules"
