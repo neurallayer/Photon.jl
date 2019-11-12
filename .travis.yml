@@ -24,7 +24,7 @@ jobs:
 
 
 script:
-  - julia --color=yes -e 'using Pkg; Pkg.activate(); Pkg.instantiate(); Pkg.test(coverage=true)'
+  - julia --color=yes -e 'using Pkg; Pkg.activate("."); Pkg.instantiate(); Pkg.test(coverage=true)'
 
 after_success:
   - julia -e 'using Pkg; Pkg.add("Coverage"); using Photon, Coverage; cd(Photon.dir()); Codecov.submit(process_folder())'
