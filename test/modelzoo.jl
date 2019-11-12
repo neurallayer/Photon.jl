@@ -2,10 +2,9 @@ module ZooTests
 
 using Photon, Test
 
-include("../src/models/vgg.jl")
-include("../src/models/alexnet.jl")
-include("../src/models/densenet.jl")
+include("../src/zoo/Zoo.jl")
 
+using .Zoo
 
 """
 ############################################
