@@ -16,7 +16,9 @@ abstract type MetricStore end
 abstract type Layer end
 abstract type Metric end
 abstract type Optimizer end
-abstract type Dataset end
+
+
+
 
 
 """
@@ -25,7 +27,7 @@ any functoon as a loss function as long as it is callable and
 returns the loss as a scalar value.
 
 ```julia
-  fn(y_pred, y_true)
+ fn(y_pred, y_true) :: Number
 ```
 """
 abstract type Loss <: Function end
@@ -41,8 +43,16 @@ const Tensor{T,N} = Union{
 const Tensors = Union{Tensor, Tuple{Tensor}}
 
 
+"""
+Context is used by various parts of Photon to determine what the device and
+datatype should be for Arrays. It also allows to quickly switch between GPU and CPU
+based models.
 
-
+# Attributes
+- device::Symbol the type of device. For now supported :cpu and :gpu
+- deviceId::Int the id of the device, useful for example if you multiple GPU's
+- dtype::Type the type of data you want to use. Most common are Float32, Float16 or Float64.
+"""
 mutable struct Context
 	device::Symbol
 	deviceId::Int

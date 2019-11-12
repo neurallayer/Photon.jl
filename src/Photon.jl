@@ -1,7 +1,7 @@
 
 module Photon
 
-using Statistics, Printf
+using Statistics, Reexport
 import Knet
 
 include("core.jl")
@@ -11,17 +11,20 @@ include("layers/recurrent.jl")
 include("layers/container.jl")
 include("train.jl")
 include("losses.jl")
-include("metrics/core.jl")
-include("metrics/meters.jl")
-include("data/dataloader.jl")
-include("data/dataset.jl")
+
+include("metrics/Metrics.jl")
+@reexport using .Metrics
+
+include("data/Data.jl")
+@reexport using .Data
+
 include("utils.jl")
 
 export Dense, BatchNorm, RNN, Conv2DTranspose,
 	  Conv2D, Conv3D, output_size, Dropout, Sequential, Flatten, MaxPool2D, AvgPool2D,
 	  LSTM, GRU, Residual, Concurrent, AdaptiveAvgPool, AdaptiveMaxPool,
-	  Activation, add, forward, ContextSwitch,
-	  Dataloader, Dataset, TestDataset, OneHot, ImageDataset, ArrayDataset, JLDDataset
+	  Activation, add, forward, ContextSwitch
+
 
 
 dir(path...) = joinpath(dirname(@__DIR__),path...)

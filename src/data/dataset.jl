@@ -1,11 +1,39 @@
+
+using ..Photon: getContext
+
+"""
+Datasets are repsonsible for loading a single sample. They need to have length and
+index methods implemented. Hence, they can all be passed to a Dataloader which can load
+multiple samples parallelly using threading.
+
+Pleae note that in case your whole dataset would fit in memory, you can feed it
+directly to the fit! function (so a dataset is no requirement)
+
+```julia
+X = [randn(10,10,16) for i in 1:100]
+Y = [randn(1,16) for i in 1:100]
+fit!(workout, zip(X,Y))
+```
+
+Otherwise the combination of dataset/dataloader is your best bet.
+"""
+abstract type Dataset end
+
+
 """
 A dataset that contains random generated samples.
-Ideal for quick testing of a model. Optionally you
-can pass a sleep value to simulate IO blocking.
+Ideal for quick testing of a model.
 
-Examples:
+You need to provide the shape of X, Y and the number of
+samples that it should contain. Optionally you
+can specify a sleep value to simulate IO blocking.
 
-	ds = TestDataset((28,28,1),(10,),1000)
+# Usage
+
+```julia
+ds = TestDataset((28,28,1),(10,),1000)
+ds = TestDataset((100,),(1,),100, sleep=0.1)
+```
 """
 struct TestDataset <: Dataset
     x
@@ -119,25 +147,7 @@ function Base.getindex(ds::ImageDataset, idx)
 	img = permutedims(img, [2,3,1]);
 	img = convert(Array{Float32}, img);
 	if ds.resize != nothing
-		img = img[1:ds.resize[1], 1:ds.resize[2], :]
+		img = Images.imresize(img, ds.resize...)
 	end
 	return (img, ds.labels[idx])
-end
-
-
-
-
-"""
-Simple onehot encoder for a single sample.
-"""
-struct OneHot
-      labels
-      dtype
-      OneHot(labels; dtype=Float32) = new(label,dtype)
-end
-
-function (oh::OneHot)(x)
-      result = zeros(oh.dtype, length(oh.labels))
-      result[findfirst(x .== oh.labels)] = 1
-      result
 end

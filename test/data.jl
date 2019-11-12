@@ -100,6 +100,20 @@ function test_threading(sleep)
 	@assert workout.steps == (100÷32)*2
 end
 
+
+function test_transformers()
+	ds = TestDataset((10,),(1,),100)
+	ds = ds |> NoisingTransfomer()
+	sample = ds[1]
+	@assert size(samples[1]) == (10,)
+
+	ds = TestDataset((100,100,3),(20,20,1),100)
+	ds |> ImageCrop((50,50),(10,10))
+	sample = ds[10]
+	@assert size(samples[1]) == (50,50,3)
+	@assert size(samples[1]) == (10,10,1)
+end
+
 @testset "Data" begin
     test_dataset()
 	test_jld()

@@ -1,3 +1,5 @@
+module PhotonTest
+
 @info "Running Unit tests"
 
 using Photon
@@ -24,5 +26,7 @@ include("./complex.jl")
 
 @info "Testing dataset and dataloader"
 include("./data.jl")
+
+end
 
 end

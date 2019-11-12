@@ -1,11 +1,8 @@
 
-export SmartReducer, history, BinaryAccuracy, OneHotBinaryAccuracy
 
 """
 Stores the calculated metrics
 """
-
-
 struct SmartReducer <: MetricStore
     state::Dict{Int, Real}
     momentum::Real
