@@ -103,14 +103,22 @@ end
 """
 Simple onehot encoder for a single sample.
 """
-struct OneHot
-      labels
-      dtype
-      OneHot(labels; dtype=Float32) = new(label,dtype)
+struct OneHotEncoder
+    labels
+    dtype
+    OneHotEncoder(labels; dtype=getContext().dtype) = new(labels,dtype)
 end
 
-function (oh::OneHot)(x)
+function (oh::OneHotEncoder)(x::Any)
       result = zeros(oh.dtype, length(oh.labels))
       result[findfirst(x .== oh.labels)] = 1
+      result
+end
+
+function (oh::OneHotEncoder)(X::AbstractArray)
+      result = zeros(oh.dtype, length(oh.labels))
+      for x in X
+          result[findfirst(x .== oh.labels)] = 1
+      end
       result
 end

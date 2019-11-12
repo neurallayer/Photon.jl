@@ -1,12 +1,13 @@
 ## Convplutional layers
-"""
-	Convolutional layer
-"""
+
 expand(N, i::Tuple) = i
 expand(N, i::Integer) = ntuple(_ -> i, N)
 
+"""
+Convolutional layer that serves as the base for Conv2D and Conv3D
+"""
 mutable struct Conv <: LazyLayer
-    channels
+    channels::Int
     kernel_size
     activation
     padding
@@ -19,8 +20,8 @@ mutable struct Conv <: LazyLayer
 end
 
 function Conv(
-    channels,
-    kernel_size,
+    channels::Int,
+    kernel_size::Union{Int,Tuple},
     activation = identity;
     padding = 0,
     strides = 1,
@@ -123,8 +124,8 @@ mutable struct ConvTranspose <: LazyLayer
 end
 
 function ConvTranspose(
-    channels,
-    kernel_size;
+    channels::Int,
+    kernel_size::Union{Int,Tuple},
     activation = identity,
     padding = 0,
     strides = 1,
@@ -210,7 +211,10 @@ AvgPool1D = AvgPool
 AvgPool2D = AvgPool
 AAvgPool3D = AvgPool
 
-
+"""
+Adaptive Average Pool has a fixed size output and enables creating a convolutional
+network that can be used for multiple image formats.
+"""
 struct AdaptiveAvgPool <: PoolingLayer
     output_size::Tuple
 end
@@ -253,7 +257,10 @@ MaxPool1D = MaxPool
 MaxPool2D = MaxPool
 MaxPool3D = MaxPool
 
-
+"""
+Adaptive MaxPool has a fixed size output and enables creating a convolutional
+network that can be used for multiple image formats.
+"""
 struct AdaptiveMaxPool <: PoolingLayer
     output_size::Tuple
 end

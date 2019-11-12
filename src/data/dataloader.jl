@@ -2,7 +2,7 @@
 using Random
 
 
-function update_mb!(arr::Array, elem::Array, idx::Int)
+function update_mb!(arr::AbstractArray, elem::AbstractArray, idx::Int)
 	@assert size(arr)[1:end-1] == size(elem) "$(size(arr)) $(size(elem))"
 	idxs = Base.OneTo.(size(elem))
 	arr[idxs..., idx] = elem
@@ -16,7 +16,9 @@ function update_mb!(t::Tuple, elems::Tuple, idx::Int)
 	end
 end
 
-create_mb(arr::Array, batchsize) = similar(arr, size(arr)..., batchsize)
+# Create a minibatch that has a similar size to the structure returned
+# from the dataset.
+create_mb(arr::AbstractArray, batchsize) = similar(arr, size(arr)..., batchsize)
 create_mb(t::Tuple, batchsize)= Tuple(collect(create_mb(elem, batchsize) for elem in t))
 
 """
@@ -64,6 +66,7 @@ function Base.iterate(dl::Dataloader, state=undef)
 
 		idx = i + count - 1
 		sample = dl.dataset[idx]
+		@assert sample isa Tuple "Datasets should return Tuples, not $(typeof(sample))"
 
 		if minibatch == nothing
 			Threads.lock(l)
