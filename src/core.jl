@@ -126,3 +126,9 @@ function autoConvertor(arr::Knet.KnetArray)
 end
 
 autoConvertor(arr::Tuple)= (autoConvertor(elem) for elem in arr)
+
+
+
+# small util
+makeArray(x::AbstractArray) = x
+makeArray(x) = Vector(x)

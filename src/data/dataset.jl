@@ -144,7 +144,7 @@ Base.length(ds::ImageDataset) = length(ds.filenames)
 
 function Base.getindex(ds::ImageDataset, idx)
 	filename = ds.filenames[idx]
-	# img = Images.load(filename) has mult-tread issues
+	# img = Images.load(filename) has multi-thread issue
     img = ImageMagick.load(filename)
 	img = Images.channelview(img)
 	img = permutedims(img, [2,3,1])
@@ -153,4 +153,32 @@ function Base.getindex(ds::ImageDataset, idx)
 		img = Images.imresize(img, ds.resize...)
 	end
 	return (img, ds.labels[idx])
+end
+
+
+
+"""
+Dataset that gets is data from columns in a dataframe
+
+# Usage
+
+```julia
+df = DataFrame(randn(4,20))
+ds = DFDataset(df, :x1, :x2)
+ds = DFDataset(df, [:x1, :x3], [:x2,:x4])
+```
+"""
+struct DFDataset <: Dataset
+	df
+    X::Vector{Symbol}
+	Y::Vector{Symbol}
+
+	DFDataset(df,X,Y) = new(df, makeArray(X), makeArray(Y))
+end
+
+Base.length(ds::DFDataset) = size(df,1)
+
+function Base.getindex(ds::DFDataset, idx)
+	df = ds.df
+	(Vector(df[idx, ds.X]), Vector(df[idx, ds.Y]))
 end
