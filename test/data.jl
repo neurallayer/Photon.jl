@@ -105,13 +105,21 @@ function test_transformers()
 	ds = TestDataset((10,),(1,),100)
 	ds = ds |> NoisingTransfomer()
 	sample = ds[1]
-	@assert size(samples[1]) == (10,)
+	@assert size(sample[1]) == (10,)
 
 	ds = TestDataset((100,100,3),(20,20,1),100)
-	ds |> ImageCrop((50,50),(10,10))
+	ds = ds |> ImageCrop((50,50),(10,10))
 	sample = ds[10]
-	@assert size(samples[1]) == (50,50,3)
-	@assert size(samples[1]) == (10,10,1)
+	@assert size(sample[1]) == (50,50,3)
+	@assert size(sample[2]) == (10,10,1)
+
+	X = [randn(100,100,3) for _ in 1:10]
+	Y = [rand(0:9) for _ in 1:10]
+
+	ds = ArrayDataset(X,Y)
+	ds = ds |> OneHotEncoder(0:9)
+	sample = ds[5]
+	@assert size(sample[2]) == (10,)
 end
 
 @testset "Data" begin
@@ -122,6 +130,7 @@ end
 	test_training()
 	test_threading(0.01)
 	test_threading(0.02)
+	test_transformers()
 end
 
 
