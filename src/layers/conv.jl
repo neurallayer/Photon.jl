@@ -126,7 +126,7 @@ end
 function ConvTranspose(
     channels::Int,
     kernel_size::Union{Int,Tuple},
-    activation = identity,
+    activation = identity;	
     padding = 0,
     strides = 1,
     dilation = 1,
