@@ -2,6 +2,8 @@ module Metrics
 
 using ..Photon: MetricStore, Workout, Tensor, Meter, getmetricvalue, saveWorkout, getContext
 using Printf
+using Statistics
+import Knet
 
 include("core.jl")
 export SmartReducer, update!, history, BinaryAccuracy, OneHotBinaryAccuracy

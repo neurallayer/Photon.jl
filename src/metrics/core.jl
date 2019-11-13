@@ -22,7 +22,7 @@ end
 """
 Get the history of a metric.
 """
-function history(workout::Workout, symbol::Symbol)
+function history(workout::Workout, symbol::Symbol)::Tuple
       h = workout.history[symbol].state
       steps = sort(collect(keys(h)))
       return (steps, [h[step] for step in steps])

@@ -11,21 +11,22 @@ runall(fs::AbstractVector) = () -> foreach(call, fs)
 
 
 """
-The Workout keeps track of the progress of a training session. At least a model
+The Workout keeps track of the progress of the training session. At least a model
 and a loss function needs to be provided. Optional an optimizer and one or more
-metrics can be provided.
+metrics can be specified.
 
-If no optimizer is provided, SGD will be used. If no metrics are provided only
+If no optimizer is provided, SGD will be used. If no metrics are provided, only
 the loss during training and validation will be registered (:loss and :val_loss).
 
 # Usage
 
 ```julia
 workout = Workout(model, mse)
+
 workout = Workout(model, nll, SGD())
+
 workout = Workout(model, nll, SGD(); acc=BinaryAccuracy())
 ```
-
 """
 mutable struct Workout
     model::Layer
@@ -59,7 +60,7 @@ end
 
 
 """
-Save a workout to a file. This will save all the state that is captured in thr workout
+Save a workout to a file. This will save all the state that is captured in the workout
 and enables to continue at a later stage.
 """
 function saveWorkout(workout::Workout, filename="workout_$(workout.steps).dat")::String
