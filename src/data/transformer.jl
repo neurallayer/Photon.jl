@@ -100,25 +100,58 @@ function Base.getindex(t::ImageCrop, idx)
 end
 
 
-"""
-Simple onehot encoder for a single sample.
-"""
-struct OneHotEncoder
-    labels
-    dtype
-    OneHotEncoder(labels; dtype=getContext().dtype) = new(labels,dtype)
+
+function onehot(x, labels, dtype::Type)
+	result = zeros(dtype, length(labels))
+    result[findfirst(x .== labels)] = 1
+    result
 end
 
-function (oh::OneHotEncoder)(x::Any)
-      result = zeros(oh.dtype, length(oh.labels))
-      result[findfirst(x .== oh.labels)] = 1
-      result
+
+function onehot(X::AbstractArray, labels, dtype::Type)
+	result = zeros(dtype, length(labels))
+	for x in X
+		result[findfirst(x .== labels)] = 1
+	end
+	result
 end
 
-function (oh::OneHotEncoder)(X::AbstractArray)
-      result = zeros(oh.dtype, length(oh.labels))
-      for x in X
-          result[findfirst(x .== oh.labels)] = 1
-      end
-      result
+
+"""
+OneHot transformer for a single sample. Uses
+the onehot function to perform the actual transoformation.
+
+Supports both single and multi class encoding:
+
+	5 => [0,0,0,0,0,1,0,0,0,0]
+	[5,7] => [0,0,0,0,0,1,0,1,0,0]
+
+# Usage
+
+```julia
+ds = mnistds() |> OneHotEncoder(0:9)
+```
+"""
+mutable struct OneHotEncoder <: Transformer
+    ds::Union{Dataset, Nothing}
+	labels
+	axis
+	dtype::Type
+
+    OneHotEncoder(labels; axis=[:Y], dtype=getContext().dtype) =
+		new(nothing, labels, axis, dtype)
+end
+
+
+function Base.getindex(t::OneHotEncoder, idx)
+	X,Y = t.ds[idx]
+	if :X in t.axis
+		X = onehot(X, t.labels, t.dtype)
+	end
+
+	if :Y in t.axis
+		Y = onehot(Y, t.labels, t.dtype)
+	end
+
+	return (X,Y)
 end

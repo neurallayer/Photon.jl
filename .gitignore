@@ -7,4 +7,5 @@
 .ipynb_checkpoints
 docs/build
 scrap.jl
+scrap
 *.dat

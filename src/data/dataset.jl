@@ -128,10 +128,12 @@ struct ImageDataset <: Dataset
 	resize
 
 	function ImageDataset(filenames, labels; resize=nothing)
+		@assert length(filenames) == length(labels)
 		try
 			@eval import Images
+			@eval import ImageMagick
 		catch
-			@warn "Package Images not installed"
+			@warn "Package Images or ImageMagick not installed"
 		end
 		new(filenames, labels, resize)
 	end
@@ -142,10 +144,11 @@ Base.length(ds::ImageDataset) = length(ds.filenames)
 
 function Base.getindex(ds::ImageDataset, idx)
 	filename = ds.filenames[idx]
-	img = Images.load(filename);
-	img = Images.channelview(img);
-	img = permutedims(img, [2,3,1]);
-	img = convert(Array{Float32}, img);
+	# img = Images.load(filename) has mult-tread issues
+    img = ImageMagick.load(filename)
+	img = Images.channelview(img)
+	img = permutedims(img, [2,3,1])
+	img = convert(Array{Float32}, img)
 	if ds.resize != nothing
 		img = Images.imresize(img, ds.resize...)
 	end
