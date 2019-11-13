@@ -18,6 +18,16 @@ function test_dataset()
 end
 
 
+function test_arraydataset()
+	X = [randn(100,100,3) for _ in 1:10]
+	Y = [rand(0:9) for _ in 1:10]
+
+    ds = ArrayDataset(X, Y)
+	@test length(ds) == 10
+	sample = ds[1]
+	@test  size(sample[1]) == (100,100,3)
+end
+
 function test_jld()
 	rm("example.jld2", force=true)
 
@@ -124,6 +134,7 @@ end
 
 @testset "Data" begin
     test_dataset()
+	test_arraydataset()
 	test_jld()
 	test_output()
 	test_dataloader()
