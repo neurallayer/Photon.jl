@@ -133,7 +133,7 @@ Dropout layer with optional the rate (between 0 and 1) of dropout. If
 no rate is specified, 0.5 (so 50%) will be used.
 """
 struct Dropout <: Layer
-	rate
+	rate::Float64
 
 	function Dropout(rate=0.5)
 		@assert rate <= 1.0

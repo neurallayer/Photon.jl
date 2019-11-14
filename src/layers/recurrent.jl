@@ -55,7 +55,7 @@ function build(l::Recurrent, shape::Tuple)
     )
 end
 
-function call(layer::Recurrent, X)
+function call(layer::Recurrent, X::Tensor)
     output = layer.ops(X)
     if layer.last_only
         output[:, end, :]
@@ -68,7 +68,7 @@ end
 A simple RNN layer.
 """
 function RNN(
-    hidden_size,
+    hidden_size::Int,
     num_layers = 1;
     activation=:tanh,
     dropout = 0.0,
@@ -93,7 +93,7 @@ Examples:
 
 """
 function LSTM(
-    hidden_size,
+    hidden_size::Int,
     num_layers = 1;
     dropout = 0.0,
     bidirectional = false,
@@ -117,7 +117,7 @@ Examples:
 
 """
 function GRU(
-    hidden_size,
+    hidden_size::Int,
     num_layers = 1;
     dropout = 0.0,
     bidirectional = false,

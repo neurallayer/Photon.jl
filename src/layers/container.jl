@@ -22,7 +22,7 @@ struct Sequential <:StackedLayer
 	Sequential(blocks...) = new([blocks...])
 end
 
-function call(model::Sequential,X)
+function call(model::Sequential, X)
 	for layer in model.layers
 		X = layer(X)
 	end

@@ -57,7 +57,7 @@ function build(layer::Conv, shape::Shape)
     layer.params = (w=w,b=b)
 end
 
-function call(c::Conv, x)
+function call(c::Conv, x::Tensor)
     w,b = c.params
 
     x = Knet.conv4(
@@ -126,7 +126,7 @@ end
 function ConvTranspose(
     channels::Int,
     kernel_size::Union{Int,Tuple},
-    activation = identity;	
+    activation = identity;
     padding = 0,
     strides = 1,
     dilation = 1,
@@ -161,7 +161,7 @@ function build(layer::ConvTranspose, shape::Tuple)
     layer.params = (w=w,b=b)
 end
 
-function call(c::ConvTranspose, x)
+function call(c::ConvTranspose, x::Tensor)
     w,b = c.params
 
     x = Knet.deconv4(
@@ -219,7 +219,7 @@ struct AdaptiveAvgPool <: PoolingLayer
     output_size::Tuple
 end
 
-function call(m::AdaptiveAvgPool, x)
+function call(m::AdaptiveAvgPool, x::Tensor)
     s = []
     for idx = 1:length(m.output_size)
         push!(s, size(x, idx) - m.output_size[idx] + 1)
@@ -242,7 +242,7 @@ function MaxPool(pool_size=2; padding = 0, strides = pool_size, nanOpt = 0)
     MaxPool(pool_size, padding, strides, nanOpt)
 end
 
-function call(p::MaxPool, X)
+function call(p::MaxPool, X::Tensor)
     Knet.pool(
         X,
         window = p.pool_size,
@@ -265,7 +265,7 @@ struct AdaptiveMaxPool <: PoolingLayer
     output_size::Tuple
 end
 
-function call(m::AdaptiveMaxPool, x)
+function call(m::AdaptiveMaxPool, x::Tensor)
     s = []
     for idx = 1:length(m.output_size)
         push!(s, size(x, idx) - m.output_size[idx] + 1)

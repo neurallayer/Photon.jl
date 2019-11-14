@@ -67,13 +67,13 @@ end
 global ctx = Context()
 
 
-function is_on_gpu()
+function is_on_gpu()::Bool
 	ctx.device == :gpu
 end
 
 hasgpu() = Knet.gpu() >= 0
 
-function getContext()
+function getContext()::Context
   ctx
 end
 
