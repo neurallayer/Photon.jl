@@ -1,7 +1,5 @@
 
-using Random
-
-
+#=
 function update_mb!(arr::AbstractArray, elem::AbstractArray, idx::Int)
 	@assert size(arr)[1:end-1] == size(elem) "$(size(arr)) $(size(elem))"
 	idxs = Base.OneTo.(size(elem))
@@ -20,6 +18,7 @@ end
 # from the dataset.
 create_mb(arr::AbstractArray, batchsize) = similar(arr, size(arr)..., batchsize)
 create_mb(t::Tuple, batchsize)= Tuple(collect(create_mb(elem, batchsize) for elem in t))
+=#
 
 """
 A dataloader can be passed to the fit! function as data provider. It will call
