@@ -8,10 +8,10 @@ Convolutional layer that serves as the base for Conv2D and Conv3D
 """
 mutable struct Conv <: LazyLayer
     channels::Int
-    kernel_size
+    kernel_size::Union{Int,Tuple}
     activation
-    padding
-    strides
+    padding::Union{Int,Tuple}
+    strides::Union{Int,Tuple}
     dilation
     built::Bool
     use_bias::Bool
@@ -111,11 +111,11 @@ Conv3D = Conv
 ConvTranspose layer
 """
 mutable struct ConvTranspose <: LazyLayer
-    channels
-    kernel_size
+    channels::Int
+    kernel_size::Union{Int,Tuple}
     activation
-    padding
-    strides
+    padding::Union{Int,Tuple}
+    strides::Union{Int,Tuple}
     dilation
     built::Bool
     use_bias::Bool
@@ -188,9 +188,9 @@ Pooling layers
 abstract type PoolingLayer <: Layer end
 
 struct AvgPool <: PoolingLayer
-    pool_size
-    padding
-    strides
+    pool_size::Union{Int,Tuple}
+    padding::Union{Int,Tuple}
+    strides::Union{Int,Tuple}
 end
 
 function AvgPool(pool_size=2; padding = 0, strides = pool_size)
@@ -232,10 +232,10 @@ end
 ## MaxPool layer
 
 struct MaxPool <: PoolingLayer
-    pool_size
-    padding
-    strides
-    nanOpt
+    pool_size::Union{Int,Tuple}
+    padding::Union{Int,Tuple}
+    strides::Union{Int,Tuple}
+    nanOpt::Int
 end
 
 function MaxPool(pool_size=2; padding = 0, strides = pool_size, nanOpt = 0)

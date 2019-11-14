@@ -36,9 +36,9 @@ ds = TestDataset((100,),(1,),100, sleep=0.1)
 ```
 """
 struct TestDataset <: Dataset
-    x
-    y
-	sleep
+    x::Vector{Array}
+    y::Vector{Array}
+	sleep::Float64
 
 	function TestDataset(shapeX::Tuple, shapeY::Tuple, samples::Int; sleep=0)
 		dtype = getContext().dtype
@@ -123,9 +123,9 @@ end
 Dataset that loads an image from a file.
 """
 struct ImageDataset <: Dataset
-    filenames
-    labels
-	resize
+    filenames::Vector{String}
+    labels::Vector
+	resize::Union{Nothing,Tuple}
 
 	function ImageDataset(filenames, labels; resize=nothing)
 		@assert length(filenames) == length(labels)

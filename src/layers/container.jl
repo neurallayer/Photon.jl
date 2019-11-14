@@ -22,7 +22,7 @@ struct Sequential <:StackedLayer
 	Sequential(blocks...) = new([blocks...])
 end
 
-function call(model::Sequential, X)
+function call(model::Sequential, X::Tensor)
 	for layer in model.layers
 		X = layer(X)
 	end
@@ -39,7 +39,7 @@ struct Concurrent <:StackedLayer
 	Concurrent(blocks...) = new([blocks...])
 end
 
-function call(model::Concurrent, X)
+function call(model::Concurrent, X::Tensor)
 	out = []
 	for layer in model.layers
 		push!(out, layer(X))
@@ -58,7 +58,7 @@ struct Residual <:StackedLayer
 	Residual(blocks...) = new([blocks...])
 end
 
-function call(model::Residual, X)
+function call(model::Residual, X::Tensor)
 	res = X
 	for layer in model.layers
 		X = layer(X)
