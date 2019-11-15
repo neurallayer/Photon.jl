@@ -1,7 +1,8 @@
 import Base:haslength
 import Serialization
 
-export Workout, saveWorkout, loadWorkout, predict, fit!, hasmetric
+export Workout, saveWorkout, loadWorkout, predict, fit!, hasmetric,
+        freeze!, unfreeze!
 
 
 # Callback niceties from Flux.jl
@@ -143,7 +144,7 @@ function getmetricvalue(f::Function, workout::Workout, metricname::Symbol, step=
     if haskey(workout.history, metricname)
         m = workout.history[metricname]
         value = get(m.state, step, nothing)
-        value != nothing && f(value)
+        value !== nothing && f(value)
     end
 end
 
@@ -160,10 +161,24 @@ function gradients(workout::Workout, minibatch=first(workout.dl); convertor=auto
     end
     gradients = []
     for p in Knet.params(J)
-        if p.opt == nothing; p.opt = Knet.clone(opt); end
+        if p.opt === nothing; p.opt = Knet.clone(opt); end
         push!(gradients, (p, Knet.grad(J,p)))
     end
     return gradients
+end
+
+"""
+Freeze a parameter so it no longer will be updated during training.
+"""
+function freeze!(p::Knet.Param)
+    p.opt = :NOUPDATE
+end
+
+"""
+Unfreeze a parameter so it will be updated again during training.
+"""
+function unfreeze!(p::Knet.Param)
+    p.opt = nothing
 end
 
 
@@ -172,7 +187,8 @@ Perform the back propagation and update of weights in one go.
 """
 function back!(J::Knet.Tape, opt)
     for p in Knet.params(J)
-        if p.opt == nothing; p.opt = Knet.clone(opt); end
+        if p.opt === nothing; p.opt = Knet.clone(opt); end
+        p.opt === :NOUPDATE && continue
         Knet.update!(p, Knet.grad(J,p))
     end
 end
