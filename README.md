@@ -96,17 +96,16 @@ GTX-1080TI NVidia graphics card installed and running Ubuntu 18.04:
 The code that has been used is available in the *performance* sub directory.
 
 ## Features
-The goal is to provide a user friendly API for Machine Learning that enables
-both prototyping and production ready solutions, while remaining fast.
+The main goal is to provide a user friendly API for Machine Learning that enables
+developing both prototype and production ready solutions while remaining fast.
 
-Some of the features:
+Some of the key features:
 
-- The framework will infer the input sizes the first time it is being invoked. This
-  makes it quicker to get started, but also makes code more reusable.
+- Good support for the various ways you can to retrieve and transform your data.
 
-- Where possible, sensible defaults are selected.
+- Develop models with a minimal amount of code.
 
-- Support for iterative/discovery type of development with Notebooks or Juno.
+- Get all the required insights and visualizations into the performance of the model.
 
 
 ## Todo
