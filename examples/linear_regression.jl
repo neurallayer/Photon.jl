@@ -1,6 +1,9 @@
 using Photon, Printf
 using Knet:value
 
+# An example that demonstrates how to use Photon for linear regression problem
+
+
 """
 The most simple model possible, just a single layer with 1 output
 """
@@ -21,9 +24,12 @@ Y = [fn(x[1,:], x[2,:], x[3,:]) for x in X]
 
 """
 And finally we create the workout and start the training.
-We use Mean Square Error loss and SGD as the optimizer.
+We use Mean Square Error loss and SGD as the optimizer (default).
 """
 workout = Workout(model, mse)
 fit!(workout, zip(X,Y), epochs=5)
 
+"""
+Let's see how well we approximated the function fn
+"""
 @printf "%.1fx + %.1fy  + %.1fz + %.1f\n" Array(value(model.params.w))... Array(value(model.params.b))...

@@ -2,7 +2,7 @@ using Photon, LightXML
 
 # This file contains a more elaborate example on training a model on real images.
 # This example uses the VOC2007 image dataset. Rather then using segmentation,
-# this example uses classification. Without a GPU, this training will be slow.
+# this example uses classification. Without a GPU, this training will be slow!
 #
 # You can read more about this dataset at:
 #    http://host.robots.ox.ac.uk/pascal/VOC/voc2007/
