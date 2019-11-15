@@ -1,5 +1,6 @@
 using Photon, LightXML
 
+# This file contains a more elaborate example on training a model on real images.
 # This example uses the VOC2007 image dataset. Rather then using segmentation,
 # this example uses classification. Without a GPU, this training will be slow.
 #
@@ -13,7 +14,7 @@ using Photon, LightXML
 # Change location below to where you extracted the VOC2007 dataset
 const VOC_DIR = "/home/peter/data/VOCdevkit/VOC2007/"
 
-# Shouldn't need to change anything below this line
+# Shouldn't be a need to change anything below this line
 const IMAGEDIR = joinpath(VOC_DIR,"JPEGImages/")
 const LABELDIR = joinpath(VOC_DIR,"Annotations/")
 const LABELS = ["chair", "diningtable", "person", "boat", "pottedplant", "car", "sofa",
@@ -53,9 +54,8 @@ labels = get_labels(files)
 @info "Parsed $(length(labels)) label files"
 
 images = joinpath.(IMAGEDIR, files)
-ds = ImageDataset(images, labels, resize=(200, 200))
-
-dl = Dataloader(ds, 16)
+data = ImageDataset(images, labels, resize=(200, 200))
+data = data |> Normalizer(1.0, 0.5) |> MiniBatch(16)
 
 # Create a simple convolutional network
 model = Sequential(
@@ -68,5 +68,5 @@ model = Sequential(
 
 workout = Workout(model, mse)
 
-fit!(workout, dl, epochs=10)
+fit!(workout, data, epochs=10)
 @info "Finished training for $(workout.epochs) epochs"

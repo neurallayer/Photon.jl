@@ -9,6 +9,7 @@ using Documenter, Photon
 makedocs(modules=[Photon],
          sitename = "Photon",
          pages = ["Home" => "index.md",
+                  "API" => "api.md",
                   "Community" => "community.md"],
          format = Documenter.HTML())
 
