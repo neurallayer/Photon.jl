@@ -1,6 +1,6 @@
-# Introduction
+## Introduction
 
-Photon is a developer friendly framework for Deep Learning in Julia.
+Photon is a developer friendly framework for Machine Learning in Julia.
 Under the hood it leverages **Knet** and it provides a Keras like API on top of that.
 
 
@@ -16,7 +16,7 @@ To train your own model, there are four steps to follow:
 4) **Train** the model by calling fit! on the workout and the training data.
 
 
-### Step 1: Model
+### Step 1: Create a Model
 A model can use out of the box layers or your own layers. Photon support most
 common type of layer:
 
@@ -63,18 +63,21 @@ myLayer(X) = moon == :full ? X .- 1 : X
 ```
 
 
-### Step 2: Workout
+### Step 2: Define a Workout
 A workout combines a model + loss + optimiser and keeps track of the progress
 during the actual training. The workout is stateful in the sense that you can run
 multiple training sessions and the progress will be recorded appropriately.   
 
-The minimum required to create a workout is:
+The minimum required code to create a workout is:
 
 ```julia
-workout = Workout(mymodel, MSE())
+workout = Workout(mymodel, MSELoss())
 ```
 
-Besides this, you can pass an optimizer and define the metrics that you want to get tracked during
+This will create a workout that will use the default Optimiser (SGD) and only
+the *loss metric* being tracked.
+
+Alternatively you can pass an optimizer and define the metrics that you want to get tracked during
 the training sessions. Photon tracks :loss and :val_loss (for the validation phase) by
 default, but you define additional ones.
 
@@ -82,7 +85,18 @@ default, but you define additional ones.
 workout = Workout(mymodel, MSE(), SGD(), acc=accuracy())
 ```
 
-### Step 3: Data
+Another useful feature is that a Workout can saved and restored at any moment during the training.
+And not only the model and its parameters will be saved. Also the state of the optimiser and any defined
+metrics will be able saved and restored to their previous state. This even makes it also possible
+to shared workout with colleagues (although they need the same packages installed installed as you).
+
+```julia
+filename = saveWorkout(workout)
+
+workout2 = loadWorkout(filename)
+```
+
+### Step 3: Prepare the Data
 Although Photon is perfectly happy to work on plain Vectors of data, this often won't be feasible due to the data not fitting in memory. In those cases you can use the data pipeline feature of Photon.
 
 A typical pipeline would look something like this:
@@ -119,7 +133,7 @@ data = ImageDataset(files, labels, resize=(250,250))
 data = data |> Crop(200,200) |> Normalize() |> MiniBatch(8)
 ```
 
-### Step 4: Train
+### Step 4: Run the Training
 The actual training in Photon is done invoking the fit! function.
 
 ```julia

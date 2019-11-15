@@ -128,6 +128,24 @@ function test_transformers()
 	@assert size(sample[2]) == (10,)
 end
 
+
+function test_split()
+	ds = TestDataset((30,30,3),(10,),100)
+
+	t,v = ds |> Split()
+	@assert length(t) == 80
+	@assert length(v) == 20
+
+	X,Y = t[4]
+	@assert size(X) == (30,30,3)
+	@assert size(Y) == (10,)
+
+	X,Y = v[10]
+	@assert size(X) == (30,30,3)
+	@assert size(Y) == (10,)
+end
+
+
 @testset "Data" begin
     test_dataset()
 	test_arraydataset()
@@ -135,6 +153,7 @@ end
 	test_output()
 	test_minibatch()
 	test_training()
+	test_split()
 	test_threading(0.01)
 	test_threading(0.02)
 	test_transformers()

@@ -243,9 +243,10 @@ function (t::Split)(ds::Dataset)
 	maxl = length(ds)
 
 	idxs = t.shuffle ? Random.shuffle(1:maxl) : 1:maxl
-	cut = round(maxl*(1.0-t.valid_perc))
+	cut = round(Int, maxl*(1.0-t.valid_perc))
 
-    return (Subset(idxs[1:cut]), Subset(idxs[cut+1:end]))
+    a, b = (Subset(idxs[1:cut]), Subset(idxs[cut+1:end]))
+	return (a(ds), b(ds))
 end
 
 
