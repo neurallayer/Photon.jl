@@ -86,6 +86,14 @@ function loadWorkout(filename)::Workout
 end
 
 
+"""
+Stop a training session. If this is called outside the scope of
+a trianing session, just an error is thrown.
+"""
+function stop(workout::Workout, reason::String)
+    throw(ErrorException(reason))
+end
+
 
 """
 Does the workout have any recorded values for a certain metric
@@ -129,7 +137,7 @@ end
 
 """
 Get the metric value for a fully qualified metric name and a certain step. If
-step is not provided the last step is used. If no value is found the passed
+step is not provided the last step will be used. If no value is found the passed
 function will not be invoked.
 
 # Usage

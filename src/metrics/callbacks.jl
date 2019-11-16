@@ -1,17 +1,51 @@
 
 
 """
-Save the Workout if a certain metric has improved
+Save the Workout at the end of every epoch.
+
+# Usage
+```julia
+fit!(workout, data, cb=EpochSave())
+```
+
 """
-struct AutoSave
-    value
-    metric::Symbol
-    AutoSave(metric::Symbol) = new(1000, metric)
+struct EpochSave
 end
 
-function (meter::AutoSave)(workout::Workout, phase::Symbol)
+function (c::EpochSave)(workout::Workout, phase::Symbol)
     if phase == :valid
         saveWorkout(workout)
+    end
+end
+
+
+
+"""
+Save the Workout if a certain metric has improved
+
+# Usage
+```julia
+
+# save as long as the validation loss is declining
+fit!(workout, data, cb=AutoSave(:val_loss))
+```
+
+"""
+struct AutoSave
+    value::Float64
+    metric::Symbol
+    AutoSave(metric::Symbol) = new(Inf, metric)
+end
+
+function (c::AutoSave)(workout::Workout, phase::Symbol)
+    if phase == :valid
+        getmetricvalue(workout, c.metric) do x
+            if x > c.value
+                saveWorkout(workout)
+            else
+                c.value = x
+            end
+        end
     end
 end
 
@@ -20,13 +54,19 @@ end
 Stop the training if a certain metric didn't improve
 """
 struct EarlyStop
-    value
+    value::Float64
     metric::Symbol
-    EarlyStop(metric::Symbol) = new(1000, metric)
+    EarlyStop(metric::Symbol) = new(Inf, metric)
 end
 
-function (meter::EarlyStop)(workout::Workout, phase::Symbol)
+function (c::EarlyStop)(workout::Workout, phase::Symbol)
     if phase == :valid
-        saveWorkout(workout)
+        getmetricvalue(workout, c.metric) do x
+            if x > c.value
+                stop(workout,"$(c.metric) didn't improve anymore")
+            else
+                c.value = x
+            end
+        end
     end
 end

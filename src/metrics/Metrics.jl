@@ -1,6 +1,6 @@
 module Metrics
 
-using ..Photon: MetricStore, Workout, Tensor, Meter, getmetricvalue, saveWorkout, getContext
+using ..Photon: MetricStore, stop, Workout, Tensor, Meter, getmetricvalue, saveWorkout, getContext
 using Printf
 using Statistics
 import Knet
