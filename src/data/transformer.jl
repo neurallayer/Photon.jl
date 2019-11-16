@@ -130,11 +130,11 @@ end
 
 function Base.getindex(t::ImageCrop, idx)
 	X,Y = t.ds[idx]
-	if t.shapeX != nothing
+	if t.shapeX !== nothing
 		X = imageCrop(X, t.shapeX)
 	end
 
-	if t.shapeY != nothing
+	if t.shapeY !== nothing
 		Y = imageCrop(Y, t.shapeY)
 	end
 
@@ -318,9 +318,9 @@ function Base.iterate(dl::MiniBatch, state=undef)
 		sample = dl.ds[idx]
 		@assert sample isa Tuple "Datasets should return Tuples, not $(typeof(sample))"
 
-		if minibatch == nothing
+		if minibatch === nothing
 			Threads.lock(l)
-			if minibatch == nothing
+			if minibatch === nothing
 				minibatch = create_mb(sample, bs)
 			end
 			Threads.unlock(l)

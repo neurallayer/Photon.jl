@@ -114,7 +114,7 @@ mutable struct Flatten <: Layer
 end
 
 function call(layer::Flatten, X::Tensor)
-	layer.dims == nothing ? Knet.mat(X) : Knet.mat(X, dims=layer.dims)
+	layer.dims === nothing ? Knet.mat(X) : Knet.mat(X, dims=layer.dims)
 end
 
 

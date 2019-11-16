@@ -149,7 +149,7 @@ function Base.getindex(ds::ImageDataset, idx)
 	img = Images.channelview(img)
 	img = permutedims(img, [2,3,1])
 	img = convert(Array{Float32}, img)
-	if ds.resize != nothing
+	if ds.resize !== nothing
 		img = Images.imresize(img, ds.resize...)
 	end
 	return (img, ds.labels[idx])

@@ -41,13 +41,13 @@ function test_base_Conv2D()
     X = getimages()
 
     Y = Conv2D(16, (3,3))(X)
-    @test Y != nothing
+    @test Y !== nothing
 
     Y = Conv2D(16, (3,3), relu)(X)
-    @test Y != nothing
+    @test Y !== nothing
 
     Y = Conv2D(16, 3; padding=1, strides=2, dilation=2)(X)
-    @test Y != nothing
+    @test Y !== nothing
 
 end
 

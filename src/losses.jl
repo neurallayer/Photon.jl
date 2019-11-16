@@ -93,7 +93,7 @@ struct CrossEntropyLoss <: Loss
 end
 
 function (l::CrossEntropyLoss)(ŷ, y, weight=nothing)
-  w = weight != nothing ? weight : l.weight
+  w = weight !== nothing ? weight : l.weight
 
   ŷ, y = Knet.mat(ŷ), Knet.mat(y)
   r = -sum(y .* log.(ŷ)) .* w

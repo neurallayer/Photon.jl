@@ -70,7 +70,7 @@ mutable struct TensorBoardMeter <: Meter
 end
 
 function (meter::TensorBoardMeter)(workout::Workout, phase::Symbol)
-    if meter.logger == nothing
+    if meter.logger === nothing
         meter.logger = TensorBoardLogger.TBLogger(meter.path)
     end
 

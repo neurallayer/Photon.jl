@@ -285,7 +285,7 @@ function fit!(workout::Workout, data, validation=nothing;
             cb(workout, :train)
         end
 
-        if validation != nothing
+        if validation !== nothing
             d = validation isa Function ? validation() : validation
             for minibatch in d
                 validate(workout, convertor(minibatch)...)
