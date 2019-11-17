@@ -69,14 +69,14 @@ Pseudo Huber Loss implementation, somewhere between a L1 and L2 loss.
 struct PseudoHuberLoss <: Loss
   delta
   reduction
-  PseudoHuberLoss(delata=1; reduction=mean) = new(δ, reduction)
+  PseudoHuberLoss(delta=1; reduction=mean) = new(delta, reduction)
 end
 
 function (l::PseudoHuberLoss)(ŷ, y)
   ŷ, y = Knet.mat(ŷ), Knet.mat(y)
   δ = l.delta
   r = δ^2 .* (sqrt.(1 .+ ((ŷ - y)/δ).^2) .- 1)
-  l.reduction(-r)
+  l.reduction(r)
 end
 
 
@@ -128,11 +128,19 @@ Hinge Loss implementation
 """
 struct HingeLoss <: Loss
   reduction
-  HingeLoss(;reduction=mean) = new(reduction)
+  autofix
+  HingeLoss(;reduction=mean, autofix=true) = new(reduction,autofix)
 end
 
 function (l::HingeLoss)(ŷ, y)
   ŷ, y = Knet.mat(ŷ), Knet.mat(y)
-  r = max.(0, 1 .- ŷ*y)
-  l.reduction(-r)
+
+  # Hinge lost requires y to be {-1,1}. So the following converts {0,1} to
+  # the right values
+  if l.autofix
+    y[Array(y) .< 1.0] .= -1.0
+  end
+
+  r = max.(0, 1 .- (ŷ .* y))
+  l.reduction(r)
 end
