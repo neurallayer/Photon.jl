@@ -3,20 +3,13 @@ export  L1Loss, MAELoss, L2Loss, MSELoss, LNLoss, PseudoHuberLoss, HingeLoss,
   BCELoss, CrossEntropyLoss, FocalLoss
 
 
-binarycrossentropy(ŷ, y) = -y*log(ŷ + ϵ) - (1 - y)*log(1 - ŷ + ϵ)
-
-
-function bce_loss(y_pred, y)
-    y_pred = Knet.mat(y_pred)
-    y = Knet.mat(y_pred)
-    # y_pred = Knet.sigm.(y_pred)
-    loss = binarycrossentropy.(y_pred, y)
-    mean(loss)
-end
-
-
 """
-L1Loss also known as MAE loss
+Calculates the mean absolute error between `label` and `pred`.
+
+``L = \\sum_i \\vert {label}_i - {pred}_i \\vert``
+
+`label` and `pred` can have arbitrary shape as long as they have the same
+number of elements.
 """
 struct L1Loss <: Loss
   reduction
@@ -33,7 +26,12 @@ end
 MAELoss = L1Loss
 
 """
-L2Loss also known as MSE loss
+Calculates the mean squared error between `label` and `pred`.
+
+``L = \\frac{1}{2} \\sum_i \\vert {label}_i - {pred}_i \\vert^2``
+
+`label` and `pred` can have arbitrary shape as long as they have the same
+number of elements.
 """
 struct L2Loss <: Loss
   reduction
@@ -122,14 +120,23 @@ function (l::CrossEntropyLoss)(ŷ, y, weight=nothing)
 end
 
 
-
 """
-Hinge Loss implementation
+Calculates the hinge loss function often used in SVMs:
+
+``L = \\sum_i max(0, {margin} - {pred}_i \\cdot {label}_i)``
+
+where `pred` is the classifier prediction and `label` is the target tensor
+containing values -1 or 1. `label` and `pred` must have the same number of
+elements.
+
+If autofix is true, will convert label from {0,1} to {-1,1}
+
 """
 struct HingeLoss <: Loss
   reduction
+  margin
   autofix
-  HingeLoss(;reduction=mean, autofix=true) = new(reduction,autofix)
+  HingeLoss(;margin=1.0, reduction=mean, autofix=true) = new(reduction,margin, autofix)
 end
 
 function (l::HingeLoss)(ŷ, y)
@@ -141,9 +148,40 @@ function (l::HingeLoss)(ŷ, y)
     y[Array(y) .< 1.0] .= -1.0
   end
 
-  r = max.(0, 1 .- (ŷ .* y))
+  r = max.(0, l.margin .- (ŷ .* y))
   l.reduction(r)
 end
+
+
+"""
+Calculates the soft-margin loss function used in SVMs:
+
+``L = \\sum_i max(0, {margin} - {pred}_i \\cdot {label}_i)^2``
+
+where `pred` is the classifier prediction and `label` is the target tensor
+containing values -1 or 1. `label` and `pred` can have arbitrary shape as
+long as they have the same number of elements.
+"""
+struct SquaredHingeLoss <: Loss
+  reduction
+  margin
+  autofix
+  SquaredHingeLoss(;margin=1.0, reduction=mean, autofix=true) = new(reduction,margin, autofix)
+end
+
+function (l::SquaredHingeLoss)(ŷ, y)
+  ŷ, y = Knet.mat(ŷ), Knet.mat(y)
+
+  # Hinge lost requires y to be {-1,1}. So the following converts {0,1} to
+  # the right values
+  if l.autofix
+    y[Array(y) .< 1.0] .= -1.0
+  end
+
+  r = max.(0, l.margin .- (ŷ .* y)).^2
+  l.reduction(r)
+end
+
 
 
 """
