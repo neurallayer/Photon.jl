@@ -302,7 +302,7 @@ function Base.iterate(dl::MiniBatch, state=undef)
     bs = dl.batchsize
 
     if state == undef
-        idxs = dl.shuffle ? Random.shuffle(1:maxl) : 1:max1
+        idxs = dl.shuffle ? Random.shuffle(1:maxl) : 1:maxl
         state = (idxs,1)
     end
     idxs, count = state

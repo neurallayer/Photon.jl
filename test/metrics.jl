@@ -22,6 +22,21 @@ function getdata(s=28)
     ) for i=1:10]
 end
 
+
+function test_callbacks()
+    model = simple_conv_model()
+    workout = Workout(model, MSELoss())
+
+    data = getdata()
+
+    fit!(workout, data, epochs=2, cb=AutoSave(:loss))
+
+    fit!(workout, data, epochs=2, cb=EpochSave())
+
+    fit!(workout, data, epochs=2, cb=EarlyStop(:loss))
+end
+
+
 function test_core()
     model = simple_conv_model()
     workout = Workout(model, MSELoss())
@@ -48,6 +63,7 @@ end
 
 @testset "Metrics" begin
     resetContext()
+    test_callbacks()
     test_core()
     test_metrics()
 end

@@ -69,6 +69,9 @@ function test_minibatch()
 	sample = first(data)
 	@test  size(sample[1]) == (28,28,1,8)
 	@test  size(sample[2]) == (10,8)
+
+	data = TestDataset((28,28,1), (10,), 50) |> MiniBatch(8, shuffle=false)
+	sample = first(data)
 end
 
 

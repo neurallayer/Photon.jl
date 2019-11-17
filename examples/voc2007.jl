@@ -55,7 +55,10 @@ labels = get_labels(files)
 
 images = joinpath.(IMAGEDIR, files)
 data = ImageDataset(images, labels, resize=(200, 200))
-data = data |> Normalizer(1.0, 0.5) |> MiniBatch(16)
+data = data |> Normalizer(1.0, 0.5)
+data_train, data_valid = data |> Split()
+data_train = data_train |> MiniBatch(16)
+data_valid = data_valid |> MiniBatch(32, shuffle=false)
 
 # Create a simple convolutional network
 model = Sequential(
@@ -68,5 +71,5 @@ model = Sequential(
 
 workout = Workout(model, MSELoss())
 
-fit!(workout, data, epochs=10)
+fit!(workout, data_train, data_valid, epochs=10)
 @info "Finished training for $(workout.epochs) epochs"

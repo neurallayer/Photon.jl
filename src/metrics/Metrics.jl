@@ -12,6 +12,6 @@ include("meters.jl")
 export ConsoleMeter, TensorBoardMeter, FileMeter, PlotMeter
 
 include("callbacks.jl")
-export AutoSave, EarlyStop
+export AutoSave, EpochSave, EarlyStop
 
 end

@@ -31,7 +31,7 @@ fit!(workout, data, cb=AutoSave(:val_loss))
 ```
 
 """
-struct AutoSave
+mutable struct AutoSave
     value::Float64
     metric::Symbol
     AutoSave(metric::Symbol) = new(Inf, metric)
@@ -40,9 +40,8 @@ end
 function (c::AutoSave)(workout::Workout, phase::Symbol)
     if phase == :valid
         getmetricvalue(workout, c.metric) do x
-            if x > c.value
+            if x < c.value
                 saveWorkout(workout)
-            else
                 c.value = x
             end
         end
@@ -53,7 +52,7 @@ end
 """
 Stop the training if a certain metric didn't improve
 """
-struct EarlyStop
+mutable struct EarlyStop
     value::Float64
     metric::Symbol
     EarlyStop(metric::Symbol) = new(Inf, metric)
