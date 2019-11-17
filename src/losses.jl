@@ -1,6 +1,6 @@
 
 export  L1Loss, MAELoss, L2Loss, MSELoss, LNLoss, PseudoHuberLoss, HingeLoss,
-  BCELoss, CrossEntropyLoss
+  BCELoss, CrossEntropyLoss, FocalLoss
 
 
 binarycrossentropy(ŷ, y) = -y*log(ŷ + ϵ) - (1 - y)*log(1 - ŷ + ϵ)
@@ -98,12 +98,12 @@ end
 """
 CrossEntropy loss function with support for an optional weight parameter.
 The weight parameter can be static (for example to handle class inbalances)
-or dynamic (so passed every time when the lost function is invoked)
+or dynamic, so passed every time when the lost function is invoked.
 
 # Usage
 
 ```julia
-workout = Workout(model, CE(), SGD())
+workout = Workout(model, CrossEntropyLoss(), SGD())
 ```
 
 """
@@ -117,7 +117,7 @@ function (l::CrossEntropyLoss)(ŷ, y, weight=nothing)
   w = weight !== nothing ? weight : l.weight
 
   ŷ, y = Knet.mat(ŷ), Knet.mat(y)
-  r = (y .* log.(ŷ)) .* w
+  r = sum((y .* log.(ŷ .+ ϵ)) .* w, dims=1)
   l.reduction(-r)
 end
 
@@ -143,4 +143,25 @@ function (l::HingeLoss)(ŷ, y)
 
   r = max.(0, 1 .- (ŷ .* y))
   l.reduction(r)
+end
+
+
+"""
+Focal Loss implementation
+"""
+struct FocalLoss <: Loss
+  reduction
+  gamma
+  alpha
+  FocalLoss(;gamma=2, alpha=2, reduction=mean) = new(reduction, gamma, alpha)
+end
+
+function (l::FocalLoss)(ŷ, y)
+  ŷ, y = Knet.mat(ŷ), Knet.mat(y)
+  γ = l.gamma
+
+  loss =   @.      y  * ( - (1 - ŷ)^γ  * log(    ŷ + ϵ)) # if y = 1
+  loss .+= @. (1 - y) * ( - (    ŷ)^γ  * log(1 - ŷ + ϵ)) # if y = 0
+
+  l.reduction(loss)
 end

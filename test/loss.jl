@@ -71,6 +71,7 @@ end
     test_classification(HingeLoss())
     test_classification(CrossEntropyLoss())
     test_classification(BCELoss())
+    test_classification(FocalLoss())
 end
 
 

@@ -56,6 +56,8 @@ labels = get_labels(files)
 images = joinpath.(IMAGEDIR, files)
 data = ImageDataset(images, labels, resize=(200, 200))
 data = data |> Normalizer(1.0, 0.5)
+
+# Split into train and validation data
 data_train, data_valid = data |> Split()
 data_train = data_train |> MiniBatch(16)
 data_valid = data_valid |> MiniBatch(32, shuffle=false)
@@ -69,7 +71,10 @@ model = Sequential(
     Dense(20, sigm)
 )
 
-workout = Workout(model, MSELoss())
+workout = Workout(model, CrossEntropyLoss())
 
-fit!(workout, data_train, data_valid, epochs=10)
+fit!(workout, data_train, data_valid, epochs=5)
 @info "Finished training for $(workout.epochs) epochs"
+
+import Plots
+plotmetrics(Plots, workout, [:loss, :val_loss])
