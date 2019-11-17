@@ -24,7 +24,7 @@ end
 
 function test_core()
     model = simple_conv_model()
-    workout = Workout(model, mse)
+    workout = Workout(model, MSELoss())
 
     data = getdata()
     fit!(workout, data, epochs=2)

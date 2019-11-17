@@ -1,10 +1,6 @@
 
-export mse, mae, bce_loss, MSELoss, PseudoHuberLoss, MAELoss, HingeLoss,
+export  L1Loss, MAELoss, L2Loss, MSELoss, LNLoss, PseudoHuberLoss, HingeLoss,
   BCELoss, CrossEntropyLoss
-
-mae(y_pred, y) = mean(abs.(Knet.mat(y_pred) .- Knet.mat(y)))
-
-mse(y_pred, y) = mean((Knet.mat(y_pred) .- Knet.mat(y)).^2)
 
 
 binarycrossentropy(ŷ, y) = -y*log(ŷ + ϵ) - (1 - y)*log(1 - ŷ + ϵ)
@@ -20,58 +16,83 @@ end
 
 
 """
-Mean Square Error implementation, also referred to
-as the L2 Loss.
-
-# Usage
-
-```julia
-workout = Workout(model, MSELoss(), SGD())
-```
+L1Loss also known as MAE loss
 """
-struct MSELoss <: Loss
-  reduction::Symbol
+struct L1Loss <: Loss
+  reduction
 
-  MSELoss(;reduction=:mean) = new(reduction)
+  L1Loss(;reduction=mean) = new(reduction)
 end
 
-function (l::MSELoss)(ŷ, y)
+function (l::L1Loss)(ŷ, y)
   ŷ, y = Knet.mat(ŷ), Knet.mat(y)
-  r = sum((ŷ .- y).^2)
-  l.reduction == :mean ? r * 1 // length(y) : r
+  l.reduction(abs.(ŷ - y))
 end
 
 
-"""
-Mean Absolute Error implementation, also referred to
-as the L1 Loss.
-"""
-struct MAELoss <: Loss
-  reduction::Symbol
+MAELoss = L1Loss
 
-  MAELoss(;reduction=:mean) = new(reduction)
+"""
+L2Loss also known as MSE loss
+"""
+struct L2Loss <: Loss
+  reduction
+
+  L2Loss(;reduction=mean) = new(reduction)
 end
 
-function (l::MAELoss)(ŷ, y)
+function (l::L2Loss)(ŷ, y)
   ŷ, y = Knet.mat(ŷ), Knet.mat(y)
-  r = sum(abs.(ŷ .- y))
-  l.reduction == :mean ? r * 1 // length(y) : r
+  l.reduction((ŷ - y).^2)
 end
+
+MSELoss = L2Loss
+
+"""
+LNLoss
+"""
+struct LNLoss <: Loss
+  n
+  reduction
+
+  LNLoss(n::Int;reduction=mean) = new(n, reduction)
+end
+
+function (l::LNLoss)(ŷ, y)
+  ŷ, y = Knet.mat(ŷ), Knet.mat(y)
+  l.reduction(abs.(ŷ - y).^l.n)
+end
+
+"""
+Pseudo Huber Loss implementation, somewhere between a L1 and L2 loss.
+"""
+struct PseudoHuberLoss <: Loss
+  delta
+  reduction
+  PseudoHuberLoss(delata=1; reduction=mean) = new(δ, reduction)
+end
+
+function (l::PseudoHuberLoss)(ŷ, y)
+  ŷ, y = Knet.mat(ŷ), Knet.mat(y)
+  δ = l.delta
+  r = δ^2 .* (sqrt.(1 .+ ((ŷ - y)/δ).^2) .- 1)
+  l.reduction(-r)
+end
+
 
 """
 Binary CrossEntropy
 """
 struct BCELoss <: Loss
-  reduction::Symbol
+  reduction
 
-  BCELoss(;reduction=:mean) = new(reduction)
+  BCELoss(;reduction=mean) = new(reduction)
 end
 
 function (l::BCELoss)(ŷ, y)
   ŷ, y = Knet.mat(ŷ), Knet.mat(y)
   r = -y .* log.(ŷ .+ ϵ) .- (1 .- y) .* log.(1 .- ŷ .+ ϵ)
-  r = sum(r)
-  l.reduction == :mean ? r * 1 // size(y,2) : r
+  l.reduction(r)
 end
 
 """
@@ -88,45 +109,30 @@ workout = Workout(model, CE(), SGD())
 """
 struct CrossEntropyLoss <: Loss
   weight
-  reduction::Symbol
-  CrossEntropyLoss(;weight=1, reduction=:mean) = new(weight, reduction)
+  reduction
+  CrossEntropyLoss(weight=1; reduction=mean) = new(weight, reduction)
 end
 
 function (l::CrossEntropyLoss)(ŷ, y, weight=nothing)
   w = weight !== nothing ? weight : l.weight
 
   ŷ, y = Knet.mat(ŷ), Knet.mat(y)
-  r = -sum(y .* log.(ŷ)) .* w
-  l.reduction == :mean ? r * 1 // size(y, 2) : r
+  r = (y .* log.(ŷ)) .* w
+  l.reduction(-r)
 end
 
-"""
-Pseudo Huber Loss implementation, somewhere between a L1 and L2 loss.
-"""
-struct PseudoHuberLoss <: Loss
-  δ
-  reduction::Symbol
-  PseudoHuberLoss(;δ=1, reduction=:mean) = new(δ, reduction)
-end
 
-function (l::PseudoHuberLoss)(ŷ, y)
-  δ = l.δ
-  r = δ^2 .* (sqrt.(1 .+ ((ŷ - y)/δ).^2) .- 1)
-  r = -sum(r)
-  l.reduction == :mean ? r * 1 // length(y) : r
-end
 
 """
 Hinge Loss implementation
 """
 struct HingeLoss <: Loss
-  reduction::Symbol
-  HingeLoss(;reduction=:mean) = new(reduction)
+  reduction
+  HingeLoss(;reduction=mean) = new(reduction)
 end
 
 function (l::HingeLoss)(ŷ, y)
   ŷ, y = Knet.mat(ŷ), Knet.mat(y)
   r = max.(0, 1 .- ŷ*y)
-  r = -sum(r)
-  l.reduction == :mean ? r * 1 // length(y) : r
+  l.reduction(-r)
 end

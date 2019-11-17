@@ -20,7 +20,7 @@ function testOptim(opt)
     X = [randn(dtype,50,50,3,4) for _=1:5]
     Y = [randn(dtype,10,4) for _=1:5]
 
-    workout = Workout(model, mse, opt)
+    workout = Workout(model, MSELoss(), opt)
     fit!(workout, zip(X,Y), epochs=2)
     @test hasmetric(workout, :loss)
 end

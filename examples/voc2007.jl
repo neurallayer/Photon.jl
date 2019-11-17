@@ -66,7 +66,7 @@ model = Sequential(
     Dense(20, sigm)
 )
 
-workout = Workout(model, mse)
+workout = Workout(model, MSELoss())
 
 fit!(workout, data, epochs=10)
 @info "Finished training for $(workout.epochs) epochs"

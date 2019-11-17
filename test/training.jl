@@ -19,7 +19,7 @@ function test_save_load()
     m = simple_conv_model()
     X = KorA(randn(Float32,28,28,1,4))
     pred = m(X)
-    workout = Workout(m, mse)
+    workout = Workout(m, MSELoss())
     f = saveWorkout(workout)
     workout2 = loadWorkout(f)
     rm(f, force=true)
@@ -37,7 +37,7 @@ end
 
 function test_train()
     model = simple_conv_model()
-    workout = Workout(model, mse)
+    workout = Workout(model, MSELoss())
 
     data = getdata()
     fit!(workout, data, epochs=2)
@@ -49,7 +49,7 @@ end
 
 function test_train_valid()
     model = simple_conv_model()
-    workout = Workout(model, mse)
+    workout = Workout(model, MSELoss())
 
     data_tr = getdata()
     data_val = getdata()
@@ -62,7 +62,7 @@ end
 
 function test_channel()
     model = simple_conv_model()
-    workout = Workout(model, mse)
+    workout = Workout(model, MSELoss())
 
     minibatch = (KorA(randn(Float32,30,30,3,4)), KorA(randn(Float32,10,4)))
 
