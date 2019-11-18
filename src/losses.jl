@@ -142,7 +142,7 @@ function (l::CrossEntropyLoss)(ŷ, y, weight=nothing)
 
   ŷ = l.use_softmax ? softmax(ŷ) : ŷ
 
-  r = sum((y .* log.(ŷ .+ ϵ)) .* w, dims=2)
+  r = sum(y .* log.(ŷ .+ ϵ), dims=2) .* w
   l.reduction(-r)
 end
 

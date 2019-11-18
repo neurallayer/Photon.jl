@@ -221,12 +221,12 @@ Base.getindex(t::Subset, idx) = t.ds[t.idxs[idx]]
 """
 Split one dataset into two subsets, one for training and one for validation.
 By default Split will shuffle the indexes first in order to get a representative
-validaiton set. The default split is 80/20.
+validaiton set. The default split is 80% for training and 20% for validation.
 
 # Usage
 
 ```julia
-data_train, data_valid = mnistds() |> Split(0.1, shuffle=false)
+data_train, data_valid = ImageDataset(...) |> Split(0.25, shuffle=false)
 ```
 """
 mutable struct Split <: Transformer

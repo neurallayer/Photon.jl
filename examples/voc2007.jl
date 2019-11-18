@@ -53,27 +53,26 @@ files = readdir(IMAGEDIR)
 labels = get_labels(files)
 @info "Parsed $(length(labels)) label files"
 
-images = joinpath.(IMAGEDIR, files)
-data = ImageDataset(images, labels, resize=(200, 200))
-data = data |> Normalizer(1.0, 0.5)
-
 # Split into train and validation data
-data_train, data_valid = data |> Split()
+images = joinpath.(IMAGEDIR, files)
+data_train, data_valid = ImageDataset(images, labels, resize=(200, 200)) |> Split()
 data_train = data_train |> MiniBatch(16)
 data_valid = data_valid |> MiniBatch(32, shuffle=false)
 
 # Create a simple convolutional network
 model = Sequential(
     Conv2D(16, 3, relu),
+    MaxPool2D(),
     Conv2D(64, 3, relu),
     MaxPool2D(),
     Dense(128, relu),
-    Dense(20, sigm)
+    Dense(20),
+    softmax
 )
 
 workout = Workout(model, CrossEntropyLoss())
 
-fit!(workout, data_train, data_valid, epochs=5)
+fit!(workout, data_train, data_valid, epochs=50)
 @info "Finished training for $(workout.epochs) epochs"
 
 import Plots

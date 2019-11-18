@@ -197,7 +197,26 @@ function call(c::ConvTranspose, x::Tensor)
     end
 end
 
+"""
+Transposed 2D convolution layer (sometimes called Deconvolution).
+
+The need for transposed convolutions generally arises from the desire to use a
+transformation going in the opposite direction of a normal convolution,
+i.e., from something that has the shape of the output of some convolution
+to something that has the shape of its input while maintaining a connectivity
+pattern that is compatible with said convolution.
+"""
 Conv2DTranspose = ConvTranspose
+
+"""
+Transposed 3D convolution layer (sometimes called Deconvolution).
+
+The need for transposed convolutions generally arises from the desire to use a
+transformation going in the opposite direction of a normal convolution,
+i.e., from something that has the shape of the output of some convolution
+to something that has the shape of its input while maintaining a connectivity
+pattern that is compatible with said convolution.
+"""
 Conv3DTranspose = ConvTranspose
 
 ## AvgPool layer
@@ -227,8 +246,12 @@ function call(p::AvgPool, X)
 end
 
 AvgPool1D = AvgPool
+
+"""Average pooling operation for two dimensional (spatial) data."""
 AvgPool2D = AvgPool
-AAvgPool3D = AvgPool
+
+"""Average pooling operation for three dimensional (spatial) data."""
+AvgPool3D = AvgPool
 
 """
 Adaptive Average Pool has a fixed size output and enables creating a convolutional
@@ -273,7 +296,11 @@ function call(p::MaxPool, X::Tensor)
 end
 
 MaxPool1D = MaxPool
+
+"""Max pooling operation for two dimensional (spatial) data."""
 MaxPool2D = MaxPool
+
+"""Max pooling operation for three dimensional (spatial) data."""
 MaxPool3D = MaxPool
 
 """

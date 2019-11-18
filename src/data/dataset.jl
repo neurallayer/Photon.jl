@@ -21,18 +21,20 @@ abstract type Dataset end
 
 
 """
-A dataset that contains random generated samples.
-Ideal for quick testing of a model.
+A dataset that contains random generated samples. Ideal for quick testing
+of a model. The random values will be drawn from a normal distribution.
 
-You need to provide the shape of X, Y and the number of
-samples that it should contain. Optionally you
-can specify a sleep value to simulate IO blocking.
+You need to provide the shape of X, Y and the number of samples that the
+dataset should contain. Optionally you can specify a sleep value to simulate IO blocking.
 
 # Usage
 
 ```julia
-ds = TestDataset((28,28,1),(10,),1000)
-ds = TestDataset((100,),(1,),100, sleep=0.1)
+xshape = (28,28,1)
+yshape = (10,)
+ds = TestDataset(xshape, yshape, 60000)
+
+ds = TestDataset((100,), (1,), 100, sleep=0.1)
 ```
 """
 struct TestDataset <: Dataset
@@ -77,17 +79,18 @@ Note: Tested with JLD2 library only.
 Example:
 ========
 
-	using JLD2
+```julia
+using JLD2
 
-	jldopen("example.jld2", "w") do file
-	    file["image1"] = (randn(Float32,28,28,1), rand(0:9,1))
-	    file["image2"] = (randn(Float32,28,28,1), rand(0:9,1))
-	end
+jldopen("example.jld2", "w") do file
+    file["image1"] = (randn(Float32,28,28,1), rand(0:9,1))
+    file["image2"] = (randn(Float32,28,28,1), rand(0:9,1))
+end
 
-	f = jldopen("example.jld2", "r")
-	ds = JLD2Dataset(f)
-	ds[1]
-
+f = jldopen("example.jld2", "r")
+ds = JLD2Dataset(f)
+ds[1]
+```
 """
 struct JLDDataset <: Dataset
 	f
@@ -105,7 +108,7 @@ end
 
 
 """
-Dataset that loads data from a JuliaDB
+Dataset that loads data from a JuliaDB. Not yet implemented.
 """
 struct JuliaDBDataset{A,B} <: Dataset
     filenames::A
@@ -120,7 +123,14 @@ end
 
 
 """
-Dataset that loads an image from a file.
+Dataset that loads an single image from a file and optionally resizes the image.
+The labels are passed as is.
+
+# Usage
+
+```julia
+ds = ImageDataset(filenames, labels, resize=(200,200))
+```
 """
 struct ImageDataset <: Dataset
     filenames::Vector{String}
@@ -158,7 +168,8 @@ end
 
 
 """
-Dataset that gets is data from columns in a dataframe
+Dataset that retrieves is data from a dataframe. The provided column names
+for X and Y can be either a single Symbol or a Vector of Symbols.
 
 # Usage
 
