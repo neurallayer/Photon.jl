@@ -305,7 +305,7 @@ MaxPool3D = MaxPool
 
 """
 Adaptive MaxPool has a fixed size output and enables creating a convolutional
-network that can be used for multiple image formats.
+network that can be used for different image sizes.
 """
 struct AdaptiveMaxPool <: PoolingLayer
     output_size::Tuple
@@ -319,6 +319,5 @@ function call(m::AdaptiveMaxPool, x::Tensor)
     s = tuple(s...)
     return Knet.pool(x, window = s, padding = 0, stride = 1, mode = 1)
 end
-
 
 @debug "Loaded Convolutional modules"

@@ -65,7 +65,14 @@ function call(layer::Recurrent, X::Tensor)
 end
 
 """
-A simple RNN layer.
+Applies a multi-layer Elman RNN with :tanh or :relu non-linearity to an
+input sequence.
+
+For each element in the input sequence, each layer computes the following
+function:
+
+``h_t = \\text{tanh}(W_{ih} x_t + b_{ih} + W_{hh} h_{(t-1)} + b_{hh})``
+
 """
 function RNN(
     hidden_size::Int,
@@ -100,8 +107,8 @@ i_t = sigmoid(W_{ii} x_t + b_{ii} + W_{hi} h_{(t-1)} + b_{hi})
 \\h_t = o_t * \tanh(c_t)
 \end{array}``
 
-Examples:
-=========
+# Usage
+
 ```julia
 layer = LSTM(50)
 layer = LSTM(50, 2, bidirectional=true)
@@ -122,13 +129,25 @@ function LSTM(
 end
 
 
-"""
-Create a GRU layer
+@doc raw"""
+Applies a multi-layer gated recurrent unit (GRU) RNN to an input sequence.
 
-Examples:
-=========
+For each element in the input sequence, each layer computes the following
+function:
 
-    layer = GRU(50)
+``\begin{array}{ll}
+r_t = \sigma(W_{ir} x_t + b_{ir} + W_{hr} h_{(t-1)} + b_{hr})
+\\z_t = \sigma(W_{iz} x_t + b_{iz} + W_{hz} h_{(t-1)} + b_{hz})
+\\n_t = \tanh(W_{in} x_t + b_{in} + r_t * (W_{hn} h_{(t-1)}+ b_{hn}))
+\\h_t = (1 - z_t) * n_t + z_t * h_{(t-1)}
+\end{array}``
+
+# Usage
+
+```julia
+layer = GRU(50)
+layer = GRU(50, 2, bidirectional=true)
+```
 
 """
 function GRU(

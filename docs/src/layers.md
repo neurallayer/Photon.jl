@@ -8,6 +8,7 @@ Flatten
 ```
 
 ## Container
+Containers are special type of layers that contain other layers.
 
 ```@docs
 Sequential
@@ -16,6 +17,8 @@ Residual
 ```
 
 ## Convolutional
+Convolution layer for 2D and 3D spatial data. A 2D convolutional layer requires
+a 4D Array in the shape of WxHxCxN (width x height x channels x batch).
 
 ```@docs
 Conv2D
@@ -39,6 +42,7 @@ AdaptiveMaxPool
 ```
 
 ## Recurrent
+
 
 ```@docs
 RNN
