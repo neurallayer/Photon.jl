@@ -83,14 +83,29 @@ function RNN(
     (w=initw, b=initb, f=initf), activation)
 end
 
-"""
-Create a LSTM layer.
+
+@doc raw"""
+Applies a multi-layer long short-term memory (LSTM) RNN to an input sequence.
+
+For each element in the input sequence, each layer computes the following
+function:
+
+
+``\begin{array}{ll}
+i_t = sigmoid(W_{ii} x_t + b_{ii} + W_{hi} h_{(t-1)} + b_{hi})
+\\f_t = sigmoid(W_{if} x_t + b_{if} + W_{hf} h_{(t-1)} + b_{hf})
+\\g_t = \tanh(W_{ig} x_t + b_{ig} + W_{hc} h_{(t-1)} + b_{hg})
+\\o_t = sigmoid(W_{io} x_t + b_{io} + W_{ho} h_{(t-1)} + b_{ho})
+\\c_t = f_t * c_{(t-1)} + i_t * g_t
+\\h_t = o_t * \tanh(c_t)
+\end{array}``
 
 Examples:
 =========
-
-    layer = LSTM(50)
-
+```julia
+layer = LSTM(50)
+layer = LSTM(50, 2, bidirectional=true)
+```
 """
 function LSTM(
     hidden_size::Int,

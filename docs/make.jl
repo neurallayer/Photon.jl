@@ -9,7 +9,13 @@ using Documenter, Photon
 makedocs(modules=[Photon],
          sitename = "Photon",
          pages = ["Home" => "index.md",
-                  "API" => "api.md",
+                  "API" => [
+                        "Core"    => "core.md",
+                        "Layers"  => "layers.md",
+                        "Losses"  => "losses.md",
+                        "Metrics" => "metrics.md",
+                        "Data"    => "data.md"
+                  ],
                   "Community" => "community.md"],
          format = Documenter.HTML())
 

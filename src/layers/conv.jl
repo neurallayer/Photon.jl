@@ -104,7 +104,26 @@ function output_size(c::Conv, input_size)
     tuple(result...)
 end
 
+
+"""
+2D convolution layer (e.g. spatial convolution over images).
+
+This layer creates a convolution kernel that is convolved with the layer
+input to produce a tensor of outputs. If use_bias is true, a bias vector
+is created and added to the outputs. Finally, if activation is not nothing,
+it is applied to the outputs as well.
+"""
 Conv2D = Conv
+
+
+"""
+3D convolution layer (e.g. spatial convolution over volumes).
+
+This layer creates a convolution kernel that is convolved with the layer input
+to produce a tensor of outputs. If use_bias is true, a bias vector is created
+and added to the outputs. Finally, if activation is not nothing, it is
+applied to the outputs as well.
+"""
 Conv3D = Conv
 
 """

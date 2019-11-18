@@ -191,7 +191,7 @@ end
 
 
 """
-Perform the back propagation and update of weights in one go.
+Perform the back propagation and update of weights in a single go.
 """
 function back!(J::Knet.Tape, opt)
     for p in Knet.params(J)
@@ -248,7 +248,7 @@ end
 
 """
 Validate a minibatch and calculate the loss and metrics. Typically this function
-is called from the fit! method.
+is called from the fit! method. But if required can also be invoked directly.
 """
 function validate(workout::Workout, x, y)
     y_pred = workout.model(x)

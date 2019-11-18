@@ -22,13 +22,14 @@ abstract type Optimizer end
 
 
 """
-Base type for the loss functions. However Photon accepts
-any functoon as a loss function as long as it is callable and
-returns the loss as a scalar value.
+Abstract type for the loss functions. However Photon accepts
+any function as a loss function as long as it is callable and
+returns the loss value as a scalar.
 
 ```julia
- fn(y_pred, y_true) :: Number
+fn(y_pred, y_true) :: Number
 ```
+
 """
 abstract type Loss <: Function end
 
@@ -45,8 +46,8 @@ const Tensors = Union{Tensor, Tuple{Tensor}}
 
 """
 Context is used by various parts of Photon to determine what the device and
-datatype should be for Arrays. It also allows to quickly switch between GPU and CPU
-based models.
+datatype should be for data. It allows for quickly switches between GPU and CPU
+based environments.
 
 # Attributes
 - device::Symbol the type of device. For now supported :cpu and :gpu

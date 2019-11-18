@@ -136,6 +136,7 @@ We used several other open source frameworks for code and inspiration
 - Flux, we use it for inspiration. This has to be one of the most
   beautiful code bases out there.
 
-- Keras and MXNet for their well thought out API's.
+- Keras and MXNet for their well thought out API's. Also copied some of their
+  excellent documentation for layers and losses.
 
 - And of course Julia, that enables writing very fast deep learning applications.

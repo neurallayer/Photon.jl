@@ -20,12 +20,11 @@ include("data/Data.jl")
 
 include("utils.jl")
 
-export Dense, BatchNorm, RNN, Conv2DTranspose,
-	  Conv2D, Conv3D, output_size, Dropout, Sequential, Flatten, MaxPool2D, AvgPool2D,
-	  LSTM, GRU, Residual, Concurrent, AdaptiveAvgPool, AdaptiveMaxPool,
-	  Activation, add, forward, ContextSwitch
-
-
+export Dense, BatchNorm, Sequential, Flatten, Residual, Concurrent, Dropout,
+	   Conv2D, Conv3D, Conv2DTranspose, Conv3DTranspose, output_size,
+	   MaxPool2D, AvgPool2D, AdaptiveAvgPool, AdaptiveMaxPool,
+	   RNN, LSTM, GRU,
+	   Activation, add, forward, ContextSwitch
 
 dir(path...) = joinpath(dirname(@__DIR__),path...)
 
@@ -44,7 +43,6 @@ export relu, elu, selu, sigm
 export softmax, nll
 export Adam, SGD, Momentum, Nesterov, Adagrad, Rmsprop, Adadelta
 export xavier, gaussian, bilinear
-
 
 @debug "Loaded Photon"
 
