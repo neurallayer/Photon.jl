@@ -60,12 +60,36 @@ function test_metrics()
 
 end
 
+function test_algo()
+
+    pred   = [[0.3 0.7]; [0. 1.]; [0.4 0.6]]
+    labels = [[1 0];[0 1];[0 1]]
+    loss = CrossEntropyLoss()
+    @assert loss(pred, labels) ≈ 0.5715992760
+
+    pred   = reshape(Array([3, -0.5, 2, 7]), (4,1))
+    labels = reshape(Array([2.5, 0.0, 2, 8]), (4,1))
+    loss = L1Loss()
+    @assert loss(pred,labels) ≈ 0.5
+
+    pred   = reshape(Array([3, -0.5, 2, 7]), (4,1))
+    labels = reshape(Array([2.5, 0.0, 2, 8]), (4,1))
+    loss = L2Loss()
+    @assert loss(pred,labels) ≈ 0.375
+
+    pred   = [[0.3 0.7]; [0. 1.]; [0.4 0.6]]
+    labels = [[1 0];[0 1];[0 1]]
+    loss = BinaryAccuracy()
+    @assert loss(pred, labels) ≈ 0.666666666666
+
+end
 
 @testset "Metrics" begin
     resetContext()
     test_callbacks()
     test_core()
     test_metrics()
+    test_algo()
 end
 
 end

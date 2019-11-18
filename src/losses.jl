@@ -86,13 +86,13 @@ end
 
 
 """
-BCE loss is useful when training logistic regression.
+BCE (Binary Cross Entropy) loss is useful when training logistic regression.
 
 ``L = - \\sum_i {label}_i * \\log({pred}_i) +
             (1 - {label}_i) * \\log(1 - {pred}_i)``
 
-If `use_sigmoid` is true, first a sigmoid will be applied before
-ccluating the loss.
+If `use_sigmoid` is true, first a sigmoid activation will be applied before
+calcuating the BCE loss.
 """
 struct BCELoss <: Loss
   reduction
@@ -142,7 +142,7 @@ function (l::CrossEntropyLoss)(ŷ, y, weight=nothing)
 
   ŷ = l.use_softmax ? softmax(ŷ) : ŷ
 
-  r = sum((y .* log.(ŷ .+ ϵ)) .* w, dims=1)
+  r = sum((y .* log.(ŷ .+ ϵ)) .* w, dims=2)
   l.reduction(-r)
 end
 
