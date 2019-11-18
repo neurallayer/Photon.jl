@@ -1,6 +1,6 @@
 
 
-export getContext, setContext, resetContext, hasgpu, is_on_gpu, KorA
+export Loss, Context, getContext, setContext, resetContext, hasgpu, is_on_gpu, KorA
 
 const ϵ = 10e-8
 
@@ -24,14 +24,9 @@ abstract type Optimizer end
 """
 Abstract type for the loss functions. However Photon accepts
 any function as a loss function as long as it is callable and
-returns the loss value as a scalar.
-
-```julia
-fn(y_pred, y_true) :: Number
-```
-
+returns the loss value as a scalar type.
 """
-abstract type Loss <: Function end
+abstract type Loss end
 
 const Shape = Tuple{Vararg{Int}}
 

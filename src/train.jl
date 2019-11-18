@@ -2,7 +2,7 @@ import Base:haslength
 import Serialization
 
 export Workout, saveWorkout, loadWorkout, predict, fit!, hasmetric,
-        freeze!, unfreeze!
+        freeze!, unfreeze!, validate
 
 
 # Callback niceties from Flux.jl
@@ -22,23 +22,23 @@ the loss during training and validation will be registered (:loss and :val_loss)
 # Usage
 
 ```julia
-workout = Workout(model, mse)
+workout = Workout(model, L1Loss())
 
-workout = Workout(model, nll, SGD())
+workout = Workout(model, CrossEntropy(), SGD())
 
-workout = Workout(model, nll, SGD(); acc=BinaryAccuracy())
+workout = Workout(model, HingeLoss(), SGD(); acc=BinaryAccuracy())
 ```
 """
 mutable struct Workout
     model::Layer
-    loss::Function
+    loss::Union{Loss,Function}
     opt
     metrics::Vector{Pair}
     history::IdDict{Symbol,MetricStore}
     steps::Int
     epochs::Int
 
-    function Workout(model::Layer, loss::Function, opt=Knet.SGD(); metrics...)
+    function Workout(model::Layer, loss::Union{Loss,Function}, opt=Knet.SGD(); metrics...)
         new(model, loss, opt, collect(metrics), IdDict(), 0, 0)
     end
 end

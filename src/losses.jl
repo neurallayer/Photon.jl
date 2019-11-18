@@ -1,6 +1,6 @@
 
 export  L1Loss, MAELoss, L2Loss, MSELoss, LNLoss, PseudoHuberLoss, HingeLoss,
-  BCELoss, CrossEntropyLoss, FocalLoss
+        SquaredHingeLoss, BCELoss, CrossEntropyLoss, FocalLoss
 
 
 """

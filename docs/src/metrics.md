@@ -14,6 +14,7 @@ OneHotBinaryAccuracy
 ConsoleMeter
 FileMeter
 PlotMeter
+TensorBoardMeter
 EarlyStop
 AutoSave
 EpochSave

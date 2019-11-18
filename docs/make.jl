@@ -17,7 +17,9 @@ makedocs(modules=[Photon],
                         "Data"    => "data.md"
                   ],
                   "Community" => "community.md"],
-         format = Documenter.HTML())
+         format = Documenter.HTML(
+                  prettyurls = get(ENV, "CI", nothing) == "true"
+         ))
 
 deploydocs(
         repo = "github.com/neurallayer/Photon.jl.git",
