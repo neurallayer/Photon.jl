@@ -86,12 +86,14 @@ function loadWorkout(filename)::Workout
 end
 
 
+struct StopException <: Exception end
+
 """
 Stop a training session. If this is called outside the scope of
 a trianing session, just an error is thrown.
 """
 function stop(workout::Workout, reason::String)
-    throw(ErrorException(reason))
+    throw(StopException())
 end
 
 
@@ -282,7 +284,6 @@ fit!(workout, traindata, convertor=identity)
 """
 function fit!(workout::Workout, data, validation=nothing;
     epochs=1, convertor=autoConvertor, cb = ConsoleMeter())
-
     cb = runall(cb)
 
     for epoch in 1:epochs
@@ -299,8 +300,13 @@ function fit!(workout::Workout, data, validation=nothing;
                 validate(workout, convertor(minibatch)...)
             end
         end
-        cb(workout, :valid)
+        try
+            cb(workout, :valid)
+        catch ex
+            ex isa StopException ? break : rethrow(ex)
+        end
     end
+
 end
 
 @debug "Loaded Training module"

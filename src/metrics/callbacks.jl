@@ -10,11 +10,17 @@ fit!(workout, data, cb=EpochSave())
 
 """
 struct EpochSave
+    filename
+    EpochSave(filename=nothing) = new(filename)
 end
 
 function (c::EpochSave)(workout::Workout, phase::Symbol)
     if phase == :valid
-        saveWorkout(workout)
+        if c.filename !== nothing
+            saveWorkout(workout, c.filename)
+        else
+            saveWorkout(workout)
+        end
     end
 end
 
@@ -34,14 +40,19 @@ fit!(workout, data, cb=AutoSave(:val_loss))
 mutable struct AutoSave
     value::Float64
     metric::Symbol
-    AutoSave(metric::Symbol) = new(Inf, metric)
+    filename
+    AutoSave(metric::Symbol, filename=nothing) = new(Inf, metric, filename)
 end
 
 function (c::AutoSave)(workout::Workout, phase::Symbol)
     if phase == :valid
         getmetricvalue(workout, c.metric) do x
             if x < c.value
-                saveWorkout(workout)
+                if c.filename !== nothing
+                    saveWorkout(workout, c.filename)
+                else
+                    saveWorkout(workout)
+                end
                 c.value = x
             end
         end

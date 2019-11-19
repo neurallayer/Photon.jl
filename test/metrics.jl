@@ -28,12 +28,21 @@ function test_callbacks()
     workout = Workout(model, MSELoss())
 
     data = getdata()
+    filename = "myworkout.dat"
+    rm(filename, force=true)
 
-    fit!(workout, data, epochs=2, cb=AutoSave(:loss))
+    fit!(workout, data, epochs=2, cb=AutoSave(:loss, filename))
+    @assert isfile(filename)
+    rm(filename, force=true)
 
-    fit!(workout, data, epochs=2, cb=EpochSave())
+    fit!(workout, data, epochs=2, cb=EpochSave(filename))
+    @assert isfile(filename)
+    rm(filename, force=true)
 
-    fit!(workout, data, epochs=2, cb=EarlyStop(:loss))
+    val_data = getdata()
+    workout = Workout(model, MSELoss())
+    fit!(workout, data, val_data, epochs=10, cb=EarlyStop(:val_loss))
+    @assert workout.epochs < 10
 end
 
 
