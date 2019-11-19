@@ -111,6 +111,13 @@ function getmetricname(metric::Symbol, phase=:train)::Symbol
     metricname = phase == :train ? metric : Symbol("val_", metric)
 end
 
+"""
+Update the workout history with a single metric value
+"""
+function updatemetric!(workout::Workout, metricname::Symbol, value)
+    e = get!(workout.history, metricname, SmartReducer())
+    update!(e, workout.steps, value)
+end
 
 """
 Invoke the configured metrics. The loss metric will always be logged and available.
@@ -128,8 +135,7 @@ function updatemetrics!(workout::Workout, loss::Number, y, y_pred, phase=:train)
         try
             metricname = getmetricname(name, phase)
             metricvalue = fn(y_pred, y)
-            e = get!(workout.history, metricname, SmartReducer())
-            update!(e, workout.steps, metricvalue)
+            updatemetric!(workout, metricname, metricvalue)
         catch
             @warn "Failed executing metric." metricname maxlog=1
         end
@@ -300,6 +306,9 @@ function fit!(workout::Workout, data, validation=nothing;
                 validate(workout, convertor(minibatch)...)
             end
         end
+
+        updatemetric!(workout, :epoch, workout.epochs)
+
         try
             cb(workout, :valid)
         catch ex

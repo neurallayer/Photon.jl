@@ -1,7 +1,7 @@
 
 
 """
-Save the Workout at the end of every epoch.
+Save the Workout at the end of every epoch. Optionally provide a filename.
 
 # Usage
 ```julia
@@ -27,7 +27,7 @@ end
 
 
 """
-Save the Workout if a certain metric has improved
+Save the Workout if a certain metric has improved since the last epoch
 
 # Usage
 ```julia
