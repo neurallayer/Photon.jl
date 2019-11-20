@@ -11,7 +11,9 @@ OneHotBinaryAccuracy
 ## Callbacks
 
 ```@docs
+Meter
 ConsoleMeter
+SilentMeter
 FileMeter
 PlotMeter
 TensorBoardMeter

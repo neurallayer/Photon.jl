@@ -22,7 +22,7 @@ include("utils.jl")
 
 export Dense, BatchNorm, Sequential, Flatten, Residual, Concurrent, Dropout,
 	   Conv2D, Conv3D, Conv2DTranspose, Conv3DTranspose, output_size,
-	   MaxPool2D, AvgPool2D, AdaptiveAvgPool, AdaptiveMaxPool,
+	   MaxPool2D, AvgPool2D, MaxPool3D, AvgPool3D, AdaptiveAvgPool, AdaptiveMaxPool,
 	   RNN, LSTM, GRU,
 	   Activation, add, forward, ContextSwitch
 

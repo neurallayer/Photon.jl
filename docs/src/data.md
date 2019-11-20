@@ -12,6 +12,7 @@ TestDataset
 
 ## Transformers
 ```@docs
+Transformer
 ImageCrop
 Normalizer
 OneHotEncoder

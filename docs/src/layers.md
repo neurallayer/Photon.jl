@@ -33,10 +33,8 @@ Conv3DTranspose
 ```@docs
 MaxPool2D
 AvgPool2D
-
 MaxPool3D
 AvgPool3D
-
 AdaptiveAvgPool
 AdaptiveMaxPool
 ```

@@ -11,6 +11,7 @@ dl = Dataloader(ds)
 ```
 """
 abstract type Transformer <: Dataset end
+
 Base.length(t::Transformer) = length(t.ds)
 function (t::Transformer)(ds::Dataset)
     t.ds = ds

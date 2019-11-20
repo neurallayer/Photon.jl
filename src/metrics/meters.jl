@@ -1,17 +1,17 @@
 """
 A meter is reponsible for presenting metric values. It can be used just as
-a regualr callback argumet to the *fit!* function.
-A meter can be printing results to the console output, showing it on TensorBoard
-or storing results in a database.
+a regular callback argument to the *fit!* function.
+A meter is not limited to printing results to the console output, it can also be
+showing it on a TensorBoard or storing results in a database for example.
 """
 abstract type Meter end
 
 
 
 """
-Use a SilentMeter in case no output at all should be produced. The default of
-fit! function is to use a ConsoleMeter and using the SilentMeter this bahavior can be
-overriden.
+Use a SilentMeter in case no output is required. The default of
+*fit!* function is to use a ConsoleMeter and using the SilentMeter this
+behavior can be overriden.
 
 # Usage
 
