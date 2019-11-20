@@ -5,20 +5,10 @@ export Loss, Context, getContext, setContext, resetContext, hasgpu, is_on_gpu, K
 const ϵ = 10e-8
 
 
-"""
-A meter is reponsible for presenting metric values. This can be
-printing it to the console output, showing it on TensorBoard of storing it
-in a database.
-"""
-abstract type Meter end
-
 abstract type MetricStore end
 abstract type Layer end
 abstract type Metric end
 abstract type Optimizer end
-
-
-
 
 
 """

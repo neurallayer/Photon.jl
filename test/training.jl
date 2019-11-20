@@ -40,7 +40,7 @@ function test_train()
     workout = Workout(model, MSELoss())
 
     data = getdata()
-    fit!(workout, data, epochs=2)
+    fit!(workout, data, epochs=2, cb=SilentMeter())
 
     @test workout.epochs == 2
     @test workout.steps == (2 * length(data))
@@ -53,7 +53,7 @@ function test_train_valid()
 
     data_tr = getdata()
     data_val = getdata()
-    fit!(workout, data_tr, data_val, epochs=2)
+    fit!(workout, data_tr, data_val, epochs=2, cb=SilentMeter())
 
     @test hasmetric(workout, :loss)
     @test hasmetric(workout, :val_loss)
@@ -74,7 +74,7 @@ function test_channel()
         end
     end
 
-    fit!(workout, randomdata, epochs=2)
+    fit!(workout, randomdata, epochs=2,cb=SilentMeter())
     @test workout.epochs == 2
     @test hasmetric(workout, :loss)
 end

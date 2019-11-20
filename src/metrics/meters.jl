@@ -1,15 +1,41 @@
 
 
 """
+A meter is reponsible for presenting metric values. This can be
+printing it to the console output, showing it on TensorBoard of storing it
+in a database.
+"""
+abstract type Meter end
+
+
+
+"""
+Use a SilentMeter in case no output at all should be produced.
+
+# Usage
+
+```julia
+fit!(workout, data, val_data; epochs=5, cb=SilentMeter())
+```
+"""
+struct SilentMeter <: Meter
+end
+
+(meter::SilentMeter)(workout::Workout, phase::Symbol) = ()
+
+
+
+"""
 Logs metrics to the console output. By default it will only log at the end of an epoch
 and log the epoch, step, loss and validation loss. This is also the default configuration
 when you run fit! without specifying your own meters.
 
-Example:
+# Usage
 
-    meter = ConsoleMeter([:loss, :val_accuracy, :accuracy]; epochOnly=false)
-    fit!(workout, data, val_data; epochs=5, meters=[meter])
-
+```julia
+meter = ConsoleMeter([:loss, :val_accuracy, :accuracy]; epochOnly=false)
+fit!(workout, data, val_data; epochs=5, meters=[meter])
+```
 """
 mutable struct ConsoleMeter <: Meter
     throttle::Float64

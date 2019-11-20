@@ -20,17 +20,19 @@ end
 
 
 """
-Get the history of a metric. The provided metric has the fully qualified symbol
+Get the history of a metric. The provided metric has the fully qualified name
 and the returned value is a tuple of steps and values.
 
 ```julia
 h = history(workout, :val_loss)
 # returns e.g ([1000, 2000, 3000, 4000], [0.81, 0.73, 0.64, 0.61])
+
+h = history(workout, :loss)
 ```
 
 """
-function history(workout::Workout, symbol::Symbol)::Tuple
-      h = workout.history[symbol].state
+function history(workout::Workout, metric::Symbol)::Tuple
+      h = workout.history[metric].state
       steps = sort(collect(keys(h)))
       return (steps, [h[step] for step in steps])
 end

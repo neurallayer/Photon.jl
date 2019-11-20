@@ -8,7 +8,7 @@ using Documenter, Photon
 
 makedocs(modules=[Photon],
          sitename = "Photon",
-         pages = ["Home" => "index.md",
+         pages = ["Get Started" => "index.md",
                   "API" => [
                         "Core"    => "core.md",
                         "Layers"  => "layers.md",

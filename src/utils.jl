@@ -2,6 +2,13 @@
 export plotmetrics
 
 
+function getMetricsAtEpoch(m,ep)
+      s = intersect(Set(ep[1]), Set(m[1]))
+      a = [v for (k,v) in zip(ep...) if k in s]
+      b = [v for (k,v) in zip(m...) if k in s]
+      return (a,b)
+end
+
 """
 Plot the metrics after some training. This function will plot all the metrics
 in a single graph.
@@ -18,14 +25,22 @@ import Plots
 plotmetrics(Plots, workout)
 ```
 """
-function plotmetrics(Plots::Module, workout::Workout, metrics=[:loss, :val_loss])
+function plotmetrics(Plots::Module, workout::Workout, metrics=[:loss, :val_loss]; epoch_only=false)
       p = nothing
+      if epoch_only
+            ep = history(workout, :epoch)
+      end
 
       for (idx, metric) in enumerate(metrics)
             h = history(workout, metric)
 
+            if epoch_only
+                  h = getMetricsAtEpoch(h, ep)
+            end
+
             if idx == 1
-                  p = Plots.plot(h..., xlabel = "steps", ylabel="values", label=metric)
+                  xlabel = epoch_only ? "epochs" : "steps"
+                  p = Plots.plot(h..., xlabel = xlabel, ylabel="values", label=metric)
             else
                   Plots.plot!(h..., label=metric)
             end
