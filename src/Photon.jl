@@ -20,11 +20,12 @@ include("data/Data.jl")
 
 include("utils.jl")
 
-export Dense, BatchNorm, Sequential, Flatten, Residual, Concurrent, Dropout,
+export Dense, BatchNorm, Flatten, Dropout,
+	   StackedLayer, Sequential, Residual, Concurrent,
 	   Conv2D, Conv3D, Conv2DTranspose, Conv3DTranspose, output_size,
-	   MaxPool2D, AvgPool2D, MaxPool3D, AvgPool3D, AdaptiveAvgPool, AdaptiveMaxPool,
+	   PoolingLayer, MaxPool2D, AvgPool2D, MaxPool3D, AvgPool3D, AdaptiveAvgPool, AdaptiveMaxPool,
 	   RNN, LSTM, GRU,
-	   Activation, add, forward, ContextSwitch
+	   Activation, add, forward, ContextSwitch, autoConvertor
 
 dir(path...) = joinpath(dirname(@__DIR__),path...)
 

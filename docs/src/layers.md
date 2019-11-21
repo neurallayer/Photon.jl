@@ -11,6 +11,7 @@ Flatten
 Containers are special type of layers that contain other layers.
 
 ```@docs
+StackedLayer
 Sequential
 Concurrent
 Residual
@@ -31,6 +32,7 @@ Conv3DTranspose
 ## Pooling
 
 ```@docs
+PoolingLayer
 MaxPool2D
 AvgPool2D
 MaxPool3D
@@ -46,4 +48,10 @@ AdaptiveMaxPool
 RNN
 LSTM
 GRU
+```
+
+## Experimental
+
+```@docs
+ContextSwitch
 ```

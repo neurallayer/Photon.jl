@@ -27,4 +27,5 @@ EpochSave
 
 ```@docs
 history
+plotmetrics
 ```

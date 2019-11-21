@@ -1,4 +1,4 @@
-## Convplutional layers
+## Convolutional layers
 
 expand(N, i::Tuple) = i
 expand(N, i::Integer) = ntuple(_ -> i, N)

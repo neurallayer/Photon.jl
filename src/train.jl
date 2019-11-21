@@ -2,7 +2,7 @@ import Base:haslength
 import Serialization
 
 export Workout, saveWorkout, loadWorkout, predict, fit!, hasmetric,
-        freeze!, unfreeze!, validate
+        freeze!, unfreeze!, validate, gradients
 
 
 # Callback niceties from Flux.jl

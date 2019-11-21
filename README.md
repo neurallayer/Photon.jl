@@ -32,6 +32,10 @@ In the future it will be possible to use:
 pkg> add Photon
 ```
 
+## Documentation
+
+Click [here](https://neurallayer.github.io/Photon.jl/dev/) to go to the documentation site.
+
 
 ## Usage
 Defining a model is straightforward and should look familiar if you used Keras

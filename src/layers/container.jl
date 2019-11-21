@@ -2,7 +2,8 @@
 using MacroTools: @forward
 
 """
-Common behavior for stacked layers that enables to access them as arrays
+Stacked layer is a abstract type and defines common behavior for containers
+layers that enables to access them as arrays.
 """
 abstract type StackedLayer <: Layer end
 

@@ -59,10 +59,17 @@ end
 
 hasgpu() = Knet.gpu() >= 0
 
+"""
+Get the currently configured Context.
+"""
 function getContext()::Context
   ctx
 end
 
+"""
+Update the Context with the provided values. If values are no specified, the
+current value will be used.
+"""
 function setContext(;device=ctx.device, deviceId=ctx.deviceId, dtype=ctx.dtype)
   ctx.device = device
   ctx.deviceId = deviceId
@@ -70,7 +77,10 @@ function setContext(;device=ctx.device, deviceId=ctx.deviceId, dtype=ctx.dtype)
   getContext()
 end
 
-
+"""
+Reset the Context to its default values. That means if there is a GPU detected
+GPU, otherwise CPU. And as a datatype Float32.
+"""
 function resetContext()
 	global ctx
 	ctx = Context()
