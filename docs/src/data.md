@@ -6,7 +6,7 @@ ImageDataset
 JLDDataset
 DFDataset
 JuliaDBDataset
-ArrayDataset
+VectorDataset
 TestDataset
 ```
 

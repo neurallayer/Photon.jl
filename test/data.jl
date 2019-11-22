@@ -18,11 +18,11 @@ function test_dataset()
 end
 
 
-function test_arraydataset()
+function test_vectordataset()
 	X = [randn(100,100,3) for _ in 1:10]
 	Y = [rand(0:9) for _ in 1:10]
 
-    ds = ArrayDataset(X, Y)
+    ds = VectorDataset(X, Y)
 	@test length(ds) == 10
 	sample = ds[1]
 	@test  size(sample[1]) == (100,100,3)
@@ -50,7 +50,7 @@ function test_output()
 	samples = 9
 	X1 = [zeros(Float32,28,28,1) for _ = 1:samples]
 	Y1 = [ones(2) for _ = 1:samples]
-	data = ArrayDataset(X1,Y1) |> MiniBatch(4)
+	data = VectorDataset(X1,Y1) |> MiniBatch(4)
 
 	@assert data.batchsize == 4
 	@assert length(data) == samples ÷ 4
@@ -125,7 +125,7 @@ function test_transformers()
 	X = [randn(100,100,3) for _ in 1:10]
 	Y = [rand(0:9) for _ in 1:10]
 
-	ds = ArrayDataset(X,Y)
+	ds = VectorDataset(X,Y)
 	ds = ds |> OneHotEncoder(0:9)
 	sample = ds[5]
 	@assert size(sample[2]) == (10,)
@@ -151,7 +151,7 @@ end
 
 @testset "Data" begin
     test_dataset()
-	test_arraydataset()
+	test_vectordataset()
 	test_jld()
 	test_output()
 	test_minibatch()

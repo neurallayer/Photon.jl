@@ -2,12 +2,18 @@
 using ..Photon: getContext
 
 """
-Datasets are repsonsible for loading a single sample. They need to have length and
-index methods implemented. Hence, they can all be passed to a Dataloader which can load
-multiple samples parallelly using threading.
+Datasets can load and transform data and can be used in a pipeline.
+Typically they would have length and index methods implemented and need to return
+only a single sample. The MiniBatch transformer would collect these single samples
+and put them into a mini batch.
 
-Pleae note that in case your whole dataset would fit in memory, you can feed it
-directly to the fit! function (so a dataset is no requirement)
+```julia
+data = SomeDataset() |> SomeTransformer() |> MiniBatch()
+fit!(workout, data)
+```
+
+Please note that in case all your data would fit in memory, you can feed it
+directly to the fit! function (so a dataset is not required)
 
 ```julia
 X = [randn(10,10,16) for i in 1:100]
@@ -15,7 +21,6 @@ Y = [randn(1,16) for i in 1:100]
 fit!(workout, zip(X,Y))
 ```
 
-Otherwise the combination of dataset/dataloader is your best bet.
 """
 abstract type Dataset end
 
@@ -25,7 +30,8 @@ A dataset that contains random generated samples. Ideal for quick testing
 of a model. The random values will be drawn from a normal distribution.
 
 You need to provide the shape of X, Y and the number of samples that the
-dataset should contain. Optionally you can specify a sleep value to simulate IO blocking.
+dataset should contain. Optionally you can specify a sleep value to simulate
+IO blocking.
 
 # Usage
 
@@ -34,7 +40,7 @@ xshape = (28,28,1)
 yshape = (10,)
 ds = TestDataset(xshape, yshape, 60000)
 
-ds = TestDataset((100,), (1,), 100, sleep=0.1)
+ds = TestDataset((100,), (1,), 1000, sleep=0.1)
 ```
 """
 struct TestDataset <: Dataset
@@ -58,15 +64,15 @@ function Base.getindex(ds::TestDataset, idx)
 end
 
 """
-Base dataset that contains two vectors.
+Dataset that contains two vectors, one for the input data and one for the labels.
 """
-struct ArrayDataset{A,B} <: Dataset
+struct VectorDataset{A,B} <: Dataset
     x::A
     y::B
 end
 
-Base.length(ds::ArrayDataset) = length(ds.x)
-Base.getindex(ds::ArrayDataset, idx) = return (ds.x[idx], ds.y[idx])
+Base.length(ds::VectorDataset) = length(ds.x)
+Base.getindex(ds::VectorDataset, idx) = return (ds.x[idx], ds.y[idx])
 
 
 

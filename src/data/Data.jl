@@ -3,7 +3,7 @@ module Data
 using Random
 
 include("dataset.jl")
-export Dataset,ImageDataset, ArrayDataset, TestDataset, JLDDataset,
+export Dataset,ImageDataset, VectorDataset, TestDataset, JLDDataset,
         JuliaDBDataset, DFDataset
 
 include("transformer.jl")
