@@ -6,7 +6,7 @@ using Statistics
 import Knet
 
 include("core.jl")
-export SmartReducer, update!, history, BinaryAccuracy, OneHotBinaryAccuracy
+export getmetricname, SmartReducer, update!, history, BinaryAccuracy, OneHotBinaryAccuracy
 
 include("meters.jl")
 export Meter, ConsoleMeter, SilentMeter, TensorBoardMeter, FileMeter, PlotMeter

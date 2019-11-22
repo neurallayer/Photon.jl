@@ -1,5 +1,6 @@
 ## Basic
 
+
 ```@docs
 Dense
 Dropout
@@ -8,7 +9,8 @@ Flatten
 ```
 
 ## Container
-Containers are special type of layers that contain other layers.
+Containers are special type of layers that contain other layers. They typically
+extend the abstract type that allows to use them as regular Vectors.
 
 ```@docs
 StackedLayer
@@ -18,8 +20,13 @@ Residual
 ```
 
 ## Convolutional
-Convolution layer for 2D and 3D spatial data. A 2D convolutional layer requires
-a 4D Array in the shape of WxHxCxN (width x height x channels x batch).
+Photon contains convolutional layers for 2D and 3D spatial data.
+
+A 2D convolutional layer would require a 4D Array in the shape of WxHxCxN
+(width x height x channels x batch). So for a typical image classification
+problem this could look like: 224 x 224 x 3 x 8 (224 by 224 image, with 3 colors
+and 8 samples per batch).
+
 
 ```@docs
 Conv2D

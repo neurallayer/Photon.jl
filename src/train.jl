@@ -2,7 +2,7 @@ import Base:haslength
 import Serialization
 
 export Workout, saveWorkout, loadWorkout, predict, fit!, hasmetric,
-        freeze!, unfreeze!, validate, gradients
+        freeze!, unfreeze!, validate, gradients, stop
 
 
 # Callback niceties from Flux.jl
@@ -16,7 +16,7 @@ The Workout keeps track of the progress of the training session. At least a mode
 and a loss function needs to be provided. Optional an optimizer and one or more
 metrics can be specified.
 
-If no optimizer is provided, SGD will be used. If no metrics are provided, only
+If no optimizer is specified, SGD will be used. If no metrics are provided, only
 the loss during training and validation will be registered (:loss and :val_loss).
 
 # Usage
@@ -24,9 +24,9 @@ the loss during training and validation will be registered (:loss and :val_loss)
 ```julia
 workout = Workout(model, L1Loss())
 
-workout = Workout(model, CrossEntropy(), SGD())
+workout = Workout(model, CrossEntropy(), Adam())
 
-workout = Workout(model, HingeLoss(), SGD(); acc=BinaryAccuracy())
+workout = Workout(model, HingeLoss(); acc=BinaryAccuracy())
 ```
 """
 mutable struct Workout
@@ -89,8 +89,10 @@ end
 struct StopException <: Exception end
 
 """
-Stop a training session. If this is called outside the scope of
-a trianing session, just an error is thrown.
+Stop a training session. Typically invoked by a callback function that detects
+that the training is not progressing anymore.
+
+If this function is called outside the scope of a trianing session, an exception is thrown.
 """
 function stop(workout::Workout, reason::String)
     throw(StopException())
@@ -98,21 +100,22 @@ end
 
 
 """
-Does the workout have any recorded values for a certain metric
+Checks if the workout has any recorded values for a certain metric. The provided
+metricname has to be fully qualified.
+
+# Usage
+
+```julia
+if hasmetric(workout, :val_loss) ...
+```
+
 """
 hasmetric(workout::Workout, metricname::Symbol)::Bool = haskey(workout.history, metricname)
 
 
-"""
-Function to generate the fully qualified metric name. It uses the metric name
-and phase (train or valid) to come up with a unique name.
-"""
-function getmetricname(metric::Symbol, phase=:train)::Symbol
-    metricname = phase == :train ? metric : Symbol("val_", metric)
-end
 
 """
-Update the workout history with a single metric value
+Update the workout history with a single metric value.
 """
 function updatemetric!(workout::Workout, metricname::Symbol, value)
     e = get!(workout.history, metricname, SmartReducer())

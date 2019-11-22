@@ -1,7 +1,9 @@
 
 
 """
-Stores the calculated metrics
+Stores the calculated metrics. If multiple values are provided at the same step
+(like is the case with validation metrics), the moving average over those values
+will be stored.
 """
 struct SmartReducer <: MetricStore
     state::Dict{Int, Real}
@@ -17,6 +19,19 @@ function update!(r::SmartReducer, step::Int, value::Real)
     end
 end
 
+
+"""
+Function to generate the fully qualified metric name. It uses the metric name
+and the phase (:train or :valid) to come up with a unique name.
+
+```julia
+getmetricname(:loss, :train) # return is :loss
+getmetricname(:loss, :valid) # return is :val_loss
+```
+"""
+function getmetricname(metric::Symbol, phase=:train)::Symbol
+    metricname = phase == :train ? metric : Symbol("val_", metric)
+end
 
 
 """
@@ -42,10 +57,9 @@ end
 Binary accuracy calculation
 """
 struct BinaryAccuracy
-    name::Symbol
     threshold
 
-    BinaryAccuracy(;threshold=0.5, name=:acc) = new(name,threshold)
+    BinaryAccuracy(;threshold=0.5) = new(threshold)
 end
 
 function (a::BinaryAccuracy)(y_pred::Tensor, y_true::Tensor)
@@ -56,11 +70,7 @@ end
 """
 Binary accuracy for a onehot classification.
 """
-struct OneHotBinaryAccuracy
-    name::Symbol
-
-    OneHotBinaryAccuracy(name=:acc) = new(name)
-end
+struct OneHotBinaryAccuracy end
 
 function (a::OneHotBinaryAccuracy)(y_pred::Tensor, y_true::Tensor)
     y_pred, y_true = Knet.mat(y_pred), Knet.mat(y_true)
