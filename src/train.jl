@@ -6,9 +6,9 @@ export Workout, saveWorkout, loadWorkout, predict, fit!, hasmetric,
 
 
 # Callback niceties from Flux.jl
-call(f, xs...) = f(xs...)
+call_fn(f, xs...) = f(xs...)
 runall(f) = f
-runall(fs::AbstractVector) = () -> foreach(call, fs)
+runall(fs::AbstractVector) = () -> foreach(call_fn, fs)
 
 
 """
