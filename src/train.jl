@@ -37,9 +37,11 @@ mutable struct Workout
     history::IdDict{Symbol,MetricStore}
     steps::Int
     epochs::Int
+    mover::Mover
 
-    function Workout(model::Layer, loss::Union{Loss,Function}, opt=Knet.SGD(); metrics...)
-        new(model, loss, opt, collect(metrics), IdDict(), 0, 0)
+    function Workout(model::Layer, loss::Union{Loss,Function},
+                     opt=Knet.SGD(); mover=SmartMover(), metrics...)
+        new(model, loss, opt, collect(metrics), IdDict(), 0, 0, mover)
     end
 end
 
@@ -172,8 +174,8 @@ end
 Utility function to calculate the gradients. Useful when checking for vanishing or
 exploding gradients. The returned value is a Vector of (Param, Gradient).
 """
-function gradients(workout::Workout, minibatch=first(workout.dl); convertor=autoConvertor)
-    x, y = convertor(minibatch)
+function gradients(workout::Workout, minibatch=first(workout.dl))
+    x, y = workout.mover(minibatch)
     J = Knet.@diff begin
         y_pred = workout.model(x)
         workout.loss(y_pred, y)
@@ -224,8 +226,9 @@ For a minibatch (x,y) of data, the folowing sequence will be executed:
 3. update and remember the metrics, if any
 4. do the backpropagation and update the weights
 """
-function step!(workout::Workout, x, y; zerograd=true)
+function step!(workout::Workout, minibatch; zerograd=true)
     workout.steps += 1
+    x, y = workout.mover(minibatch)
     J = Knet.@diff begin
         y_pred = workout.model(x)
         loss = workout.loss(y_pred, y)
@@ -250,9 +253,9 @@ x = randn(Float32, 224, 224, 3)
 predict(model, x)
 ```
 """
-function predict(model, x; makebatch=true, convertor=autoConvertor)
+function predict(workout, x; makebatch=true)
     x = makebatch ? addlast(x) : x
-    y = model(convertor(x))
+    y = workout.model(workout.conv(x))
     makebatch ? droplast(y) : y
 end
 
@@ -261,7 +264,8 @@ end
 Validate a minibatch and calculate the loss and metrics. Typically this function
 is called from the fit! method. But if required can also be invoked directly.
 """
-function validate(workout::Workout, x, y)
+function validate(workout::Workout, minibatch)
+    x, y = workout.mover(minibatch)
     y_pred = workout.model(x)
     loss = workout.loss(y_pred, y)
     updatemetrics!(workout, loss, y, y_pred, :valid)
@@ -283,30 +287,24 @@ the model.
 fit!(workout, traindata)
 fit!(workout, traindata, testdata, epochs=50)
 ```
-If you don't want any data conversion, just pass the identity funciton
-as the convertor:
-
-```julia
-fit!(workout, traindata, convertor=identity)
-```
 
 """
 function fit!(workout::Workout, data, validation=nothing;
-    epochs=1, convertor=autoConvertor, cb = ConsoleMeter())
+    epochs=1, cb = ConsoleMeter())
     cb = runall(cb)
 
     for epoch in 1:epochs
         workout.epochs += 1
         d = data isa Function ? data() : data
         for minibatch in d
-            step!(workout, convertor(minibatch)...)
+            step!(workout, minibatch)
             cb(workout, :train)
         end
 
         if validation !== nothing
             d = validation isa Function ? validation() : validation
             for minibatch in d
-                validate(workout, convertor(minibatch)...)
+                validate(workout, minibatch)
             end
         end
 

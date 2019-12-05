@@ -37,7 +37,8 @@ based environments.
 # Attributes
 - device::Symbol the type of device. For now supported :cpu and :gpu
 - deviceId::Int the id of the device, useful for example if you multiple GPU's
-- dtype::Type the type of data you want to use. Most common are Float32, Float16 or Float64.
+- dtype::Type the type you want to use for parameters. Most common are
+  Float32, Float16 or Float64.
 """
 mutable struct Context
 	device::Symbol
@@ -104,24 +105,37 @@ addlast(x) = reshape(x, (size(x)...,1))
 droplast(x) = reshape(x, (size(x)[1:end-1]...))
 
 
+
+abstract type Mover end
+
 """
-autoConvertor converts data to the right format for a model.
+Converts data to the right device and optioal data type for a model.
 It uses the context to determine the device (cpu or gpu) and datatype
 that the data needs to be.
 
 It supports Tuples, Arrays and KnetArrays and a combination of those.
 """
-function autoConvertor(arr::Array)
-	arr = convert(Array{ctx.dtype},arr)
+struct SmartMover <: Mover
+	move_float
+
+	SmartMover(move_float=true) = new(move_float)
+end
+
+function (m::SmartMover)(arr::Array)
+	if m.move_float && (eltype(arr) isa AbstractFloat)
+		arr = convert(Array{ctx.dtype}, arr)
+	end
 	ctx.device == :gpu ? Knet.KnetArray(arr) : arr
 end
 
-function autoConvertor(arr::Knet.KnetArray)
-	arr = convert(Knet.KnetArray{ctx.dtype}, arr)
+function (m::SmartMover)(arr::Knet.KnetArray)
+	if m.move_float && (eltype(arr) isa AbstractFloat)
+		arr = convert(Knet.KnetArray{ctx.dtype}, arr)
+	end
 	ctx.device == :gpu ? arr : Array(arr)
 end
 
-autoConvertor(arr::Tuple)= (autoConvertor(elem) for elem in arr)
+(m::SmartMover)(t::Tuple)= (m(elem) for elem in t)
 
 
 
