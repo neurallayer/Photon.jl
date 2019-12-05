@@ -12,7 +12,7 @@ From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
 pkg> add https://github.com/neurallayer/Photon.jl
 ```
 
-In the future it will be possible to use:
+Once a stable API is in place, it will be possible to use:
 
 ```
 pkg> add Photon
@@ -25,7 +25,7 @@ To train your own model, there are four steps to follow:
 
 1) Create your **model** using the layers that come out of the box with Photon or using your own custom layers.
 
-2) Create a **workout** that combines the model, a loss function and an optimiser. Optionally you can also add some metrics that you want to monitor.
+2) Create a **workout** that combines the model, a loss function and an optimiser. Optionally you can also add some metrics that you want to monitor during the progress of the training.
 
 3) Prepare your **data** with Data pipelines.
 
@@ -72,7 +72,7 @@ mymodel = Sequential(
 
 
 So normally you won't need to create your own layers. But if you have to, a layer
-is nothing more than function. So the following could be a layer ;)
+is in it simplest form nothing more than function that receives and Array and returns an Array. So the following could be a layer ;)
 
 ```julia
 myLayer(X) = is_full_moon() ? X .- 1 : X
@@ -82,7 +82,7 @@ myLayer(X) = is_full_moon() ? X .- 1 : X
 ### Step 2: Define a Workout
 A workout combines a model + loss + optimiser and keeps track of the progress
 during the actual training. The workout is stateful in the sense that you can run
-multiple training sessions and the progress will be recorded appropriately.   
+multiple training sessions (fit!) and the progress will be recorded appropriately.   
 
 The minimum required code to create a workout is:
 
@@ -90,19 +90,18 @@ The minimum required code to create a workout is:
 workout = Workout(mymodel, MSELoss())
 ```
 
-This will create a workout that will use the default Optimiser (SGD) and only
+This will create a workout that will use the default optimiser (SGD) and only
 the *loss metric* being tracked.
 
-Alternatively you can pass an optimizer and define the metrics that you want to get tracked during the training sessions. Photon tracks :loss and :val_loss (for the validation phase) by default, but you can define additional ones.
+Alternatively you can pass an optimiser and define the metrics that you want to get tracked during the training sessions. Photon tracks :loss and :val_loss (for the validation phase) by default, but you can define additional ones.
 
 ```julia
 workout = Workout(mymodel, MSE(), SGD(), acc=BinaryAccuracy())
 ```
 
-Each additional metric is added as an optional parameter, where the name will be
-the metricname and the function the metric calculation.
+Each additional metric is added as an optional parameter, where the name of the parameter (so acc in the above example) will be the metricname and the function the metric calculation.
 
-Another useful feature is that a Workout can saved and restored at any moment during the training. And not only the model and its parameters will be saved. Also the state of the optimiser and any logged metrics will be able saved and restored to their previous state. This even makes it also possible to shared workout with colleagues (although they need the same packages installed installed as you).
+Another useful feature is that a Workout can saved and restored at any moment during the training. And not only the model and its parameters will be saved. Also the state of the optimiser and any of the logged metrics will be saved and restored to their previous state. This makes it also possible to shared workout with colleagues (although they still need to have the same packages installed installed as you).
 
 ```julia
 filename = saveWorkout(workout)
@@ -138,6 +137,7 @@ Photon comes out the box with several reusable components for creating these pip
 - Cropper
 - MiniBatch
 - Noiser
+- Split
 
 A complete pipeline for image data could look something like this:
 
@@ -147,19 +147,21 @@ data = data |> Crop(200,200) |> Normalize() |> MiniBatch(8)
 ```
 
 ### Step 4: Run the Training
-The actual training in Photon is done invoking the fit! function.
+The final step is the actual training and is done by invoking the fit! function with the right parameters.
 
 ```julia
 fit!(workout, data, epochs=5)
 ```
 
-The validation phase is optional. But if you provide data for the validation phase, Photon will automatically run the validation step after each training epoch.
+You always need to provide a workout and the data for training. Other parameters are optional.
+
+So for example the validation phase is optional. But if you provide data for the validation phase, Photon will automatically run the validation step after each training epoch.
 
 
 ```julia
 fit!(workout, data, training_data, epochs=10)
 ```
-Defined metrics and loss will then be available both for training and validation.
+Any additional defined metrics and the loss value will then be available *both* for training and validation.
 
 The data is expected to be a tuple of (X, Y) where X and Y can be tuples again in case your model expects multiple inputs or outputs. So some examples of valid formats
 
@@ -170,8 +172,7 @@ The data is expected to be a tuple of (X, Y) where X and Y can be tuples again i
 ((X1, X2), (Y1, Y2))
 ```
 
-By default fit! will convert each batch to the right data type and device. This is
-controlled by the optional parameter *convertor*. If you don't want a conversion to take place and ensured the provided data is already in the right format, you can pass the identity function:
+By default fit! will convert each batch to the right data type and device. This is controlled by the optional parameter *convertor*. If you don't want a conversion to take place and ensured the provided data is already in the right format, you can pass the identity function:
 
 ```julia
 fit!(workout, data; convertor=identity)

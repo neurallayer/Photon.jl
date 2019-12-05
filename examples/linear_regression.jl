@@ -3,7 +3,6 @@ using Knet:value
 
 # An example that demonstrates how to use Photon for linear regression problem
 
-
 """
 The most simple model possible, just a single layer with 1 output
 """

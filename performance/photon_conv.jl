@@ -3,7 +3,6 @@ module PhotonTest
 
 using Photon
 
-
 function test()
 
   model = Sequential(
