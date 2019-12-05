@@ -27,7 +27,7 @@ workout = Workout(model, nll, acc=OneHotBinaryAccuracy())
 
 # Run the training for 10 epochs and we don't need a convertor since
 # mnistdata function already does that work.
-fit!(workout, trndata, tstdata; epochs=10, convertor=identity)
+fit!(workout, trndata, tstdata; epochs=1)
 
 println("\nTrained the model in $(workout.epochs) epochs.")
 
