@@ -71,8 +71,8 @@ end
 
 function test_algo()
 
-    pred   = [[0.3 0.7]; [0. 1.]; [0.4 0.6]]
-    labels = [[1 0];[0 1];[0 1]]
+    pred   = [[0.3 0.7]; [0. 1.]; [0.4 0.6]]'
+    labels = [[1 0];[0 1];[0 1]]'
     loss = CrossEntropyLoss()
     @assert loss(pred, labels) ≈ 0.5715992760
 
