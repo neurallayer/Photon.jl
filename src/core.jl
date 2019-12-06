@@ -4,7 +4,6 @@ export Loss, Context, getContext, setContext, resetContext, hasgpu, is_on_gpu, K
 
 const ϵ = 10e-8
 
-
 abstract type MetricStore end
 abstract type Layer end
 abstract type Metric end
@@ -87,31 +86,24 @@ function resetContext()
 	ctx = Context()
 end
 
-"""
-KorA makes it easy to move an array to the GPU or the other way around
-"""
-KorA(arr::Array) = (ctx.device == :gpu) ? Knet.KnetArray(arr) : arr
-KorA(arr::Knet.KnetArray)= (ctx.device == :cpu) ? Array(arr) : arr
-KorA(arr::Tuple)= (KorA(elem) for elem in arr)
-
-
-# TODO: Make more generic
-toFloat32(arr::Array) = convert(Array{Float32}, arr)
-toFloat32(arr::Knet.KnetArray) = convert(Knet.KnetArray{Float32}, arr)
-toFloat32(arr::Tuple) = (toFloat32(elem) for elem in arr)
-
-
 addlast(x) = reshape(x, (size(x)...,1))
 droplast(x) = reshape(x, (size(x)[1:end-1]...))
 
+"""
+Mover converts data to the right device liek a CPU or GPU. However implememetations
+can provide extra functionality like also taking care of the correct data types.
 
-
+The default Mover is SmartMover.isconcretetype
+"""
 abstract type Mover end
 
 """
-Converts data to the right device and optioal data type for a model.
+SmartMover converts data to the right device and optional data type for a model.
 It uses the context to determine the device (cpu or gpu) and datatype
 that the data needs to be.
+
+It move_float is true, SmartMover will ensure that any provided Array of the type
+AbstractFloat will convert to the Float type as defined in the context.
 
 It supports Tuples, Arrays and KnetArrays and a combination of those.
 """
@@ -137,6 +129,11 @@ end
 
 (m::SmartMover)(t::Tuple)= (m(elem) for elem in t)
 
+
+"""
+KorA is just an instance of SmartMover.
+"""
+KorA = SmartMover()
 
 
 # small util
