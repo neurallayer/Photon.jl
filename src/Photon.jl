@@ -12,6 +12,9 @@ include("layers/container.jl")
 include("train.jl")
 include("losses.jl")
 
+include("callbacks/Callbacks.jl")
+@reexport using .Callbacks
+
 include("metrics/Metrics.jl")
 @reexport using .Metrics
 

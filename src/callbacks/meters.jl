@@ -1,5 +1,5 @@
 """
-A meter is reponsible for presenting metric values. It can be used just as
+A meter is responsible for presenting metric values. It can be used just as
 a regular callback argument to the *fit!* function.
 A meter is not limited to printing results to the console output, it can also be
 showing it on a TensorBoard or storing results in a database for example.

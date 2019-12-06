@@ -1,5 +1,17 @@
 
 
+module Callbacks
+
+
+using ..Photon: stop, Workout, Tensor, getmetricvalue, saveWorkout, getContext
+using Printf
+using Statistics
+import Knet
+
+include("meters.jl")
+export Meter, ConsoleMeter, SilentMeter, TensorBoardMeter, FileMeter, PlotMeter
+
+export AutoSave, EpochSave, EarlyStop
 """
 Save the Workout at the end of every epoch. Optionally provide a filename.
 
@@ -79,4 +91,6 @@ function (c::EarlyStop)(workout::Workout, phase::Symbol)
             end
         end
     end
+end
+
 end
