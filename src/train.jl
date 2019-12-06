@@ -19,6 +19,9 @@ metrics can be specified.
 If no optimizer is specified, SGD will be used. If no metrics are provided, only
 the loss during training and validation will be registered (:loss and :val_loss).
 
+The provided mover will move data to the correct device. See also SmartMover. If
+no mover is required, you can provide the identity function instead.
+
 # Usage
 
 ```julia
@@ -27,6 +30,8 @@ workout = Workout(model, L1Loss())
 workout = Workout(model, CrossEntropy(), Adam())
 
 workout = Workout(model, HingeLoss(); acc=BinaryAccuracy())
+
+workout = Workout(model, L1Loss(), mover=identity)
 ```
 """
 mutable struct Workout
@@ -37,7 +42,7 @@ mutable struct Workout
     history::IdDict{Symbol,MetricStore}
     steps::Int
     epochs::Int
-    mover::Mover
+    mover::Union{Mover,Function}
 
     function Workout(model::Layer, loss::Union{Loss,Function},
                      opt=Knet.SGD(); mover=SmartMover(), metrics...)
@@ -48,7 +53,7 @@ end
 
 """
 Enable saving and loading of models by specialized KnetArray methods for Julia serialization
-This will effectively move a GPU weight to the CPU before serialing it and move it back to
+This will effectively move a GPU weigth to the CPU before serialing it and move it back to
 the GPU when deserializing.
 """
 function Serialization.serialize(s::Serialization.AbstractSerializer, p::Knet.KnetArray)
@@ -64,7 +69,8 @@ end
 
 """
 Save a workout to a file. This will save all the state that is captured in the workout
-and enables to continue at a later stage.
+and enables to continue at a later stage using the loadWorkout function. Under the hood
+this function uses Julia serialization.
 """
 function saveWorkout(workout::Workout, filename="workout_$(workout.steps).dat")::String
     # serialize
@@ -73,7 +79,7 @@ function saveWorkout(workout::Workout, filename="workout_$(workout.steps).dat"):
 end
 
 """
-Load a workout from file and return it.
+Load a workout from a file and return the initialized Workout.
 
 # Usage
 
@@ -182,6 +188,7 @@ function gradients(workout::Workout, minibatch=first(workout.dl))
     end
     gradients = []
     for p in Knet.params(J)
+        p.opt === :NOUPDATE && continue
         if p.opt === nothing; p.opt = Knet.clone(opt); end
         push!(gradients, (p, Knet.grad(J,p)))
     end
@@ -208,8 +215,8 @@ Perform the back propagation and update of weights in a single go.
 """
 function back!(J::Knet.Tape, opt)
     for p in Knet.params(J)
-        if p.opt === nothing; p.opt = Knet.clone(opt); end
         p.opt === :NOUPDATE && continue
+        if p.opt === nothing; p.opt = Knet.clone(opt); end
         Knet.update!(p, Knet.grad(J,p))
     end
 end
@@ -244,18 +251,18 @@ Predict a sample, either a single value or a batch. Compared to invoking
 the model directory with model(x), predit takes care of:
 
 - Moving the data to the GPU if required.
-- Making the data into a batch (controlled by makebatch parameter)
+- Shaping the data into a batch (controlled by makebatch parameter)
 
 # Usage
 
 ```julia
 x = randn(Float32, 224, 224, 3)
-predict(model, x)
+predict(workout, x)
 ```
 """
 function predict(workout, x; makebatch=true)
     x = makebatch ? addlast(x) : x
-    y = workout.model(workout.conv(x))
+    y = workout.model(workout.mover(x))
     makebatch ? droplast(y) : y
 end
 
