@@ -87,17 +87,7 @@ The combination of Deep Learning and Julia is a very performant one. Especially
 when running the models on a GPU. Some tests reveal **speedups of up to 100%** when
 compared one of the most popular framework Keras/Tensorflow 2.0.
 
-Some early results based on running models on an Intel 7820X machine with a
-GTX-1080TI NVidia graphics card installed and running Ubuntu 18.04:
-
-|Scenario | Photon | Keras | Flux |
-| :---    |   ---: |  ---: | ---: |
-| Conv predict | 5.7s | 12.3s | 9.1s |
-| Conv train | todo | todo | todo |
-| LSTM predict | todo | todo | todo |
-| LSTM train | todo | todo | todo |
-
-The code that has been used is available in the *performance* sub directory.
+The code that has been used to test is available in the *performance* sub directory.
 
 ## Features
 The main goal is to provide a user friendly API for Machine Learning that enables

@@ -3,7 +3,7 @@ module FluxTest
 
 using Flux
 using Flux:cu
-
+using Flux: @epochs
 
 function test()
   model = Chain(
@@ -25,14 +25,22 @@ function test()
   ) |> gpu
 
 
-  data = randn(Float32,224,224,3,16)
+  # Create dummy data. This is a bit cheating since all the data is already
+  # put on the GPU. Ideally this should happen only during training to simulate
+  # large datasets.
+  X = (cu(randn(Float32,224,224,3,16)) for _=1:100)
+  Y = (cu(randn(Float32,10,16)) for _=1:100)
+  data = collect(zip(X,Y))
 
-  model(cu(data))
+  loss(x, y) = Flux.mse(model(x), y)
+  opt = Descent()
 
-  @time for i in 1:1000
-    X = cu(data)
-    model(X)
-  end
+  # One training epochs to get everything compiled
+  Flux.train!(loss, params(model), data, opt)
+
+  # Now it is time to measure
+  @time @epochs 10 Flux.train!(loss, params(model), data, opt)
+
 end
 
 test()

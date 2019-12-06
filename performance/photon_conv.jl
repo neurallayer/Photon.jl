@@ -22,14 +22,19 @@ function test()
     Dense(10, relu)
   )
 
-  data = randn(Float32,224,224,3,16)
+  # Create dummy data
+  X = (randn(Float32,224,224,3,16) for _=1:100)
+  Y = (randn(Float32,10,16) for _=1:100)
+  data = collect(zip(X,Y))
 
-  model(KorA(data))
+  # Create the workout
+  workout = Workout(model, MSELoss())
 
-  @time for i in 1:1000
-    X = KorA(data)
-    model(X)
-  end
+  # One run ensure all is compiled
+  fit!(workout, data)
+
+  # 10 runs we going to measure
+  @time fit!(workout, data, epochs=10)
 end
 
 test()
