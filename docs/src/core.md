@@ -10,6 +10,7 @@ predict
 train!
 freeze!
 unfreeze!
+stop
 gradients
 ```
 
@@ -23,7 +24,8 @@ Context
 getContext
 setContext
 resetContext
-autoConvertor
+Mover
+SmartMover
 ```
 
 ## Internal

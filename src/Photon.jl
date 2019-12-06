@@ -29,7 +29,8 @@ export Dense, BatchNorm, Flatten, Dropout,
 	   PoolingLayer, MaxPool2D, AvgPool2D, MaxPool3D, AvgPool3D,
 	   AdaptiveAvgPool, AdaptiveMaxPool,
 	   RNN, LSTM, GRU,
-	   Activation, add, forward, ContextSwitch
+	   Activation, add, forward, ContextSwitch,
+	   Mover, SmartMover
 
 dir(path...) = joinpath(dirname(@__DIR__), path...)
 
