@@ -19,7 +19,7 @@ X = [randn(25, 16) for i in 1:10]
 Y = [rand(10, 16) for i in 1:10]
 
 # perform the training
-fit!(workout, zip(X,Y))
+train!(workout, zip(X,Y))
 
 
 # We can call the trained model directly to predict a minibatch of 16 samples

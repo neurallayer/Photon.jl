@@ -9,16 +9,16 @@ and put them into a mini batch.
 
 ```julia
 data = SomeDataset() |> SomeTransformer() |> MiniBatch()
-fit!(workout, data)
+train!(workout, data)
 ```
 
 Please note that in case all your data would fit in memory, you can feed it
-directly to the fit! function (so a dataset is not required)
+directly to the train! function (so a dataset is not required)
 
 ```julia
 X = [randn(10,10,16) for i in 1:100]
 Y = [randn(1,16) for i in 1:100]
-fit!(workout, zip(X,Y))
+train!(workout, zip(X,Y))
 ```
 
 """

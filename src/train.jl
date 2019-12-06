@@ -1,7 +1,7 @@
 import Base:haslength
 import Serialization
 
-export Workout, saveWorkout, loadWorkout, predict, fit!, hasmetric,
+export Workout, saveWorkout, loadWorkout, predict, train!, hasmetric,
         freeze!, unfreeze!, validate, gradients, stop
 
 
@@ -85,7 +85,7 @@ Load a workout from a file and return the initialized Workout.
 
 ```julia
 workout = loadWorkout("workout_1000.dat")
-fit!(workout, mydata)
+train!(workout, mydata)
 ```
 """
 function loadWorkout(filename)::Workout
@@ -224,7 +224,7 @@ end
 
 """
 Take a single step in updating the weights of a model. This function
-will be invoked from fit! to do the actual learning.
+will be invoked from train! to do the actual learning.
 
 For a minibatch (x,y) of data, the folowing sequence will be executed:
 
@@ -269,7 +269,7 @@ end
 
 """
 Validate a minibatch and calculate the loss and metrics. Typically this function
-is called from the fit! method. But if required can also be invoked directly.
+is called from the train! method. But if required can also be invoked directly.
 """
 function validate(workout::Workout, minibatch)
     x, y = workout.mover(minibatch)
@@ -281,22 +281,22 @@ end
 
 """
 Train the model based on a supervised dataset and for a number
-of epochs. fit! can be called multiple times and will continue
+of epochs. train! can be called multiple times and will continue
 to train where is left of last time.
 
-By default the fit! function will try to ensure the data is of the right
+By default the train! function will try to ensure the data is of the right
 type (e.g. Float32) and on the right device (e.g. GPU) before feeding it to
 the model.
 
 # Usage
 
 ```julia
-fit!(workout, traindata)
-fit!(workout, traindata, testdata, epochs=50)
+train!(workout, traindata)
+train!(workout, traindata, testdata, epochs=50)
 ```
 
 """
-function fit!(workout::Workout, data, validation=nothing;
+function train!(workout::Workout, data, validation=nothing;
     epochs=1, cb = ConsoleMeter())
     cb = runall(cb)
 

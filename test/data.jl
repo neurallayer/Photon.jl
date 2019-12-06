@@ -87,7 +87,7 @@ function test_training()
     )
 
 	workout = Workout(model, MSELoss())
-	fit!(workout, data, epochs=2, cb=SilentMeter())
+	train!(workout, data, epochs=2, cb=SilentMeter())
 	@assert workout.steps == (100÷8)*2
 
 end
@@ -105,7 +105,7 @@ function test_threading(sleep)
     )
 
 	workout = Workout(model, MSELoss())
-	@time fit!(workout, data, epochs=2, cb=SilentMeter())
+	@time train!(workout, data, epochs=2, cb=SilentMeter())
 	@assert workout.steps == (100÷32)*2
 end
 

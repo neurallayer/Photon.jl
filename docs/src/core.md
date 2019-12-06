@@ -7,7 +7,7 @@ saveWorkout
 loadWorkout
 validate
 predict
-fit!
+train!
 freeze!
 unfreeze!
 gradients

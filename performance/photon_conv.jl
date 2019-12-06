@@ -31,10 +31,10 @@ function test()
   workout = Workout(model, MSELoss())
 
   # One run ensure all is compiled
-  fit!(workout, data)
+  train!(workout, data)
 
   # 10 runs we going to measure
-  @time fit!(workout, data, epochs=10)
+  @time train!(workout, data, epochs=10)
 end
 
 test()

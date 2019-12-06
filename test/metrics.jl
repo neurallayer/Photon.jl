@@ -31,17 +31,17 @@ function test_callbacks()
     filename = "myworkout.dat"
     rm(filename, force=true)
 
-    fit!(workout, data, epochs=2, cb=AutoSave(:loss, filename))
+    train!(workout, data, epochs=2, cb=AutoSave(:loss, filename))
     @assert isfile(filename)
     rm(filename, force=true)
 
-    fit!(workout, data, epochs=2, cb=EpochSave(filename))
+    train!(workout, data, epochs=2, cb=EpochSave(filename))
     @assert isfile(filename)
     rm(filename, force=true)
 
     val_data = getdata()
     workout = Workout(model, MSELoss())
-    fit!(workout, data, val_data, epochs=10, cb=EarlyStop(:val_loss))
+    train!(workout, data, val_data, epochs=10, cb=EarlyStop(:val_loss))
     @assert workout.epochs < 10
 end
 
@@ -51,7 +51,7 @@ function test_core()
     workout = Workout(model, MSELoss())
 
     data = getdata()
-    fit!(workout, data, epochs=2)
+    train!(workout, data, epochs=2)
     h = history(workout, :loss)
 
     @test h isa Tuple

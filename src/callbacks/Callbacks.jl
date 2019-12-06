@@ -17,7 +17,7 @@ Save the Workout at the end of every epoch. Optionally provide a filename.
 
 # Usage
 ```julia
-fit!(workout, data, cb=EpochSave())
+train!(workout, data, cb=EpochSave())
 ```
 
 """
@@ -45,7 +45,7 @@ Save the Workout if a certain metric has improved since the last epoch
 ```julia
 
 # save as long as the validation loss is declining
-fit!(workout, data, cb=AutoSave(:val_loss))
+train!(workout, data, cb=AutoSave(:val_loss))
 ```
 
 """

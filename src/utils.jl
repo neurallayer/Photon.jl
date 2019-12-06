@@ -19,7 +19,7 @@ to provide that module as the first parameter.
 # Usage
 
 ```julia
-fit!(workout, mydata, epochs=10)
+train!(workout, mydata, epochs=10)
 
 import Plots
 plotmetrics(Plots, workout)

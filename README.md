@@ -79,7 +79,7 @@ easy API:
 
 ```julia
 workout = Workout(model, nll)
-fit!(workout, data, epochs=10)
+train!(workout, data, epochs=10)
 ```
 
 ## Performance

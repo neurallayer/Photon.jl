@@ -8,7 +8,7 @@ Many of the transformers can be chained together.
 data = SomeDataset(...)
 data = data |> Transformer1(...) |> Transformer2(...) |> Transformer3(...)
 
-fit!(workout, data)
+train!(workout, data)
 ```
 """
 abstract type Transformer <: Dataset end
@@ -289,7 +289,7 @@ this won't become a botttleneck.
 
 ```julia
 data = ImageDataset(filenames,labels) |> MiniBatch(16, shuffle=False)
-fit!(workout, data)
+train!(workout, data)
 ```
 
 """

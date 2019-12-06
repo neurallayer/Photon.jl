@@ -72,7 +72,7 @@ model = Sequential(
 
 workout = Workout(model, CrossEntropyLoss())
 
-fit!(workout, data_train, data_valid, epochs=50)
+train!(workout, data_train, data_valid, epochs=50)
 @info "Finished training for $(workout.epochs) epochs"
 
 import Plots

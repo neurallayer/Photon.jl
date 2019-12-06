@@ -1,6 +1,6 @@
 """
 A meter is responsible for presenting metric values. It can be used just as
-a regular callback argument to the *fit!* function.
+a regular callback argument to the *train!* function.
 A meter is not limited to printing results to the console output, it can also be
 showing it on a TensorBoard or storing results in a database for example.
 """
@@ -10,13 +10,13 @@ abstract type Meter end
 
 """
 Use a SilentMeter in case no output is required. The default of
-*fit!* function is to use a ConsoleMeter and using the SilentMeter this
+*train!* function is to use a ConsoleMeter and using the SilentMeter this
 behavior can be overriden.
 
 # Usage
 
 ```julia
-fit!(workout, data, val_data; epochs=5, cb=SilentMeter())
+train!(workout, data, val_data; epochs=5, cb=SilentMeter())
 ```
 """
 struct SilentMeter <: Meter
@@ -29,13 +29,13 @@ end
 """
 Logs metrics to the console output. By default it will only log at the end of an epoch
 and log the epoch, step, loss and validation loss. This is also the default configuration
-when you run fit! without specifying oter callbacks.
+when you run train! without specifying oter callbacks.
 
 # Usage
 
 ```julia
 meter = ConsoleMeter([:loss, :val_accuracy, :accuracy]; epochOnly=false)
-fit!(workout, data, val_data; epochs=5, cb=meter)
+train!(workout, data, val_data; epochs=5, cb=meter)
 ```
 """
 mutable struct ConsoleMeter <: Meter

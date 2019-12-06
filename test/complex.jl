@@ -52,7 +52,7 @@ function multi_input_output()
     # Two outputs
     Y = [(randn(dtype,20,4), randn(dtype,10,4)) for i in 1:10]
 
-    fit!(workout, zip(X,Y), epochs=2,cb=SilentMeter())
+    train!(workout, zip(X,Y), epochs=2,cb=SilentMeter())
 
     @test hasmetric(workout, :loss)
 

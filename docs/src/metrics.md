@@ -12,7 +12,7 @@ SmartReducer
 
 
 ## Callbacks
-Callbacks can be passed to the fit! function and provide a way to extend the functionality
+Callbacks can be passed to the train! function and provide a way to extend the functionality
 of Photon. Their functionality ranges from callbacks that generate output (like console or plots),
 to callbacks that save the model and callbacks that abort the training due to lack of progress.
 

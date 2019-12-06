@@ -29,7 +29,7 @@ To train your own model, there are four steps to follow:
 
 3) Prepare your **data** with Data pipelines.
 
-4) **Train** the model by calling fit! on the workout and the training data.
+4) **Train** the model by calling train! on the workout and the training data.
 
 
 ### Step 1: Create a Model
@@ -82,7 +82,7 @@ myLayer(X) = is_full_moon() ? X .- 1 : X
 ### Step 2: Define a Workout
 A workout combines a model + loss + optimiser and keeps track of the progress
 during the actual training. The workout is stateful in the sense that you can run
-multiple training sessions (fit!) and the progress will be recorded appropriately.   
+multiple training sessions (train!) and the progress will be recorded appropriately.   
 
 The minimum required code to create a workout is:
 
@@ -121,7 +121,7 @@ A typical pipeline would look something like this:
 Add then the pipeline can be used directly in the training cycle:
 
 ```julia
-  fit!(workout, data)
+  train!(workout, data)
 ```
 
 Photon comes out the box with several reusable components for creating these pipelines. They can be divided into two types; *Datasets* that are the start of a pipeline and retrieve the data from some source and *Transformers* that transform the output of a previous step in the pipeline.
@@ -147,10 +147,10 @@ data = data |> Crop(200,200) |> Normalize() |> MiniBatch(8)
 ```
 
 ### Step 4: Run the Training
-The final step is the actual training and is done by invoking the fit! function with the right parameters.
+The final step is the actual training and is done by invoking the train! function with the right parameters.
 
 ```julia
-fit!(workout, data, epochs=5)
+train!(workout, data, epochs=5)
 ```
 
 You always need to provide a workout and the data for training. Other parameters are optional.
@@ -159,7 +159,7 @@ So for example the validation phase is optional. But if you provide data for the
 
 
 ```julia
-fit!(workout, data, training_data, epochs=10)
+train!(workout, data, training_data, epochs=10)
 ```
 Any additional defined metrics and the loss value will then be available *both* for training and validation.
 
@@ -172,8 +172,8 @@ The data is expected to be a tuple of (X, Y) where X and Y can be tuples again i
 ((X1, X2), (Y1, Y2))
 ```
 
-By default fit! will convert each batch to the right data type and device. This is controlled by the optional parameter *convertor*. If you don't want a conversion to take place and ensured the provided data is already in the right format, you can pass the identity function:
+By default train! will convert each batch to the right data type and device. This is controlled by the optional parameter *convertor*. If you don't want a conversion to take place and ensured the provided data is already in the right format, you can pass the identity function:
 
 ```julia
-fit!(workout, data; convertor=identity)
+train!(workout, data; convertor=identity)
 ```

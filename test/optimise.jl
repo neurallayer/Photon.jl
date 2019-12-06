@@ -21,7 +21,7 @@ function testOptim(opt)
     Y = [randn(dtype,10,4) for _=1:5]
 
     workout = Workout(model, MSELoss(), opt)
-    fit!(workout, zip(X,Y), epochs=2, cb=SilentMeter())
+    train!(workout, zip(X,Y), epochs=2, cb=SilentMeter())
     @test hasmetric(workout, :loss)
 end
 
