@@ -28,6 +28,16 @@ function test_save_load()
 end
 
 
+function test_predict()
+    m = simple_conv_model()
+    X = KorA(randn(Float32,28,28,1,4))
+    workout = Workout(m, MSELoss())
+    p1 = predict(workout, X, makebatch=false)
+    p2 = predict(workout, X[:,:,:,1])
+
+    # @assert p1[:,:,:,1] == p2
+end
+
 function getdata(s=28)
     [(
         KorA(randn(Float32,s,s,1,16)),
@@ -60,6 +70,33 @@ function test_train_valid()
 end
 
 
+function test_validate()
+    model = simple_conv_model()
+    workout = Workout(model, MSELoss())
+    e, s = workout.epochs, workout.steps
+
+    data = getdata()
+    validate(workout, first(data))
+
+    @test workout.epochs == e
+    @test workout.steps == s
+    @test hasmetric(workout, :val_loss)
+end
+
+
+function test_gradients()
+    model = simple_conv_model()
+    workout = Workout(model, MSELoss())
+    e, s = workout.epochs, workout.steps
+
+    data = getdata()
+    g = gradients(workout, first(data))
+
+    @test workout.epochs == e
+    @test workout.steps == s
+end
+
+
 function test_channel()
     model = simple_conv_model()
     workout = Workout(model, MSELoss())
@@ -83,6 +120,9 @@ end
     resetContext()
     test_train()
     test_train_valid()
+    test_validate()
+    test_predict()
+    test_gradients()
     test_channel()
     test_save_load()
 end

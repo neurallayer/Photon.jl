@@ -180,7 +180,7 @@ end
 Utility function to calculate the gradients. Useful when checking for vanishing or
 exploding gradients. The returned value is a Vector of (Param, Gradient).
 """
-function gradients(workout::Workout, minibatch=first(workout.dl))
+function gradients(workout::Workout, minibatch)
     x, y = workout.mover(minibatch)
     J = Knet.@diff begin
         y_pred = workout.model(x)
@@ -189,7 +189,7 @@ function gradients(workout::Workout, minibatch=first(workout.dl))
     gradients = []
     for p in Knet.params(J)
         p.opt === :NOUPDATE && continue
-        if p.opt === nothing; p.opt = Knet.clone(opt); end
+        if p.opt === nothing; p.opt = Knet.clone(workout.opt); end
         push!(gradients, (p, Knet.grad(J,p)))
     end
     return gradients
