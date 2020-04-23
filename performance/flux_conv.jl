@@ -2,7 +2,7 @@
 module FluxTest
 
 using Flux
-using Flux:cu
+using CuArrays
 using Flux: @epochs
 
 function test()
@@ -21,7 +21,7 @@ function test()
     MaxPool((4,4)),
     x -> reshape(x, :, size(x, 4)),
     Dense(1024, 64, relu),
-    Dense(64, 10, relu),
+    Dense(64, 10, relu)
   ) |> gpu
 
 

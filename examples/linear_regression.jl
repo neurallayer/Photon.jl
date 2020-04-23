@@ -18,7 +18,7 @@ fn(x,y,z) = 2x - 3y + 4z .- 5
 """
 Now we create the training data
 """
-X = [randn(Float32, 3,8) for _ in 1:50]
+X = [randn(Float32, 3, 8) for _ in 1:50]
 Y = [fn(x[1,:], x[2,:], x[3,:]) for x in X]
 
 """
