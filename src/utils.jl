@@ -47,3 +47,22 @@ function plotmetrics(Plots::Module, workout::Workout, metrics=[:loss, :val_loss]
       end
       return p # otherwise no plotting in Juno
 end
+
+"""
+Move the batch from the first to the last dimension
+"""
+function batchlast(a::AbstractArray)
+      p = collect(1:length(size(a)))
+      push!(p, popfirst!(p))
+      permutedims(a,p)
+end
+
+
+"""
+Move the batch from the last to the first dimension
+"""
+function batchfirst(a::AbstractArray)
+      p = collect(1:length(size(a)))
+      pushfirst!(p, pop!(p))
+      permutedims(a,p)
+end

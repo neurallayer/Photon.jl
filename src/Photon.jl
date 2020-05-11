@@ -30,7 +30,7 @@ export Dense, BatchNorm, Flatten, Dropout,
 	   AdaptiveAvgPool, AdaptiveMaxPool,
 	   RNN, LSTM, GRU,
 	   Activation, add, forward, ContextSwitch,
-	   Mover, SmartMover
+	   Mover, SmartMover, batchfirst, batchlast
 
 dir(path...) = joinpath(dirname(@__DIR__), path...)
 
