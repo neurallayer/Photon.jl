@@ -3,7 +3,7 @@
 module Callbacks
 
 
-using ..Photon: stop, Workout, Tensor, getmetricvalue, saveWorkout, getContext
+using ..Photon: stop, Workout, Tensor, getmetricvalue, saveWorkout, getContext, hasmetric
 using Printf
 using Statistics
 import Knet

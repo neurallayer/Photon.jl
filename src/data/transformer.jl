@@ -94,6 +94,25 @@ function Base.getindex(t::Normalizer, idx)
 end
 
 
+mutable struct Standardizer <: Transformer
+    ds::Union{Dataset, Nothing}
+	mean
+	std
+    Standardize() = new(nothing, 0.0f0, 1.0f0)
+end
+
+function fit!(t::Standardizer, x)
+	t.mean = mean(x)
+	t.std = std(x)
+end
+
+function Base.getindex(t::Standardizer, idx)
+	X,Y = t.ds[idx]
+
+	Y = normalize(Y, t.means, t.stds)
+
+	return (X,Y)
+end
 
 
 
