@@ -316,7 +316,7 @@ function Base.iterate(dl::MiniBatch, state=undef)
 
     if count > (maxl-bs) return nothing end
 
-	l = Threads.SpinLock()
+	l = ReentrantLock()
 	minibatch = nothing
 
     Threads.@threads for i in 1:bs
@@ -326,15 +326,14 @@ function Base.iterate(dl::MiniBatch, state=undef)
 		@assert sample isa Tuple "Datasets should return Tuples, not $(typeof(sample))"
 
 		if minibatch === nothing
-			Threads.lock(l)
-			if minibatch === nothing
-				minibatch = create_mb(sample, bs)
+			lock(l) do
+				if minibatch === nothing
+					minibatch = create_mb(sample, bs)
+				end
 			end
-			Threads.unlock(l)
 		end
 
 		update_mb!(minibatch, sample, i)
     end
-	Threads.unlock(l)
     return ((minibatch), (idxs, count + bs))
 end
