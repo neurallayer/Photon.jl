@@ -113,20 +113,6 @@ function Base.getindex(ds::JLDDataset, idx)
 end
 
 
-"""
-Dataset that loads data from a JuliaDB. Not yet implemented.
-"""
-struct JuliaDBDataset{A,B} <: Dataset
-    filenames::A
-    labels::B
-end
-
-Base.length(ds::JuliaDBDataset) = length(ds.filenames)
-
-function Base.getindex(ds::JuliaDBDataset, idx)
-	# TODO
-end
-
 
 """
 Dataset that loads an single image from a file and optionally resizes the image.
