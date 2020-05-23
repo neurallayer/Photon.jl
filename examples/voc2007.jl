@@ -12,7 +12,7 @@ using Photon, LightXML
 
 
 # Change location below to where you extracted the VOC2007 dataset
-const VOC_DIR = "/home/peter/data/VOCdevkit/VOC2007/"
+const VOC_DIR = "/data/VOCdevkit/VOC2007/"
 
 # Shouldn't be a need to change anything below this line
 const IMAGEDIR = joinpath(VOC_DIR,"JPEGImages/")
