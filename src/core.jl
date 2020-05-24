@@ -50,7 +50,7 @@ mutable struct Context
 	end
 end
 
-global ctx = Context()
+global const ctx = Context()
 
 
 function is_on_gpu()::Bool
@@ -82,8 +82,9 @@ Reset the Context to its default values. That means if there is a GPU detected
 GPU, otherwise CPU. And as a datatype Float32.
 """
 function resetContext()
-	global ctx
-	ctx = Context()
+	ctx.device = Knet.gpu() >= 0 ? :gpu : :cpu
+	ctx.deviceId = 0
+	ctx.dtype = Float32
 end
 
 addlast(x) = reshape(x, (size(x)...,1))
@@ -109,7 +110,7 @@ AbstractFloat will convert to the Float type as defined in the context.
 It supports Tuples, Arrays and KnetArrays and a combination of those.
 """
 struct SmartMover <: Mover
-	move_float
+	move_float::Bool
 
 	SmartMover(move_float=true) = new(move_float)
 end
