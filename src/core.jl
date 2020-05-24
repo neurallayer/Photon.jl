@@ -50,11 +50,11 @@ mutable struct Context
 	end
 end
 
-global const ctx = Context()
+global const __ctx = Context()
 
 
 function is_on_gpu()::Bool
-	ctx.device == :gpu
+	__ctx.device == :gpu
 end
 
 hasgpu() = Knet.gpu() >= 0
@@ -63,17 +63,17 @@ hasgpu() = Knet.gpu() >= 0
 Get the currently configured Context.
 """
 function getContext()::Context
-  ctx
+  __ctx
 end
 
 """
 Update the Context with the provided values. If values are no specified, the
 current value will be used.
 """
-function setContext(;device=ctx.device, deviceId=ctx.deviceId, dtype=ctx.dtype)
-  ctx.device = device
-  ctx.deviceId = deviceId
-  ctx.dtype= dtype
+function setContext(;device=__ctx.device, deviceId=__ctx.deviceId, dtype=__ctx.dtype)
+  __ctx.device = device
+  __ctx.deviceId = deviceId
+  __ctx.dtype= dtype
   getContext()
 end
 
@@ -82,9 +82,9 @@ Reset the Context to its default values. That means if there is a GPU detected
 GPU, otherwise CPU. And as a datatype Float32.
 """
 function resetContext()
-	ctx.device = Knet.gpu() >= 0 ? :gpu : :cpu
-	ctx.deviceId = 0
-	ctx.dtype = Float32
+	__ctx.device = Knet.gpu() >= 0 ? :gpu : :cpu
+	__ctx.deviceId = 0
+	__ctx.dtype = Float32
 end
 
 addlast(x) = reshape(x, (size(x)...,1))
@@ -116,6 +116,7 @@ struct SmartMover <: Mover
 end
 
 function (m::SmartMover)(arr::Array)
+	ctx = getContext()
 	if m.move_float && (eltype(arr) isa AbstractFloat)
 		arr = convert(Array{ctx.dtype}, arr)
 	end
@@ -123,6 +124,7 @@ function (m::SmartMover)(arr::Array)
 end
 
 function (m::SmartMover)(arr::Knet.KnetArray)
+	ctx = getContext()
 	if m.move_float && (eltype(arr) isa AbstractFloat)
 		arr = convert(Knet.KnetArray{ctx.dtype}, arr)
 	end

@@ -1,6 +1,7 @@
 
 
 function getparam(d...;init=Knet.xavier)
+	ctx = getContext()
 	et = ctx.dtype
 	atype = ctx.device == :gpu ? Knet.KnetArray{et} : Array{et}
 	Knet.Param(atype(init(d...)))
@@ -173,8 +174,8 @@ function call(bn::BatchNorm, X::Tensor)
 end
 
 """
-Beginning of allowing for a single model instance to run on multiple devices
-(expiremental)
+Beginning of allowing for a single model instance to run on multiple devices (model distribution)
+This is still highly experimental and only tested on simple inference cases.
 """
 struct ContextSwitch <: Layer
 
@@ -182,7 +183,9 @@ struct ContextSwitch <: Layer
 	deviceId::Int
 	dtype::Type
 
-	function ContextSwitch(;device=ctx.device,deviceId=ctx.deviceId,dtype=ctx.dtype)
+	function ContextSwitch(;device=getContext().device,
+							deviceId=getContext().deviceId,
+							dtype=getContext().dtype)
 		new(device,deviceId,dtype)
 	end
 end
