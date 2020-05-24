@@ -3,6 +3,10 @@ export  L1Loss, MAELoss, L2Loss, MSELoss, LNLoss, PseudoHuberLoss, HingeLoss,
         SquaredHingeLoss, BCELoss, CrossEntropyLoss, FocalLoss
 
 
+# Simple wrapper since Knet nll loss function expects regular array.
+Knet.nll(y, a::Knet.KnetArray; dims=1, average=true) = nll(y, Array(a); dims=dims, average=average)
+
+
 """
 Calculates the mean absolute error between `label` and `pred`.
 

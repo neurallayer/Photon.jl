@@ -21,9 +21,6 @@ model = Sequential(
       Dense(10)
 )
 
-# Simple wrapper since Knet nll loss function expects regular array.
-Knet.nll(y, a::Knet.KnetArray; dims=1, average=true) = Knet.nll(y, Array(a); dims=dims, average=average)
-
 # Create a workout containing the model, a loss function and
 # the optimizer (default SGD) and register the accuracy.
 workout = Workout(model, nll, acc=OneHotBinaryAccuracy())
