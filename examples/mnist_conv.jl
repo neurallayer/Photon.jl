@@ -21,13 +21,16 @@ model = Sequential(
       Dense(10)
 )
 
+# Simple wrapper since Knet nll loss function expects regular array.
+Knet.nll(y, a::Knet.KnetArray; dims=1, average=true) = Knet.nll(y, Array(a); dims=dims, average=average)
+
 # Create a workout containing the model, a loss function and
 # the optimizer (default SGD) and register the accuracy.
 workout = Workout(model, nll, acc=OneHotBinaryAccuracy())
 
-# Run the training for 10 epochs and we don't need a convertor since
+# Run the training for 10 epoch and we don't need a convertor since
 # mnistdata function already does that work.
-train!(workout, trndata, tstdata; epochs=1)
+train!(workout, trndata, tstdata; epochs=10)
 
 println("\nTrained the model in $(workout.epochs) epochs.")
 

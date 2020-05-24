@@ -1,10 +1,101 @@
+
+abstract type Callback end
+
+"""
+A callback should implement the following function signature.
+"""
+function (::Callback)(workout::Workout, phase::Symbol) end
+
+
+"""
+Save the workout at the end of every epoch. Optionally provide a filename.
+
+# Usage
+```julia
+train!(workout, data, cb=EpochSave())
+```
+"""
+struct EpochSave <: Callback
+    filename::Union{String, Nothing}
+    EpochSave(filename=nothing) = new(filename)
+end
+
+function (c::EpochSave)(workout::Workout, phase::Symbol)
+    if phase == :valid
+        if c.filename !== nothing
+            saveWorkout(workout, c.filename)
+        else
+            saveWorkout(workout)
+        end
+    end
+end
+
+
+"""
+Save the Workout if a certain metric has improved since the last epoch
+
+# Usage
+```julia
+
+# save as long as the validation loss is declining
+train!(workout, data, cb=AutoSave(:val_loss))
+```
+
+"""
+mutable struct AutoSave <: Callback
+    value::Float64
+    metric::Symbol
+    filename
+    AutoSave(metric::Symbol, filename=nothing) = new(Inf, metric, filename)
+end
+
+function (c::AutoSave)(workout::Workout, phase::Symbol)
+    if phase == :valid
+        getmetricvalue(workout, c.metric) do x
+            if x < c.value
+                if c.filename !== nothing
+                    saveWorkout(workout, c.filename)
+                else
+                    saveWorkout(workout)
+                end
+                c.value = x
+            end
+        end
+    end
+end
+
+
+"""
+Stop the training if a certain metric didn't improve
+"""
+mutable struct EarlyStop <: Callback
+    value::Float64
+    metric::Symbol
+    EarlyStop(metric::Symbol) = new(Inf, metric)
+end
+
+function (c::EarlyStop)(workout::Workout, phase::Symbol)
+    if phase == :valid
+        getmetricvalue(workout, c.metric) do x
+            if x > c.value
+                stop(workout,"$(c.metric) didn't improve anymore")
+            else
+                c.value = x
+            end
+        end
+    end
+end
+
+
+
+
 """
 A meter is responsible for presenting metric values. It can be used just as
 a regular callback argument to the *train!* function.
 A meter is not limited to printing results to the console output, it can also be
 showing it on a TensorBoard or storing results in a database for example.
 """
-abstract type Meter end
+abstract type Meter <: Callback end
 
 
 

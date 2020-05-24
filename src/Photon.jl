@@ -1,7 +1,9 @@
 
 module Photon
 
-using Statistics, Reexport
+using Printf
+using Statistics
+using Reexport
 import Knet
 
 include("core.jl")
@@ -12,11 +14,13 @@ include("layers/container.jl")
 include("train.jl")
 include("losses.jl")
 
-include("callbacks/Callbacks.jl")
-@reexport using .Callbacks
+include("callbacks.jl")
+export Callback, AutoSave, EpochSave, EarlyStop
+export Meter, ConsoleMeter, SilentMeter, TensorBoardMeter, FileMeter, PlotMeter
 
-include("metrics/Metrics.jl")
-@reexport using .Metrics
+include("metrics.jl")
+export getmetricname, SmartReducer, update!, history, BinaryAccuracy, OneHotBinaryAccuracy
+
 
 include("data/Data.jl")
 @reexport using .Data
