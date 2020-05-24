@@ -7,10 +7,7 @@ using Reexport
 import Knet
 
 include("core.jl")
-include("layers/core.jl")
-include("layers/conv.jl")
-include("layers/recurrent.jl")
-include("layers/container.jl")
+include("layers/Layers.jl")
 include("train.jl")
 include("losses.jl")
 
