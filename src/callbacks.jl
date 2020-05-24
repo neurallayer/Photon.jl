@@ -45,14 +45,19 @@ train!(workout, data, cb=AutoSave(:val_loss))
 mutable struct AutoSave <: Callback
     value::Float64
     metric::Symbol
-    filename
-    AutoSave(metric::Symbol, filename=nothing) = new(Inf, metric, filename)
+    filename::Union{String, Nothing}
+    mode::Symbol
+    function AutoSave(metric::Symbol, filename=nothing, mode=:min)
+        init_value = mode == :min ? Inf : -Inf
+        new(init_value, metric, filename, mode)
+    end
 end
 
 function (c::AutoSave)(workout::Workout, phase::Symbol)
     if phase == :valid
         getmetricvalue(workout, c.metric) do x
-            if x < c.value
+            condition = c.mode == :min ? x < c.value : x > c.value
+            if condition
                 if c.filename !== nothing
                     saveWorkout(workout, c.filename)
                 else
@@ -71,13 +76,18 @@ Stop the training if a certain metric didn't improve
 mutable struct EarlyStop <: Callback
     value::Float64
     metric::Symbol
-    EarlyStop(metric::Symbol) = new(Inf, metric)
+    mode::Symbol
+    function EarlyStop(metric::Symbol, mode=:min)
+        init_value = mode == :min ? Inf : -Inf
+        new(init_value, metric, mode)
+    end
 end
 
 function (c::EarlyStop)(workout::Workout, phase::Symbol)
     if phase == :valid
         getmetricvalue(workout, c.metric) do x
-            if x > c.value
+            condition = c.mode == :min ? x < c.value : x > c.value
+            if condition
                 stop(workout,"$(c.metric) didn't improve anymore")
             else
                 c.value = x
