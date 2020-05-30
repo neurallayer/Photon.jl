@@ -4,7 +4,7 @@ export  L1Loss, MAELoss, L2Loss, MSELoss, LNLoss, PseudoHuberLoss, HingeLoss,
 
 
 # Simple wrapper since Knet nll loss function expects regular array.
-Knet.nll(y, a::Knet.KnetArray; dims=1, average=true) = nll(y, Array(a); dims=dims, average=average)
+Knet.nll(y, a::Knet.KnetArray{<:Integer}; dims=1, average=true) = nll(y, Array(a); dims=dims, average=average)
 
 
 """

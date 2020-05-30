@@ -6,6 +6,7 @@ using Statistics
 using Reexport
 import Knet
 
+include("context.jl")
 include("core.jl")
 include("layers/Layers.jl")
 include("train.jl")

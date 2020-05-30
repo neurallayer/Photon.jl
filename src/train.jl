@@ -198,16 +198,12 @@ end
 """
 Freeze a parameter so it no longer will be updated during training.
 """
-function freeze!(p::Knet.Param)
-    p.opt = :NOUPDATE
-end
+freeze!(p::Knet.Param) = p.opt = :NOUPDATE
 
 """
 Unfreeze a parameter so it will be updated again during training.
 """
-function unfreeze!(p::Knet.Param)
-    p.opt = nothing
-end
+unfreeze!(p::Knet.Param)= p.opt = nothing
 
 
 """
