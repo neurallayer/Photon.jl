@@ -3,8 +3,8 @@ module DataTests
 
 using Photon, Test, JLD2
 
-resetContext()
-ctx = getContext()
+resetcontext()
+ctx = getcontext()
 
 getimages(s=224) = KorA(randn(ctx.dtype,s,s,3,4))
 

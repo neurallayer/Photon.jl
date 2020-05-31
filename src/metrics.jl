@@ -1,5 +1,4 @@
 
-
 """
 Stores the calculated metrics. If multiple values are provided at the same step
 (like is the case with validation metrics), the moving average over those values

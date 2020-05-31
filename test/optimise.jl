@@ -15,7 +15,7 @@ end
 
 function testOptim(opt)
     model = get_model()
-    dtype = getContext().dtype
+    dtype = getcontext().dtype
 
     X = [randn(dtype,50,50,3,4) for _=1:5]
     Y = [randn(dtype,10,4) for _=1:5]

@@ -11,14 +11,14 @@ function dense_model_cpu()
         model(data)
     end
 
-    setContext(device = :cpu, dtype = Float32)
-    ctx = getContext()
+    setcontext(device = :cpu, dtype = Float32)
+    ctx = getcontext()
     data = randn(ctx.dtype, 10, 16)
     pred = run_model(data)
     @test size(pred) == (1, 16)
     @test typeof(pred) == Array{Float32,2}
 
-    setContext(device = :cpu, dtype = Float64)
+    setcontext(device = :cpu, dtype = Float64)
     data = randn(ctx.dtype, 10, 16)
     pred = run_model(data)
     @test size(pred) == (1, 16)
@@ -33,8 +33,8 @@ function dense_model_gpu()
         model(data)
     end
 
-    setContext(device = :gpu, dtype = Float32)
-    ctx = getContext()
+    setcontext(device = :gpu, dtype = Float32)
+    ctx = getcontext()
     data = KorA(randn(ctx.dtype, 10, 16))
     pred = run_model(data)
     @test size(pred) == (1, 16)
@@ -49,8 +49,8 @@ function splitted_dense_model()
         model(data)
     end
 
-    setContext(device = :gpu)
-    ctx = getContext()
+    setcontext(device = :gpu)
+    ctx = getcontext()
     data = KorA(randn(ctx.dtype, 10, 16))
     pred = run_model(data)
     @test size(pred) == (1, 16)
@@ -60,7 +60,7 @@ end
 
 
 @testset "Dense" begin
-    resetContext()
+    resetcontext()
     dense_model_cpu()
     if hasgpu()
         dense_model_gpu()

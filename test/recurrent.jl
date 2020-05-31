@@ -2,8 +2,8 @@ module RecurrentTests
 
 using Photon, Test
 
-resetContext()
-ctx = getContext()
+resetcontext()
+ctx = getcontext()
 
 gethistoric(steps=100, features=10) = KorA(randn(ctx.dtype,features,steps,4))
 

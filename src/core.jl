@@ -58,7 +58,7 @@ struct SmartMover <: Mover
 end
 
 function (m::SmartMover)(arr::Array)
-	ctx = getContext()
+	ctx = getcontext()
 	if m.move_float && (eltype(arr) isa AbstractFloat)
 		arr = convert(Array{ctx.dtype}, arr)
 	end
@@ -66,7 +66,7 @@ function (m::SmartMover)(arr::Array)
 end
 
 function (m::SmartMover)(arr::Knet.KnetArray)
-	ctx = getContext()
+	ctx = getcontext()
 	if m.move_float && (eltype(arr) isa AbstractFloat)
 		arr = convert(Knet.KnetArray{ctx.dtype}, arr)
 	end

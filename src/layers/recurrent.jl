@@ -46,7 +46,7 @@ function build(l::Recurrent, shape::Tuple)
         inputSize,
         l.hidden_size,
         numLayers = l.num_layers,
-        dataType = getContext().dtype,
+        dataType = getcontext().dtype,
         usegpu = is_on_gpu(),
         rnnType = l.mode,
         winit = l.init.w,

@@ -1,7 +1,8 @@
 import Base:haslength
 import Serialization
+import Knet
 
-export Workout, saveWorkout, loadWorkout, predict, train!, hasmetric,
+export Workout, saveworkout, loadworkout, predict, train!, hasmetric,
         freeze!, unfreeze!, validate, gradients, stop
 
 
@@ -72,7 +73,7 @@ Save a workout to a file. This will save all the state that is captured in the w
 and enables to continue at a later stage using the loadWorkout function. Under the hood
 this function uses Julia serialization.
 """
-function saveWorkout(workout::Workout, filename="workout_$(workout.steps).dat")::String
+function saveworkout(workout::Workout, filename="workout_$(workout.steps).dat")::String
     # serialize
     Serialization.serialize(filename, workout)
     return filename
@@ -88,7 +89,7 @@ workout = loadWorkout("workout_1000.dat")
 train!(workout, mydata)
 ```
 """
-function loadWorkout(filename)::Workout
+function loadworkout(filename)::Workout
     workout = Serialization.deserialize(filename)
     return workout
 end
@@ -102,9 +103,7 @@ that the training is not progressing anymore.
 
 If this function is called outside the scope of a trianing session, an exception is thrown.
 """
-function stop(workout::Workout, reason::String)
-    throw(StopException())
-end
+stop(workout::Workout, reason::String) = throw(StopException())
 
 
 """
@@ -119,7 +118,6 @@ if hasmetric(workout, :val_loss) ...
 
 """
 hasmetric(workout::Workout, metricname::Symbol)::Bool = haskey(workout.history, metricname)
-
 
 
 """

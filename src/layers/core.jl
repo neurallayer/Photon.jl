@@ -1,7 +1,7 @@
 
 
 function getparam(d...;init=Knet.xavier)
-	ctx = getContext()
+	ctx = getcontext()
 	et = ctx.dtype
 	atype = ctx.device == :gpu ? Knet.KnetArray{et} : Array{et}
 	Knet.Param(atype(init(d...)))
@@ -183,15 +183,15 @@ struct ContextSwitch <: Layer
 	deviceId::Int
 	dtype::Type
 
-	function ContextSwitch(;device=getContext().device,
-							deviceId=getContext().deviceId,
-							dtype=getContext().dtype)
+	function ContextSwitch(;device=getcontext().device,
+							deviceId=getcontext().deviceId,
+							dtype=getcontext().dtype)
 		new(device,deviceId,dtype)
 	end
 end
 
 function call(c::ContextSwitch, X::Tensor)
-	setContext(device=c.device, deviceId=c.deviceId, dtype=c.dtype)
+	setcontext(device=c.device, deviceId=c.deviceId, dtype=c.dtype)
 
 	if c.device == :cpu
 		X = convert(Array{c.dtype},X)

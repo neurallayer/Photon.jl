@@ -20,8 +20,8 @@ function test_save_load()
     X = KorA(randn(Float32,28,28,1,4))
     pred = m(X)
     workout = Workout(m, MSELoss())
-    f = saveWorkout(workout)
-    workout2 = loadWorkout(f)
+    f = saveworkout(workout)
+    workout2 = loadworkout(f)
     rm(f, force=true)
     pred2 = workout2.model(X)
     @assert pred == pred2
@@ -117,7 +117,7 @@ function test_channel()
 end
 
 @testset "Training" begin
-    resetContext()
+    resetcontext()
     test_train()
     test_train_valid()
     test_validate()

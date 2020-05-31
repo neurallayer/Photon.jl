@@ -23,9 +23,9 @@ end
 function (c::EpochSave)(workout::Workout, phase::Symbol)
     if phase == :valid
         if c.filename !== nothing
-            saveWorkout(workout, c.filename)
+            saveworkout(workout, c.filename)
         else
-            saveWorkout(workout)
+            saveworkout(workout)
         end
     end
 end
@@ -59,9 +59,9 @@ function (c::AutoSave)(workout::Workout, phase::Symbol)
             condition = c.mode == :min ? x < c.value : x > c.value
             if condition
                 if c.filename !== nothing
-                    saveWorkout(workout, c.filename)
+                    saveworkout(workout, c.filename)
                 else
-                    saveWorkout(workout)
+                    saveworkout(workout)
                 end
                 c.value = x
             end

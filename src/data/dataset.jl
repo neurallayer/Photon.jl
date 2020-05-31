@@ -1,5 +1,5 @@
 
-using ..Photon: getContext
+using ..Photon: getcontext
 
 """
 Datasets can load and transform data and can be used in a pipeline.
@@ -49,7 +49,7 @@ struct TestDataset <: Dataset
 	sleep::Float64
 
 	function TestDataset(shapeX::Tuple, shapeY::Tuple, samples::Int; sleep=0)
-		dtype = getContext().dtype
+		dtype = getcontext().dtype
 		x = [randn(dtype, shapeX...) for _ in 1:samples]
 		y = [randn(dtype, shapeY...) for _ in 1:samples]
 		new(x,y,sleep)
@@ -179,7 +179,7 @@ struct DFDataset <: Dataset
 	DFDataset(df,X,Y) = new(df, makeArray(X), makeArray(Y))
 end
 
-Base.length(ds::DFDataset) = size(df,1)
+Base.length(ds::DFDataset) = size(ds.df,1)
 
 function Base.getindex(ds::DFDataset, idx)
 	df = ds.df

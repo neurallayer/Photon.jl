@@ -23,20 +23,20 @@ function utils()
 end
 
 function contextTest()
-    setContext(device=:cpu)
-    @test getContext().device == :cpu
+    setcontext(device=:cpu)
+    @test getcontext().device == :cpu
 
-    setContext( dtype=Float32)
-    @test getContext().dtype == Float32
+    setcontext( dtype=Float32)
+    @test getcontext().dtype == Float32
 
-    setContext(deviceId = 2)
-    @test getContext().deviceId == 2
+    setcontext(deviceId = 2)
+    @test getcontext().deviceId == 2
 
-    resetContext()
+    resetcontext()
 end
 
 function cpuTest()
-    setContext(device=:cpu)
+    setcontext(device=:cpu)
 
     a = KorA(randn(10,10))
     @test a isa Array
