@@ -1,7 +1,7 @@
 using Photon
 
 # Lets use the CPU for this, even if we have a GPU.
-setContext(device=:cpu, dtype=Float64)
+setcontext(device=:cpu, dtype=Float64)
 
 
 # Define a model with fully connected layers.

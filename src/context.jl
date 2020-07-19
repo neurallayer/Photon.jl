@@ -1,4 +1,5 @@
-export Context, getcontext, setcontext, resetcontext, hasgpu, is_on_gpu, KorA
+
+export Context, getcontext, setcontext, resetcontext, hasgpu, is_on_gpu
 
 hasgpu() = Knet.gpu() >= 0
 

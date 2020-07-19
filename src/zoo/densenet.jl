@@ -1,5 +1,4 @@
 
-
 function _make_dense_block(
     num_layers,
     bn_size,
