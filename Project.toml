@@ -1,9 +1,10 @@
 name = "Photon"
 uuid = "0bf025f6-8a23-43ed-a0f8-ad988f0a8cd8"
 authors = ["Peter Dekkers <peter@neurallayer.com>"]
-version = "0.2.1"
+version = "0.3.1"
 
 [deps]
+CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
 CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
@@ -22,11 +23,10 @@ CodecZlib = "0.7.0"
 ImageMagick = "0.7.5"
 Images = "0.18"
 JLD2 = "0.1"
-Knet = "1.3"
 MacroTools = "0.5"
 Reexport = "0.2.0"
 TensorBoardLogger = "0.1.10"
-julia = "1.4"
+julia = "1.5"
 
 [extras]
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"

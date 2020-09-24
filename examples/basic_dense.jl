@@ -27,7 +27,7 @@ x = randn(25, 16)
 y = model(x)
 
 # Or use the predict function for a single sample.
-predict(model, randn(25))
+predict(workout, randn(25))
 
 
 println("### Done ###")

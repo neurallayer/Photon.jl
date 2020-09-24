@@ -5,6 +5,7 @@ using Printf
 using Statistics
 using Reexport
 import Knet
+import CUDA
 
 include("context.jl")
 include("core.jl")

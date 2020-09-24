@@ -1,7 +1,7 @@
 
 export Context, getcontext, setcontext, resetcontext, hasgpu, is_on_gpu
 
-hasgpu() = Knet.gpu() >= 0
+hasgpu() = CUDA.functional()
 
 """
 Context is used by various parts of Photon to determine what the device and

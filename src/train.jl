@@ -54,7 +54,7 @@ end
 
 """
 Enable saving and loading of models by specialized KnetArray methods for Julia serialization
-This will effectively move a GPU weigth to the CPU before serialing it and move it back to
+This will effectively move a GPU weight to the CPU before serializing it and move it back to
 the GPU when deserializing.
 """
 function Serialization.serialize(s::Serialization.AbstractSerializer, p::Knet.KnetArray)
@@ -207,7 +207,7 @@ unfreeze!(p::Knet.Param)= p.opt = nothing
 """
 Perform the back propagation and update of weights in a single go.
 """
-function back!(J::Knet.Tape, opt)
+function back!(J, opt)
     for p in Knet.params(J)
         p.opt === :NOUPDATE && continue
         if p.opt === nothing; p.opt = Knet.clone(opt); end

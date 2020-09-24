@@ -19,14 +19,17 @@ abstract type Loss end
 
 const Shape = Tuple{Vararg{Int}}
 
+"""
 const Tensor{T,N} = Union{
 						AbstractArray{T,N},
 						Knet.KnetArray{T,N},
 						Knet.Value{Array{T,N}},
 						Knet.Value{Knet.KnetArray{T,N}}}
-
+						
 const Tensors = Union{Tensor, Tuple{Tensor}}
+"""
 
+const Tensor = Any
 
 
 addlast(x) = reshape(x, (size(x)...,1))
