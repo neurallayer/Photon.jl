@@ -108,7 +108,6 @@ function build(layer::Dense, shape::Shape)
 end
 
 
-
 """
 Flattening Layer. Photon by default already has flattening funcitonality
 build into the Dense layer, so you won't need to include a separate Flatten
