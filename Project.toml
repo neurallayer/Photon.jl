@@ -1,7 +1,7 @@
 name = "Photon"
 uuid = "0bf025f6-8a23-43ed-a0f8-ad988f0a8cd8"
 authors = ["Peter Dekkers <peter@neurallayer.com>"]
-version = "0.5.0"
+version = "0.5.1"
 
 [deps]
 CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
