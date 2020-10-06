@@ -25,7 +25,10 @@ function get_layername(layername; kwargs...)
 end
 
 
-
+"""
+Lazy layers will be created during the first invocation. This means that a development time 
+you don't need to specify much, since most aspects will be figured out based on the past data.
+"""
 abstract type LazyLayer <: Layer end
 
 ## Generic code, X can be a Tensor or a Tuple
