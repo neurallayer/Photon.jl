@@ -1,8 +1,5 @@
 using Photon
 
-# Lets use the CPU for this, even if we have a GPU.
-setcontext(device=:cpu, dtype=Float64)
-
 
 # Define a model with fully connected layers.
 model = Sequential(

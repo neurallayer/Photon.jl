@@ -1,9 +1,12 @@
 
+# Should find more elgant method to find required atype
+_get_basetype(x::Type{Knet.KnetArray{T,N}}) where {T,N} = Knet.KnetArray{T}
+_get_basetype(x::Type{Knet.AutoGrad.Result{Knet.KnetArray{T,N}}}) where {T,N} = Knet.KnetArray{T}
+_get_basetype(x::Type{Array{T,N}}) where {T,N} = Array{T}
+_get_basetype(x::Type{Knet.AutoGrad.Result{Array{T,N}}}) where {T,N} = Array{T}
 
-function getparam(d...;init=Knet.xavier)
-	ctx = getcontext()
-	et = ctx.dtype
-	atype = ctx.device == :gpu ? Knet.KnetArray{et} : Array{et}
+function getparam(atype::Type, d...;init=Knet.xavier)
+	atype = _get_basetype(atype)
 	Knet.Param(atype(init(d...)))
 end
 
@@ -45,7 +48,7 @@ function (layer::LazyLayer)(X)
 
     if ! layer.built
 		@debug "Building $(typeof(layer))" layer
-        build(layer, size(X)[1:end-1])
+        build(layer, size(X)[1:end-1], typeof(X))
 		layer.built = true
     end
 	@debug "Calling $(typeof(layer))" layer
@@ -98,14 +101,14 @@ function call(layer::Dense, X::Tensor)
 	end
 end
 
-function build(layer::Dense, shape::Shape)
+function build(layer::Dense, shape::Shape, atype)
 	# nInput = length(shape) > 1 ? *(shape...) : shape[1]
 	nInput = *(shape...)
 
-    w = getparam(layer.units, nInput, init=layer.init.w)
+    w = getparam(atype, layer.units, nInput, init=layer.init.w)
 	b = nothing
     if layer.use_bias
-		b = getparam(layer.units, init=layer.init.b)
+		b = getparam(atype, layer.units, init=layer.init.b)
 	end
 	layer.params = (w=w,b=b)
 end
@@ -174,35 +177,5 @@ end
 function call(bn::BatchNorm, X::Tensor)
 	bn.activation.(Knet.batchnorm(X, bn.moments))
 end
-
-"""
-Beginning of allowing for a single model instance to run on multiple devices (model distribution)
-This is still highly experimental and only tested on simple inference cases.
-"""
-struct ContextSwitch <: Layer
-
-  	device::Symbol
-	deviceId::Int
-	dtype::Type
-
-	function ContextSwitch(;device=getcontext().device,
-							deviceId=getcontext().deviceId,
-							dtype=getcontext().dtype)
-		new(device,deviceId,dtype)
-	end
-end
-
-function call(c::ContextSwitch, X::Tensor)
-	setcontext(device=c.device, deviceId=c.deviceId, dtype=c.dtype)
-
-	if c.device == :cpu
-		X = convert(Array{c.dtype},X)
-	elseif c.device == :gpu
-		X = convert(Knet.KnetArray{c.dtype},X)
-	end
-	X
-end
-
-
 
 @debug "Loaded Core modules"

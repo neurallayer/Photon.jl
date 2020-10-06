@@ -117,7 +117,6 @@ function test_channel()
 end
 
 @testset "Training" begin
-    resetcontext()
     test_train()
     test_train_valid()
     test_validate()

@@ -12,17 +12,18 @@
 
 
 **Photon** is a developer friendly framework for Deep Learning in Julia. Under the hood
-it leverages **Knet** and it provides a Keras like API on top of that.
+it leverages **Knet** and it provides a convenient lAPI on top of that. The main goal was to 
+enable fast prototyping and get reproducable results.
 
 
 ## Installation
-You can install Photon as any othe rpackage in Julia. From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
+You can install Photon as any other package in Julia. From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
 
 ```
 pkg> add Photon
 ```
 
-You can also isntall it from the master branch:
+You can also install it from the master branch:
 
 ```
 pkg> add https://github.com/neurallayer/Photon.jl
@@ -80,10 +81,9 @@ train!(workout, data, epochs=10)
 
 ## Performance
 The combination of Deep Learning and Julia is a very performant one. Especially
-when running the models on a GPU. Some tests reveal **speedups of up to 100%** when
-compared one of the most popular framework Keras/Tensorflow 2.0.
+when running the models on a GPU. The performance is close to the best that
+the Python eco system has to offer.
 
-The code that has been used to test is available in the *performance* sub directory.
 
 ## Features
 The main goal is to provide a user friendly API for Machine Learning that enables
@@ -127,4 +127,4 @@ We used several other open source frameworks for code and inspiration
 - Keras and MXNet for their well thought out API's. Also copied some of their
   excellent documentation for layers and losses.
 
-- And of course Julia, that enables writing very fast deep learning applications.
+- And of course Julia, that enables us to write fast deep learning applications.

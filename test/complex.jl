@@ -44,7 +44,7 @@ function multi_input_output()
     model = MyModel()
 
     workout = Workout(model, myloss)
-    dtype = getcontext().dtype
+    dtype = Float32
 
     # Two inputs
     X = [(randn(dtype,100,4),randn(dtype,50,50,3,4)) for i in 1:10]

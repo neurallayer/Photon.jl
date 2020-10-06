@@ -3,10 +3,8 @@ module DataTests
 
 using Photon, Test, JLD2
 
-resetcontext()
-ctx = getcontext()
 
-getimages(s=224) = KorA(randn(ctx.dtype,s,s,3,4))
+getimages(s=224) = KorA(randn(Float32, s,s,3,4))
 
 
 function test_dataset()

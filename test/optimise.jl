@@ -15,10 +15,9 @@ end
 
 function testOptim(opt)
     model = get_model()
-    dtype = getcontext().dtype
 
-    X = [randn(dtype,50,50,3,4) for _=1:5]
-    Y = [randn(dtype,10,4) for _=1:5]
+    X = [randn(50,50,3,4) for _=1:5]
+    Y = [randn(10,4) for _=1:5]
 
     workout = Workout(model, MSELoss(), opt)
     train!(workout, zip(X,Y), epochs=2, cb=SilentMeter())

@@ -23,8 +23,8 @@ function test()
   )
 
   # Create dummy data
-  X = (randn(Float32,224,224,3,16) for _=1:100)
-  Y = (randn(Float32,10,16) for _=1:100)
+  X = (randn(224,224,3,16) for _=1:100)
+  Y = (randn(10,16) for _=1:100)
   data = collect(zip(X,Y))
 
   # Create the workout

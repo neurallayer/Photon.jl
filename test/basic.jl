@@ -22,31 +22,9 @@ function utils()
     @test batchfirst(batchlast(a)) == a
 end
 
-function contextTest()
-    setcontext(device=:cpu)
-    @test getcontext().device == :cpu
-
-    setcontext( dtype=Float32)
-    @test getcontext().dtype == Float32
-
-    setcontext(deviceId = 2)
-    @test getcontext().deviceId == 2
-
-    resetcontext()
-end
-
-function cpuTest()
-    setcontext(device=:cpu)
-
-    a = KorA(randn(10,10))
-    @test a isa Array
-end
-
 @testset "Basic" begin
     KorATest()
     utils()
-    contextTest()
-    cpuTest()
 end
 
 end

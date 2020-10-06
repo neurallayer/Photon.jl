@@ -45,14 +45,14 @@ function Conv(
     )
 end
 
-function build(layer::Conv, shape::Shape)
+function build(layer::Conv, shape::Shape, atype)
     input_channels = shape[end]
     rank = length(shape) - 1
     kernel_size = expand(rank, layer.kernel_size)
-    w = getparam(kernel_size..., input_channels, layer.channels, init=layer.init.w)
+    w = getparam(atype, kernel_size..., input_channels, layer.channels, init=layer.init.w)
     b = nothing
     if layer.use_bias
-        b = getparam(repeat([1],rank)..., layer.channels, 1, init = layer.init.b)
+        b = getparam(atype, repeat([1],rank)..., layer.channels, 1, init = layer.init.b)
     end
     layer.params = (w=w,b=b)
 end
@@ -168,14 +168,14 @@ function ConvTranspose(
     )
 end
 
-function build(layer::ConvTranspose, shape::Tuple)
+function build(layer::ConvTranspose, shape::Tuple, atype)
     input_channels = shape[end]
     rank = length(shape) - 1
     kernel_size = expand(rank, layer.kernel_size)
-    w = getparam(kernel_size..., layer.channels, input_channels,init=layer.init.w)
+    w = getparam(atype, kernel_size..., layer.channels, input_channels,init=layer.init.w)
     b = nothing
     if layer.use_bias
-        b = getparam(repeat([1],rank)..., layer.channels, 1, init=layer.init.b)
+        b = getparam(atype, repeat([1],rank)..., layer.channels, 1, init=layer.init.b)
     end
     layer.params = (w=w,b=b)
 end

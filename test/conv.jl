@@ -3,10 +3,8 @@ module ConvTests
 
 using Photon, Test
 
-resetcontext()
-ctx = getcontext()
 
-getimages(s=224) = KorA(randn(ctx.dtype,s,s,3,4))
+getimages(s=224) = KorA(randn(s,s,3,4))
 
 
 function simple_1D_model()
@@ -17,7 +15,7 @@ function simple_1D_model()
         Dense(10)
     )
 
-    data = KorA(randn(ctx.dtype,100,3,4))
+    data = KorA(randn(100,3,4))
     pred = model(data)
     @test size(pred) == (10,4)
 
@@ -31,7 +29,7 @@ function simple_3D_model()
         Dense(10)
     )
 
-    data = KorA(randn(ctx.dtype,20,20,20,3,4))
+    data = KorA(randn(20,20,20,3,4))
     pred = model(data)
     @test size(pred) == (10,4)
 

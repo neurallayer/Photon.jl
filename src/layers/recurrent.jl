@@ -39,15 +39,14 @@ mutable struct Recurrent <: LazyLayer
 end
 
 
-function build(l::Recurrent, shape::Tuple)
+function build(l::Recurrent, shape::Tuple, atype)
     inputSize = shape[1]
 
     l.ops = Knet.RNN(
         inputSize,
         l.hidden_size,
         numLayers = l.num_layers,
-        dataType = getcontext().dtype,
-        usegpu = is_on_gpu(),
+        atype = atype,
         rnnType = l.mode,
         winit = l.init.w,
         binit = l.init.b,

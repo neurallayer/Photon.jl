@@ -94,7 +94,6 @@ function test_algo()
 end
 
 @testset "Metrics" begin
-    resetcontext()
     test_callbacks()
     test_core()
     test_metrics()

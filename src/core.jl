@@ -9,7 +9,6 @@ abstract type Layer end
 abstract type Metric end
 abstract type Optimizer end
 
-
 """
 Abstract type for the loss functions. However Photon accepts
 any function as a loss function as long as it is callable and
@@ -31,7 +30,7 @@ const Tensors = Union{Tensor, Tuple{Tensor}}
 
 const Tensor = Any
 
-
+hasgpu() = CUDA.functional()
 addlast(x) = reshape(x, (size(x)...,1))
 droplast(x) = reshape(x, (size(x)[1:end-1]...))
 
@@ -55,29 +54,25 @@ AbstractFloat will convert to the Float type as defined in the context.
 It supports Tuples, Arrays and KnetArrays and a combination of those.
 """
 struct SmartMover <: Mover
-	move_float::Bool
+	atype::Type
 
-	SmartMover(move_float=true) = new(move_float)
+	function SmartMover(atype=nothing)
+		if isnothing(atype)
+			if hasgpu() 
+				atype = Knet.KnetArray{Float32}
+			else
+				atype = Array{Float32}
+			end
+		end
+		new(atype)
+	end
 end
 
-function (m::SmartMover)(arr::Array)
-	ctx = getcontext()
-	if m.move_float && (eltype(arr) isa AbstractFloat)
-		arr = convert(Array{ctx.dtype}, arr)
-	end
-	ctx.device == :gpu ? Knet.KnetArray(arr) : arr
-end
-
-function (m::SmartMover)(arr::Knet.KnetArray)
-	ctx = getcontext()
-	if m.move_float && (eltype(arr) isa AbstractFloat)
-		arr = convert(Knet.KnetArray{ctx.dtype}, arr)
-	end
-	ctx.device == :gpu ? arr : Array(arr)
+function (m::SmartMover)(array)
+	convert(m.atype, array)
 end
 
 (m::SmartMover)(t::Tuple)= (m(elem) for elem in t)
-
 
 
 """

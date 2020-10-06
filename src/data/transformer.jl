@@ -203,7 +203,7 @@ mutable struct OneHotEncoder <: Transformer
 	axis
 	dtype::Type
 
-    OneHotEncoder(labels; axis=[:Y], dtype=getcontext().dtype) =
+    OneHotEncoder(labels; axis=[:Y], dtype=Float32) =
 		new(nothing, labels, axis, dtype)
 end
 
