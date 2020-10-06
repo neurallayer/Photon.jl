@@ -19,15 +19,17 @@ abstract type Loss end
 const Shape = Tuple{Vararg{Int}}
 
 """
-const Tensor{T,N} = Union{
+const SingleTensor{T,N} = Union{
 						AbstractArray{T,N},
 						Knet.KnetArray{T,N},
 						Knet.Value{Array{T,N}},
 						Knet.Value{Knet.KnetArray{T,N}}}
 						
-const Tensors = Union{Tensor, Tuple{Tensor}}
-"""
+const Tensor = Union{SingleTensor, Tuple{Tensor}}
 
+Due to many possiblities we just use Tensor type to show intend but not 
+using the above definition.
+"""
 const Tensor = Any
 
 hasgpu() = CUDA.functional()

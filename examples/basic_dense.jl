@@ -9,7 +9,7 @@ model = Sequential(
 )
 
 # create the workout
-workout = Workout(model, CrossEntropyLoss())
+workout = Workout(model, CrossEntropyLoss(); mover= SmartMover(Array{Float64}))
 
 # create some dummy training data
 X = [randn(25, 16) for i in 1:10]
