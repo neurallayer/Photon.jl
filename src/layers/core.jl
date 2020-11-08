@@ -138,9 +138,11 @@ mutable struct Reshape <: Layer
 end
 
 function call(layer::Reshape, X::Tensor)
-	reshape(X,layer.dims)
+	dims = collect(layer.dims)
+    batchsize = size(X)[end]
+    newdim = push!(dims, batchsize)
+	reshape(X, Tuple(newdim))
 end
-
 
 
 

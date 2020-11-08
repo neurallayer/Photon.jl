@@ -9,8 +9,14 @@ using Test
 
 @info "Testing Basics"
 include("./basic.jl")
+
+@info "Testing Dense Layers"
 include("./dense.jl")
+
+@info "Testing Convolutional Layers"
 include("./conv.jl")
+
+@info "Testing Recurrent Layers"
 include("./recurrent.jl")
 
 @info "Testing Large models"
