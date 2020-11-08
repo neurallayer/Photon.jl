@@ -21,6 +21,24 @@ function simple_1D_model()
 
 end
 
+
+
+function simple_1D_model2()
+    model = Sequential(
+        Conv1D(16, 3, relu),
+        Conv1D(32, 5, relu),
+        Dense(100, relu),
+        Dense(10)
+    )
+
+    data = KorA(randn(100,3,4))
+    pred = model(data)
+    @test size(pred) == (10,4)
+
+end
+
+
+
 function simple_3D_model()
     model = Sequential(
         Conv3D(16, 3, relu),
@@ -63,7 +81,7 @@ function convtranspose_model()
 end
 
 
-function simple_conv_model()
+function simple_conv2D_model()
     model = Sequential(
         Conv2D(16, (3,3), relu; padding=1, strides=2, dilation=2),
         Conv2D(32, (5,5), relu),
@@ -127,8 +145,9 @@ function adaptive_avg_model()
 end
 
 @testset "Conv" begin
+    # simple_1D_model()
     test_base_Conv2D()
-    simple_conv_model()
+    simple_conv2D_model()
     convtranspose_model()
     adaptive_avg_model()
     adaptive_max_model()

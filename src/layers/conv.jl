@@ -106,6 +106,18 @@ end
 
 
 """
+1D convolution layer (e.g. spatial convolution over a timeseries).
+
+This layer creates a convolution kernel that is convolved with the layer
+input to produce a tensor of outputs. If use_bias is true, a bias vector
+is created and added to the outputs. Finally, if activation is not nothing,
+it is applied to the outputs as well.
+"""
+Conv1D = Conv
+
+
+
+"""
 2D convolution layer (e.g. spatial convolution over images).
 
 This layer creates a convolution kernel that is convolved with the layer

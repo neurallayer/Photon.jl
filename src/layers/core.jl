@@ -115,7 +115,7 @@ end
 
 
 """
-Flattening Layer. Photon by default already has flattening funcitonality
+Flattening Layer. Photon by default already has flattening functionality
 build into the Dense layer, so you won't need to include a separate Flatten
 layer before a Dense layer.
 """
@@ -127,6 +127,21 @@ end
 function call(layer::Flatten, X::Tensor)
 	layer.dims === nothing ? Knet.mat(X) : Knet.mat(X, dims=layer.dims)
 end
+
+
+"""
+Reshape the shape of a tensor. 
+"""
+mutable struct Reshape <: Layer
+	dims
+	Reshape(dims::Tuple) = new(dims)
+end
+
+function call(layer::Reshape, X::Tensor)
+	reshape(X,layer.dims)
+end
+
+
 
 
 ## Activation
