@@ -34,6 +34,27 @@ function basic_layer(T)
 end
 
 
+function train_lstm_model()
+
+    model = Sequential(
+        LSTM(50),
+        Dense(100, relu),
+        Dense(10)
+    )
+
+    w = Workout(model, MSELoss())
+
+    X = [randn(10,20,8) for i in 1:10]
+    Y = [randn(10,8)    for i in 1:10]
+    data = zip(X,Y)
+    for _ in 1:100
+        train!(w, data;cb=SilentMeter())
+        GC.gc() # this line fixed some issue
+    end
+end
+
+
+
 function lstm_model()
 
     model = Sequential(
@@ -91,6 +112,7 @@ end
 
 
 @testset "Recurrent" begin
+    train_lstm_model()
     basic_layer(LSTM)
     basic_layer(GRU)
     basic_layer(RNN)

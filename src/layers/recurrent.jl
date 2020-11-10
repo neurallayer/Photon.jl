@@ -55,6 +55,13 @@ function build(l::Recurrent, shape::Tuple, atype)
 end
 
 function call(layer::Recurrent, X::Tensor)
+
+    # If we have dims = 2, assume we only have 1 feature per step
+    # since one step doesn't make sense for a recurring model.
+    if ndims(X) === 2
+        reshape(X, (1, size(X)...))
+    end
+
     output = layer.ops(X)
     if layer.last_only
         output[:, end, :]
