@@ -37,7 +37,7 @@ end
 function train_lstm_model()
 
     model = Sequential(
-        LSTM(50),
+        LSTM(50, last_only=false),
         Dense(100, relu),
         Dense(10)
     )
@@ -49,7 +49,7 @@ function train_lstm_model()
     data = zip(X,Y)
     for _ in 1:100
         train!(w, data;cb=SilentMeter())
-        GC.gc() # this line fixed some issue
+        # GC.gc() # this line fixed some issue
     end
 end
 
