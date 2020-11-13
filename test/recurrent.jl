@@ -74,15 +74,15 @@ end
 function lstm_model2()
 
     model = Sequential(
-        LSTM(20, last_only=false),
+        LSTM(20, last_only=true),
         Dense(100, relu),
         Dense(10)
     )
 
-    pred = model(gethistoric(100))
+    pred = model(gethistoric(100,10))
     @test size(pred) == (10,4)
 
-    @test_throws DimensionMismatch model(gethistoric(200))
+    # @test_throws DimensionMismatch model(gethistoric(200,20))
 end
 
 function gru_model()
