@@ -74,7 +74,7 @@ end
 function lstm_model2()
 
     model = Sequential(
-        LSTM(20, last_only=true),
+        LSTM(20, last_only=false),
         Dense(100, relu),
         Dense(10)
     )
