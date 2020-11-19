@@ -3,6 +3,11 @@ module ConvTests
 
 using Photon, Test
 
+using Photon, Test
+import Knet: relu
+import Photon.Layers: Dense, Sequential, Conv1D, Conv2D, Conv3D, Flatten, Conv2DTranspose, MaxPool2D, AvgPool2D, MaxPool2D, AdaptiveAvgPool, AdaptiveMaxPool, output_size
+import Photon: hasgpu, KorA
+
 
 getimages(s=224) = KorA(randn(s,s,3,4))
 

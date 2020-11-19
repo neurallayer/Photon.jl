@@ -1,14 +1,9 @@
 
-using MacroTools: @forward
-
 """
 Stacked layer is a abstract type and defines common behavior for containers
 layers that enables to access them as arrays.
 """
 abstract type StackedLayer <: Layer end
-
-@forward StackedLayer.layers Base.getindex, Base.length, Base.first, Base.last,
-  Base.iterate, Base.lastindex, Base.push!
 
 add(model::StackedLayer, layer...) = push!(model::StackedLayer, layer...)
 

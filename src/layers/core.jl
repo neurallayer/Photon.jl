@@ -27,6 +27,7 @@ function get_layername(layername; kwargs...)
 	end
 end
 
+abstract type Layer end
 
 """
 Lazy layers will be created during the first invocation. This means that a development time 

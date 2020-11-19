@@ -2,6 +2,8 @@ import Base:haslength
 import Serialization
 import Knet
 
+import Photon.Layers: Layer
+
 export Workout, saveworkout, loadworkout, predict, train!, hasmetric,
         freeze!, unfreeze!, validate, gradients, stop
 

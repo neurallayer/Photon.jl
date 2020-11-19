@@ -5,7 +5,7 @@ export Loss, KorA
 const ϵ = 10e-8
 
 abstract type MetricStore end
-abstract type Layer end
+
 abstract type Metric end
 abstract type Optimizer end
 

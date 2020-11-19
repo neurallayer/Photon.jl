@@ -2,7 +2,8 @@ module DenseTests
 
 using Photon, Test
 import Knet
-
+import Photon.Layers: Dense, Sequential
+import Photon: hasgpu, KorA
 
 function dense_model_cpu()
 
@@ -34,15 +35,12 @@ function dense_model_gpu()
     pred = run_model(data)
     @test size(pred) == (1, 16)
     @test typeof(pred) == Knet.KnetArray{Float32,2}
-
 end
 
 
 @testset "Dense" begin
     dense_model_cpu()
-    if hasgpu()
-        dense_model_gpu()
-    end
+    hasgpu() && dense_model_gpu()
 end
 
 
