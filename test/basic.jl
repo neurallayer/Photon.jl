@@ -1,6 +1,7 @@
 module BasicTests
 
 using Photon, Test
+using Photon: batchfirst, batchlast
 
 function KorATest()
     a = randn(10,10)

@@ -1,6 +1,6 @@
 module PhotonTest
 
-@info "Running Unit tests"
+@info "Running Photon Unit Tests"
 
 using Photon
 using Test
@@ -22,15 +22,15 @@ include("./recurrent.jl")
 @info "Testing Large models"
 include("./modelzoo.jl")
 
-@info "Testing training of models"
+@info "Testing Training"
 include("./training.jl")
 include("./optimise.jl")
 include("./loss.jl")
 
-@info "Testing metrics and meters"
+@info "Testing Metrics and Meters"
 include("./metrics.jl")
 
-@info "Testing complex training scenarios"
+@info "Testing Complex Scenarios"
 include("./complex.jl")
 
 @info "Testing dataset and dataloader"

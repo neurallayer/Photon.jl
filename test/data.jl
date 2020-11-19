@@ -2,7 +2,10 @@
 module DataTests
 
 using Photon, Test, JLD2
-
+using Photon.Data: TestDataset, VectorDataset, NoisingTransfomer, JLDDataset, MiniBatch, Split, ImageCrop, OneHotEncoder
+using Photon.Layers
+using Knet: relu
+using Photon: SilentMeter
 
 getimages(s=224) = KorA(randn(Float32, s,s,3,4))
 

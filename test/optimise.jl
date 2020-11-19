@@ -1,7 +1,9 @@
 module OptimTests
 
 using Photon, Test
-
+using Photon.Layers
+using Photon: MSELoss, SilentMeter, Adam, SGD, Momentum
+using Knet: relu
 
 function get_model()
     Sequential(

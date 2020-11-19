@@ -1,6 +1,7 @@
 module LossTests
 
 using Photon, Test
+using Photon: L1Loss, L2Loss, LNLoss, PseudoHuberLoss, HingeLoss, CrossEntropyLoss, BCELoss, FocalLoss
 
 function test_distance(loss)
     p = randn(10,8)
