@@ -116,5 +116,3 @@ DenseNet169(; bn_size = 4, dropout = 0, classes = 1000) =
 DenseNet201(; bn_size = 4, dropout = 0, classes = 1000) =
     DenseNet(densenet_spec[201]..., bn_size = bn_size, dropout=dropout, classes=classes)
 
-
-@info "Loaded DenseNet models"
