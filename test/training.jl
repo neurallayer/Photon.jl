@@ -1,7 +1,9 @@
 module TrainingTests
 
 using Photon, Test
-
+using Photon.Layers
+using Knet: relu
+using Photon: SilentMeter
 
 function simple_conv_model()
     model = Sequential(

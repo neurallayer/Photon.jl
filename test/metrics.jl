@@ -1,6 +1,10 @@
 module MetricsTests
 
 using Photon, Test
+using Photon.Layers
+using Knet: relu
+using Photon: BinaryAccuracy, MSELoss, CrossEntropyLoss, OneHotBinaryAccuracy
+using Photon: AutoSave, EpochSave, EarlyStop, history
 
 
 function simple_conv_model()
@@ -58,6 +62,7 @@ function test_core()
     @test length(h[1]) == length(h[2])
 end
 
+
 function test_metrics()
     y_pred = rand(10,16)
     y_true = rand(0:1,10,16)
@@ -69,8 +74,8 @@ function test_metrics()
 
 end
 
-function test_algo()
 
+function test_algo()
     pred   = [[0.3 0.7]; [0. 1.]; [0.4 0.6]]'
     labels = [[1 0];[0 1];[0 1]]'
     loss = CrossEntropyLoss()

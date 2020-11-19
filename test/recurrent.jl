@@ -1,6 +1,9 @@
 module RecurrentTests
 
 using Photon, Test
+using Photon.Layers
+using Photon: SilentMeter
+import Knet: relu
 
 
 gethistoric(steps=100, features=10) = KorA(randn(features,steps,4))
