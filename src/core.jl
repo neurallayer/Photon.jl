@@ -40,7 +40,7 @@ droplast(x) = reshape(x, (size(x)[1:end-1]...))
 Moves data to the right device like a CPU or GPU. However implememetations
 can provide extra functionality like also taking care of the correct data types.
 
-The default Mover used by Photon is SmartMover if no other mover is specified during
+The default Mover used by Photon is the SmartMover if no other mover is specified during
 instantiation of the Workout.
 """
 abstract type Mover end

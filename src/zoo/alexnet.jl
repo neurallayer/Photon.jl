@@ -29,6 +29,3 @@ function (m::AlexNet)(X)
     X = m.features(X)
     m.output(X)
 end
-
-
-@info "Loaded AlexNet model"

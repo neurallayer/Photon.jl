@@ -53,6 +53,3 @@ VGG16(; classes = 1000, batch_norm = true) =
     VGG(vgg_spec[16]..., classes = classes, batch_norm = batch_norm)
 VGG19(; classes = 1000, batch_norm = true) =
     VGG(vgg_spec[19]..., classes = classes, batch_norm = batch_norm)
-
-
-@info "Loaded VGG models"

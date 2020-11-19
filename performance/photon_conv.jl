@@ -1,7 +1,9 @@
 
 module PhotonTest
 
+using Photon.Layers
 using Photon
+using Knet: relu
 
 function test()
 
