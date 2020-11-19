@@ -14,7 +14,7 @@ include("callbacks.jl")
 include("metrics.jl")
 include("data/Data.jl")
 include("utils.jl")
-
+include("zoo/Zoo.jl")
 
 dir(path...) = joinpath(dirname(@__DIR__), path...)
 

@@ -5,7 +5,7 @@ layers that enables to access them as arrays.
 """
 abstract type StackedLayer <: Layer end
 
-add(model::StackedLayer, layer...) = push!(model::StackedLayer, layer...)
+add(model::StackedLayer, layers...) = push!(model.layers, layers...)
 
 
 

@@ -1,6 +1,7 @@
 module ZooTests
 
 using Photon, Test
+using Photon.Zoo: VGG16, AlexNet, DenseNet169, DenseNet121
 
 include("../src/zoo/Zoo.jl")
 
