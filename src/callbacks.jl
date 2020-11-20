@@ -1,4 +1,14 @@
 
+module Callbacks
+
+using Photon
+using Photon: getmetricvalue, history
+using Photon.Metrics
+using Printf
+
+export Callback, EarlyStop, EpochSave, AutoSave, SilentMeter, ConsoleMeter, PlotMeter, FileMeter, TensorBoardMeter
+
+
 abstract type Callback end
 
 """
@@ -276,4 +286,6 @@ function (m::PlotMeter)(workout::Workout, phase::Symbol)
         end
     end
     m.Plots.display(m.plt)
+end
+
 end

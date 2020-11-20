@@ -2,7 +2,7 @@ module ComplexTests
 
 using Photon, Test
 using Photon.Layers
-using Photon: SilentMeter
+using Photon.Callbacks: SilentMeter
 
 
 """

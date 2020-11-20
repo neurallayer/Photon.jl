@@ -3,7 +3,7 @@ module RecurrentTests
 using Photon, Test
 using Photon.Layers
 using Photon.Losses
-using Photon: SilentMeter
+using Photon.Callbacks: SilentMeter
 import Knet: relu
 
 

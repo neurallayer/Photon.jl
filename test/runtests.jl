@@ -27,8 +27,11 @@ include("./training.jl")
 include("./optimise.jl")
 include("./loss.jl")
 
-@info "Testing Metrics and Meters"
+@info "Testing Metrics"
 include("./metrics.jl")
+
+@info "Testing Callbacks"
+include("./callbacks.jl")
 
 @info "Testing Complex Scenarios"
 include("./complex.jl")

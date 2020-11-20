@@ -5,6 +5,7 @@ import Knet
 import Photon.Layers: Layer
 import Photon.Losses: Loss
 
+
 export Workout, saveworkout, loadworkout, predict, train!, hasmetric,
         freeze!, unfreeze!, validate, gradients, stop
 
@@ -313,7 +314,9 @@ train!(workout, traindata, testdata, epochs=50)
 
 """
 function train!(workout::Workout, data, validation=nothing;
-    epochs=1, cb = ConsoleMeter())
+    epochs=1, cb = nothing)
+
+    cb = isnothing(cb) ? Photon.Callbacks.ConsoleMeter() : cb
     cb = runall(cb)
 
     for epoch in 1:epochs

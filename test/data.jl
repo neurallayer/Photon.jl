@@ -6,7 +6,7 @@ using Photon.Data: TestDataset, VectorDataset, NoisingTransfomer, JLDDataset, Mi
 using Photon.Layers
 using Photon.Losses
 using Knet: relu
-using Photon: SilentMeter
+using Photon.Callbacks: SilentMeter
 
 getimages(s=224) = KorA(randn(Float32, s,s,3,4))
 
