@@ -3,17 +3,16 @@ module MetricsTests
 using Photon, Test
 using Photon.Layers
 using Photon.Metrics
-using Knet: relu
 using Photon.Losses
 using Photon: history
 
 
 function simple_conv_model()
     model = Sequential(
-        Conv2D(4, 3, relu),
-        Conv2D(8, 3, relu),
+        Conv2D(4, 3, :relu),
+        Conv2D(8, 3, :relu),
         MaxPool2D(),
-        Dense(16, relu),
+        Dense(16, :relu),
         Dense(10)
     )
     return model

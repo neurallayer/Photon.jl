@@ -9,7 +9,7 @@ import Photon: hasgpu, KorA
 function dense_model_cpu()
 
     function run_model(data)
-        model = Sequential(Dense(10), Dense(1))
+        model = Sequential(Dense(10, :relu), Dense(1))
         model(data)
     end
 

@@ -3,15 +3,14 @@ module TrainingTests
 using Photon, Test
 using Photon.Layers
 using Photon.Losses
-using Knet: relu
 using Photon.Callbacks: SilentMeter
 
 function simple_conv_model()
     model = Sequential(
-        Conv2D(16, 3, relu),
-        Conv2D(32, 3, relu),
+        Conv2D(16, 3, :relu),
+        Conv2D(32, 3, :relu),
         MaxPool2D(),
-        Dense(32, relu),
+        Dense(32, :relu),
         Dense(10)
     )
     return model

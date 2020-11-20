@@ -4,7 +4,6 @@ module ConvTests
 using Photon, Test
 
 using Photon, Test
-import Knet: relu
 using Photon.Layers
 import Photon: hasgpu, KorA
 
@@ -14,9 +13,9 @@ getimages(s=224) = KorA(randn(s,s,3,4))
 
 function simple_1D_model()
     model = Sequential(
-        Conv1D(16, 3, relu),
-        Conv1D(32, 5, relu),
-        Dense(100, relu),
+        Conv1D(16, 3, :relu),
+        Conv1D(32, 5, :relu),
+        Dense(100, :relu),
         Dense(10)
     )
 
@@ -30,9 +29,9 @@ end
 
 function simple_1D_model2()
     model = Sequential(
-        Conv1D(16, 3, relu),
-        Conv1D(32, 5, relu),
-        Dense(100, relu),
+        Conv1D(16, 3, :relu),
+        Conv1D(32, 5, :relu),
+        Dense(100, :relu),
         Dense(10)
     )
 
@@ -46,9 +45,9 @@ end
 
 function simple_3D_model()
     model = Sequential(
-        Conv3D(16, 3, relu),
-        Conv3D(32, 5, relu),
-        Dense(100, relu),
+        Conv3D(16, 3, :relu),
+        Conv3D(32, 5, :relu),
+        Dense(100, :relu),
         Dense(10)
     )
 
@@ -64,7 +63,7 @@ function test_base_Conv2D()
     Y = Conv2D(16, (3,3))(X)
     @test Y !== nothing
 
-    Y = Conv2D(16, (3,3), relu)(X)
+    Y = Conv2D(16, (3,3), :relu)(X)
     @test Y !== nothing
 
     Y = Conv2D(16, 3; padding=1, strides=2, dilation=2)(X)
@@ -74,11 +73,11 @@ end
 
 function convtranspose_model()
     model = Sequential(
-        Conv2D(16, (3,3), relu; padding=1, strides=2, dilation=2),
-        Conv2D(32, (5,5), relu),
+        Conv2D(16, (3,3), :relu; padding=1, strides=2, dilation=2),
+        Conv2D(32, (5,5), :relu),
         Conv2DTranspose(32, (5,5)),
         Conv2DTranspose(16,3; padding=1, strides=2, dilation=1),
-        Dense(50, relu),
+        Dense(50, :relu),
         Dense(10)
     )
     pred = model(getimages())
@@ -88,10 +87,10 @@ end
 
 function simple_conv2D_model()
     model = Sequential(
-        Conv2D(16, (3,3), relu; padding=1, strides=2, dilation=2),
-        Conv2D(32, (5,5), relu),
+        Conv2D(16, (3,3), :relu; padding=1, strides=2, dilation=2),
+        Conv2D(32, (5,5), :relu),
         Flatten(),
-        Dense(100, relu),
+        Dense(100, :relu),
         Dense(10)
     )
     pred = model(getimages())
@@ -109,13 +108,13 @@ end
 function adaptive_max_model()
     # Adaptive model
     model = Sequential(
-        Conv2D(16, (3,3), relu),
+        Conv2D(16, (3,3), :relu),
         MaxPool2D(),
-        Conv2D(32, (5,5), relu),
+        Conv2D(32, (5,5), :relu),
         AvgPool2D(),
         AdaptiveMaxPool((10,10)),
         Flatten(),
-        Dense(100, relu),
+        Dense(100, :relu),
         Dense(10)
     )
 
@@ -131,13 +130,13 @@ end
 function adaptive_avg_model()
     # Adaptive model
     model = Sequential(
-        Conv2D(16, (3,3), relu),
+        Conv2D(16, (3,3), :relu),
         MaxPool2D(),
-        Conv2D(32, (5,5), relu),
+        Conv2D(32, (5,5), :relu),
         AvgPool2D(),
         AdaptiveAvgPool((10,10)),
         Flatten(),
-        Dense(100, relu),
+        Dense(100, :relu),
         Dense(10)
     )
 

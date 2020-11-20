@@ -4,7 +4,6 @@ using Photon, Test
 using Photon.Layers
 using Photon.Losses
 using Photon.Callbacks: SilentMeter
-import Knet: relu
 
 
 gethistoric(steps=100, features=10) = KorA(randn(features,steps,4))
@@ -42,7 +41,7 @@ function train_lstm_model()
 
     model = Sequential(
         LSTM(50, last_only=false),
-        Dense(100, relu),
+        Dense(100, :relu),
         Dense(10)
     )
 
@@ -63,7 +62,7 @@ function lstm_model()
 
     model = Sequential(
         LSTM(20),
-        Dense(100, relu),
+        Dense(100, :relu),
         Dense(10)
     )
 
@@ -79,7 +78,7 @@ function lstm_model2()
 
     model = Sequential(
         LSTM(20, last_only=false),
-        Dense(100, relu),
+        Dense(100, :relu),
         Dense(10)
     )
 
@@ -93,7 +92,7 @@ function gru_model()
 
     model = Sequential(
         GRU(20,2;dropout=0.5),
-        Dense(100, relu),
+        Dense(100, :relu),
         Dense(10)
     )
 
@@ -106,7 +105,7 @@ function rnn_model()
 
     model = Sequential(
         RNN(20,2;activation=:relu, dropout=0.5),
-        Dense(100, relu),
+        Dense(100, :relu),
         Dense(10)
     )
 

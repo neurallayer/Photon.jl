@@ -5,7 +5,6 @@ using Photon, Test, JLD2
 using Photon.Data: TestDataset, VectorDataset, NoisingTransfomer, JLDDataset, MiniBatch, Split, ImageCrop, OneHotEncoder
 using Photon.Layers
 using Photon.Losses
-using Knet: relu
 using Photon.Callbacks: SilentMeter
 
 getimages(s=224) = KorA(randn(Float32, s,s,3,4))
@@ -81,10 +80,10 @@ function test_training()
     data = TestDataset((28,28,1), (10,), 100) |> MiniBatch()
 
 	model = Sequential(
-        Conv2D(16, 3, relu),
-        Conv2D(32, 3, relu),
+        Conv2D(16, 3, :relu),
+        Conv2D(32, 3, :relu),
         MaxPool2D(),
-        Dense(32, relu),
+        Dense(32, :relu),
         Dense(10)
     )
 
@@ -99,10 +98,10 @@ function test_threading(sleep)
     data = TestDataset((28,28,1), (10,), 100; sleep=sleep) |> MiniBatch(32)
 
 	model = Sequential(
-        Conv2D(16, 3, relu),
-        Conv2D(32, 3, relu),
+        Conv2D(16, 3, :relu),
+        Conv2D(32, 3, :relu),
         MaxPool2D(),
-        Dense(32, relu),
+        Dense(32, :relu),
         Dense(10)
     )
 

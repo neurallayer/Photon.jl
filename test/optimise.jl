@@ -5,14 +5,13 @@ using Photon.Layers
 using Photon: Adam, SGD, Momentum
 using Photon.Callbacks: SilentMeter
 using Photon.Losses
-using Knet: relu
 
 function get_model()
     Sequential(
-        Conv2D(16, (3,3), relu),
-        Conv2D(32, (5,5), relu),
+        Conv2D(16, (3,3), :relu),
+        Conv2D(32, (5,5), :relu),
         MaxPool2D(),
-        Dense(64, relu),
+        Dense(64, :relu),
         Dense(10)
     )
 end
