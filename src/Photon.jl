@@ -9,14 +9,14 @@ import Knet
 import CUDA
 
 include("core.jl")
-include("layers/Layers.jl")
-include("metrics.jl")
-include("losses.jl")
+include("layers/layers.jl")
+include("metrics/metrics.jl")
+include("losses/losses.jl")
 include("train.jl")
-include("callbacks.jl")
-include("data/Data.jl")
+include("callbacks/callbacks.jl")
+include("data/data.jl")
 include("utils.jl")
-include("zoo/Zoo.jl")
+include("zoo/zoo.jl")
 
 dir(path...) = joinpath(dirname(@__DIR__), path...)
 

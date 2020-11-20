@@ -11,6 +11,27 @@ function getparam(atype::Type, d...;init=Knet.xavier)
 end
 
 
+const RegisteredActivations = IdDict{String, Any}(
+	"relu" => Knet.relu,
+	"elu" => Knet.elu,
+	"selu" => Knet.selu,
+	"sigm" => Knet.sigm,
+	"sigmoid" => Knet.sigm,
+	"identity" => identity
+)
+
+get_activation(f) = f
+function get_activation(f::Union{String, Symbol})
+	f = string(f)
+	if ! haskey(RegisteredActivations, f)
+		@warn "unkown activtion function, using relu instead" fn=f
+		return Knet.relu
+	else
+		return RegisteredActivations[f]
+	end
+end
+
+
 const _layernames = Dict{String,Int}()
 
 function get_layername(layername; kwargs...)
@@ -85,6 +106,7 @@ mutable struct Dense <:LazyLayer
 	function Dense(units::Int, activation=identity; use_bias=true,
 		initw = Knet.xavier, initb = zeros, kwargs...)
 		@assert units > 0 "Units of a Dense layer should be > 0"
+		activation = get_activation(activation)
 		name = get_layername("dense"; kwargs...)
 	    new(units, activation, use_bias, name, false,
 		(w=initw, b=initb), (w=nothing, b=nothing))
@@ -188,6 +210,7 @@ struct BatchNorm <: Layer
 	activation
 
 	function BatchNorm(activation=identity)
+		activation = get_activation(activation)
 		new(Knet.bnmoments(), activation)
 	end
 end

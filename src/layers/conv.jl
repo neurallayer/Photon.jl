@@ -31,6 +31,7 @@ function Conv(
 	initb = zeros
 )
     @assert channels > 0 "Conv layer should have more then 0 channels"
+    activation = get_activation(activation)
     Conv(
         channels,
         kernel_size,
@@ -166,6 +167,7 @@ function ConvTranspose(
 	initb = zeros
 )
     @assert channels > 0
+    activation = get_activation(activation)
     ConvTranspose(
         channels,
         kernel_size,
