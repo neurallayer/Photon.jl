@@ -4,6 +4,7 @@ module DataTests
 using Photon, Test, JLD2
 using Photon.Data: TestDataset, VectorDataset, NoisingTransfomer, JLDDataset, MiniBatch, Split, ImageCrop, OneHotEncoder
 using Photon.Layers
+using Photon.Losses
 using Knet: relu
 using Photon: SilentMeter
 

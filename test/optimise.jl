@@ -2,7 +2,8 @@ module OptimTests
 
 using Photon, Test
 using Photon.Layers
-using Photon: MSELoss, SilentMeter, Adam, SGD, Momentum
+using Photon: SilentMeter, Adam, SGD, Momentum
+using Photon.Losses
 using Knet: relu
 
 function get_model()

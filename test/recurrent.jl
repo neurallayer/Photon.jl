@@ -2,6 +2,7 @@ module RecurrentTests
 
 using Photon, Test
 using Photon.Layers
+using Photon.Losses
 using Photon: SilentMeter
 import Knet: relu
 

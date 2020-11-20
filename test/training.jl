@@ -2,6 +2,7 @@ module TrainingTests
 
 using Photon, Test
 using Photon.Layers
+using Photon.Losses
 using Knet: relu
 using Photon: SilentMeter
 
