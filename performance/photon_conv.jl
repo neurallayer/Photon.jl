@@ -4,25 +4,24 @@ module PhotonTest
 using Photon.Layers
 using Photon.Losses: MSELoss
 using Photon
-using Knet: relu
 
 function test()
 
   model = Sequential(
-    Conv2D(16, (3,3), relu),
-    Conv2D(16, (3,3), relu),
+    Conv2D(16, (3,3), :relu),
+    Conv2D(16, (3,3), :relu),
     BatchNorm(),
     MaxPool2D(4),
-    Conv2D(64, (3,3), relu),
-    Conv2D(64, (3,3), relu),
+    Conv2D(64, (3,3), :relu),
+    Conv2D(64, (3,3), :relu),
     BatchNorm(),
     MaxPool2D(4),
-    Conv2D(256, (3,3), relu),
-    Conv2D(256, (3,3), relu),
+    Conv2D(256, (3,3), :relu),
+    Conv2D(256, (3,3), :relu),
     BatchNorm(),
     MaxPool2D(4),
-    Dense(64, relu),
-    Dense(10, relu)
+    Dense(64, :relu),
+    Dense(10, :relu)
   )
 
   # Create dummy data
