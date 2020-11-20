@@ -1,5 +1,7 @@
 using Photon, Printf
 using Knet:value
+using Photon.Layers: Dense
+using Photon.Losses: MSELoss
 
 # An example that demonstrates how to use Photon for linear regression problem
 

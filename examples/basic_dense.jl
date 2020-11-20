@@ -1,5 +1,7 @@
 using Photon
-
+using Photon.Layers
+using Photon.Losses: CrossEntropyLoss
+using Knet: relu, softmax
 
 # Define a model with fully connected layers.
 model = Sequential(

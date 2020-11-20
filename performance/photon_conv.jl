@@ -2,6 +2,7 @@
 module PhotonTest
 
 using Photon.Layers
+using Photon.Losses: MSELoss
 using Photon
 using Knet: relu
 

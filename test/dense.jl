@@ -1,6 +1,7 @@
 module DenseTests
 
 using Photon, Test
+using Photon.Layers
 import Knet
 import Photon.Layers: Dense, Sequential
 import Photon: hasgpu, KorA

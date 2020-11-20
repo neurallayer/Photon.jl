@@ -1,20 +1,15 @@
 
 
-export Loss, KorA
+export Loss, KorA, SmartMover
 
 const ϵ = 10e-8
 
 abstract type MetricStore end
 
-abstract type Metric end
+
 abstract type Optimizer end
 
-"""
-Abstract type for the loss functions. However Photon accepts
-any function as a loss function as long as it is callable and
-returns the loss value as a scalar type.
-"""
-abstract type Loss end
+
 
 const Shape = Tuple{Vararg{Int}}
 
@@ -86,3 +81,40 @@ KorA = SmartMover()
 # small util
 makeArray(x::AbstractArray) = x
 makeArray(x) = Vector(x)
+
+
+
+"""
+Stores the calculated metrics. If multiple values are provided at the same step
+(like is the case with validation metrics), the moving average over those values
+will be stored.
+"""
+struct SmartReducer <: MetricStore
+    state::Dict{Int, Real}
+    momentum::Real
+    SmartReducer(momentum=0.9) = new(Dict(), momentum)
+end
+
+function update!(r::SmartReducer, step::Int, value::Real)
+    if haskey(r.state, step)
+        r.state[step] = r.momentum * r.state[step] + (1-r.momentum) * value
+    else
+        r.state[step] = value
+    end
+end
+
+
+"""
+Function to generate the fully qualified metric name. It uses the metric name
+and the phase (:train or :valid) to come up with a unique name.
+
+```julia
+getmetricname(:loss, :train) # return is :loss
+getmetricname(:loss, :valid) # return is :val_loss
+```
+"""
+function getmetricname(metric::Symbol, phase=:train)::Symbol
+    metricname = phase == :train ? metric : Symbol("val_", metric)
+end
+
+

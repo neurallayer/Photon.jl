@@ -2,8 +2,9 @@ module MetricsTests
 
 using Photon, Test
 using Photon.Layers
+using Photon.Metrics
 using Knet: relu
-using Photon: BinaryAccuracy, MSELoss, CrossEntropyLoss, OneHotBinaryAccuracy
+using Photon.Losses
 using Photon: AutoSave, EpochSave, EarlyStop, history
 
 

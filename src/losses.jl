@@ -1,10 +1,25 @@
 
-export  L1Loss, MAELoss, L2Loss, MSELoss, LNLoss, PseudoHuberLoss, HingeLoss,
+module Losses
+
+using Statistics
+import Knet
+using Photon: ϵ
+import Photon.Metrics: Metric
+
+export  Loss, L1Loss, MAELoss, L2Loss, MSELoss, LNLoss, PseudoHuberLoss, HingeLoss,
         SquaredHingeLoss, BCELoss, CrossEntropyLoss, FocalLoss
 
 
 # Simple wrapper since Knet nll loss function expects regular array.
 # Knet.nll(y, a::Knet.KnetArray{<:Integer}; dims=1, average=true) = nll(y, Array(a); dims=dims, average=average)
+
+
+"""
+Abstract type for the loss functions. However Photon accepts
+any function as a loss function as long as it is callable and
+returns the loss value as a scalar type.
+"""
+abstract type Loss <: Metric end
 
 
 """
@@ -107,7 +122,7 @@ end
 function (l::BCELoss)(ŷ, y)
   ŷ, y = Knet.mat(ŷ), Knet.mat(y)
 
-  ŷ = l.use_sigmoid ? sigm(ŷ) : ŷ
+  ŷ = l.use_sigmoid ? Knet.sigm(ŷ) : ŷ
 
   r = -y .* log.(ŷ .+ ϵ) .- (1 .- y) .* log.(1 .- ŷ .+ ϵ)
   l.reduction(r)
@@ -144,7 +159,7 @@ function (l::CrossEntropyLoss)(ŷ, y, weight=nothing)
   w = weight !== nothing ? weight : l.weight
   ŷ, y = Knet.mat(ŷ), Knet.mat(y)
 
-  ŷ = l.use_softmax ? softmax(ŷ) : ŷ
+  ŷ = l.use_softmax ? Knet.softmax(ŷ) : ŷ
 
   r = sum(y .* log.(ŷ .+ ϵ), dims=1) .* w
   l.reduction(-r)
@@ -239,4 +254,6 @@ function (l::FocalLoss)(ŷ, y)
   loss .+= @. (1 - y) * ( - (    ŷ)^γ  * log(1 - ŷ + ϵ)) # if y = 0
 
   l.reduction(loss)
+end
+
 end

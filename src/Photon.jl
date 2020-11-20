@@ -1,3 +1,5 @@
+__precompile__(true)
+
 
 module Photon
 
@@ -8,10 +10,10 @@ import CUDA
 
 include("core.jl")
 include("layers/Layers.jl")
-include("train.jl")
-include("losses.jl")
-include("callbacks.jl")
 include("metrics.jl")
+include("losses.jl")
+include("train.jl")
+include("callbacks.jl")
 include("data/Data.jl")
 include("utils.jl")
 include("zoo/Zoo.jl")
