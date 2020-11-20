@@ -138,6 +138,34 @@ end
 
 
 """
+Softmax
+"""
+mutable struct Softmax <: Layer
+	dims
+	Softmax(dims=:) = new(dims)
+end
+
+function call(layer::Softmax, X::Tensor)
+	Knet.softmax(X, dims=layer.dims)
+end
+
+
+
+"""
+Log Softmax
+"""
+mutable struct LogSoftmax <: Layer
+	dims
+	LogSoftmax(dims=:) = new(dims)
+end
+
+function call(layer::LogSoftmax, X::Tensor)
+	Knet.logsoftmax(X, dims=layer.dims)
+end
+
+
+
+"""
 Flattening Layer. Photon by default already has flattening functionality
 build into the Dense layer, so you won't need to include a separate Flatten
 layer before a Dense layer.

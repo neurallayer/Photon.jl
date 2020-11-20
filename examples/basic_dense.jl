@@ -1,13 +1,12 @@
 using Photon
 using Photon.Layers
 using Photon.Losses: CrossEntropyLoss
-using Knet: softmax
 
 # Define a model with fully connected layers.
 model = Sequential(
       Dense(256, :relu),
       Dense( 10),
-      softmax,
+      Softmax(),
 )
 
 # create the workout
