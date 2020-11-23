@@ -2,6 +2,7 @@ using Photon
 using Photon.Layers
 using Photon.Losses: CrossEntropyLoss
 
+
 # Define a model with fully connected layers.
 model = Sequential(
       Dense(256, :relu),

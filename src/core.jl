@@ -30,6 +30,27 @@ const Tensor = Any
 hasgpu() = CUDA.functional()
 addlast(x) = reshape(x, (size(x)...,1))
 droplast(x) = reshape(x, (size(x)[1:end-1]...))
+"""
+Move the batch from the first to the last dimension
+"""
+function batchlast(a::AbstractArray)
+      p = collect(1:length(size(a)))
+      push!(p, popfirst!(p))
+      permutedims(a,p)
+end
+
+
+"""
+Move the batch from the last to the first dimension
+"""
+function batchfirst(a::AbstractArray)
+      p = collect(1:length(size(a)))
+      pushfirst!(p, pop!(p))
+      permutedims(a,p)
+end
+
+
+
 
 """
 Moves data to the right device like a CPU or GPU. However implememetations
@@ -87,7 +108,7 @@ makeArray(x) = Vector(x)
 """
 Stores the calculated metrics. If multiple values are provided at the same step
 (like is the case with validation metrics), the moving average over those values
-will be stored.
+will be stored instead.
 """
 struct SmartReducer <: MetricStore
     state::Dict{Int, Real}

@@ -2,7 +2,7 @@ module OptimTests
 
 using Photon, Test
 using Photon.Layers
-using Photon: Adam, SGD, Momentum
+using Photon.Optimisers: Adam, SGD, Momentum
 using Photon.Callbacks: SilentMeter
 using Photon.Losses
 
