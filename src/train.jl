@@ -78,7 +78,6 @@ and enables to continue at a later stage using the loadWorkout function. Under t
 this function uses Julia serialization.
 """
 function saveworkout(workout::Workout, filename="workout_$(workout.steps).dat")::String
-    # serialize
     Serialization.serialize(filename, workout)
     return filename
 end
