@@ -5,10 +5,8 @@
 
 
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE.md)
-[![Build Status](https://travis-ci.org/neurallayer/Photon.jl.svg?branch=master)](https://travis-ci.org/neurallayer/Photon.jl)
+[![Run tests](https://github.com/neurallayer/Photon.jl/workflows/Run%20tests/badge.svg)](https://travis-ci.org/neurallayer/Photon.jl)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://neurallayer.github.io/Photon.jl/dev/)
-[![codecov](https://codecov.io/gh/neurallayer/Photon.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/neurallayer/Photon.jl)
-[![Join the julia slack](https://img.shields.io/badge/chat-slack%23photon-yellow.svg)](https://slackinvite.julialang.org)
 
 
 **Photon** is a developer friendly framework for Deep Learning in Julia. Under the hood
