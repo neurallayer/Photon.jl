@@ -1,11 +1,8 @@
-
-module PhotonTest
-
 using Photon.Layers
 using Photon.Losses: MSELoss
 using Photon
 
-function test()
+function test_performance()
 
   model = Sequential(
     Conv2D(16, (3,3), :relu),
@@ -39,6 +36,6 @@ function test()
   @time train!(workout, data, epochs=10)
 end
 
-test()
+test_performance()
 
-end
+

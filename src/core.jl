@@ -1,14 +1,12 @@
 
 
-export Loss, KorA, SmartMover
+export KorA # SmartMover
 
 const ϵ = 10e-8
 
 abstract type MetricStore end
 
-
 abstract type Optimizer end
-
 
 
 const Shape = Tuple{Vararg{Int}}
