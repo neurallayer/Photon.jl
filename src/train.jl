@@ -25,7 +25,7 @@ If no optimizer is specified, SGD will be used. If no metrics are provided, only
 the loss during training and validation will be registered (:loss and :val_loss).
 
 The provided mover will move data to the correct device. See also SmartMover. If
-no mover is required, you can provide the identity function instead.
+no mover is required, you can provide: (x) -> x or simple identity
 
 # Usage
 
