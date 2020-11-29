@@ -40,7 +40,10 @@ end
 
 
 function build(l::Recurrent, shape::Tuple, atype)
-    inputSize = shape[1]
+
+    # if we onyl get 1 input diemnsion assume it are the steps
+    # and the features dimension is just 1
+    inputSize = length(shape) === 1 ? 1 : shape[1]
 
     l.ops = Knet.RNN(
         inputSize,
@@ -63,11 +66,7 @@ function call(layer::Recurrent, X::Tensor)
     end
 
     output = layer.ops(X)
-    if layer.last_only
-        output[:, end, :]
-    else
-        output
-    end
+    return layer.last_only ? output[:, end, :] : output
 end
 
 """
