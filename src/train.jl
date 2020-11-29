@@ -57,22 +57,6 @@ end
 
 
 """
-Enable saving and loading of models by specialized KnetArray methods for Julia serialization
-This will effectively move a GPU weight to the CPU before serializing it and move it back to
-the GPU when deserializing.
-"""
-function Serialization.serialize(s::Serialization.AbstractSerializer, p::Knet.KnetArray)
-    Serialization.serialize_type(s, typeof(p))
-    Serialization.serialize(s, Array(p))
-end
-
-function Serialization.deserialize(s::Serialization.AbstractSerializer, t::Type{<:Knet.KnetArray})
-    arr = Serialization.deserialize(s)
-    return Knet.KnetArray(arr)
-end
-
-
-"""
 Save a workout to a file. This will save all the state that is captured in the workout
 and enables to continue at a later stage using the loadWorkout function. Under the hood
 this function uses Julia serialization.
